@@ -1,13 +1,28 @@
 import { useState } from 'react'
+import {Route, Routes, BrowserRouter} from 'react-router-dom'
 import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
+import User from './pages/user/user'
+import Admin from './pages/admin/admin'
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <>
+    <BrowserRouter>
+    <Routes>
+      <Route path='/' element={<Layout/>}>
+        <Route path='user' element={<User/>}/>
+        <Route path='admin' element={<Admin/>}/>
+      </Route>
+    </Routes>
+    </BrowserRouter>
+  )
+}
+
+export default App
+{/* <>
       <div>
         <a href="https://vitejs.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
@@ -28,8 +43,4 @@ function App() {
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
-    </>
-  )
-}
-
-export default App
+    </> */}
