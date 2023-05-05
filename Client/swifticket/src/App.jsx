@@ -1,39 +1,56 @@
-import {Outlet, Route, RouterProvider, createBrowserRouter, createRoutesFromElements} from 'react-router-dom'
-import './App.css'
-import User from './pages/user/user'
-import Admin from './pages/admin/admin'
-import Login from './pages/login/login'
+import {
+  Outlet,
+  Route,
+  RouterProvider,
+  createBrowserRouter,
+  createRoutesFromElements,
+} from "react-router-dom";
+import "./App.css";
+import User from "./pages/user/user";
+import Admin from "./pages/admin/admin";
+import Login from "./pages/login/login";
+import { NavBar } from "./components/NavBar";
+import Home from "./pages/home";
+import Footer from "./components/Footer";
+import OneUser from "./pages/user/id/oneUser";
 
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
-      <Route path='/' element={<Layout/>}>
-        <Route path='login' element={<Login/>} />
-        <Route path='user' element={<User/>} />
-        <Route path='admin' element={<Admin/>} />
-      </Route>
+      <>
+        <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
+          <Route path="user" element={<User />}/>
+          <Route path="user/one" element={<OneUser />} />
+          <Route path="admin" element={<Admin />} />
+        </Route>
+        <Route path="/login" element={<Login />} />
+      </>
     )
-  )
+  );
   return (
     <>
-      <RouterProvider router={router} />  
+      <RouterProvider router={router} />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
 
 const Layout = () => {
   return (
     <>
-      <div>NAV BAR</div>
-      <main><Outlet /></main>
-      <footer> Foo Ter</footer>
+      <NavBar />
+      <main>
+        <Outlet />
+      </main>
+      <Footer />
     </>
   );
 };
 
-{/* <>
+{
+  /* <>
       <div>
         <a href="https://vitejs.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
@@ -54,4 +71,5 @@ const Layout = () => {
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>
-    </> */}
+    </> */
+}
