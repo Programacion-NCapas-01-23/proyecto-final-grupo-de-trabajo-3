@@ -1,27 +1,38 @@
-import { useState } from 'react'
-import {Route, Routes, BrowserRouter} from 'react-router-dom'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import {Outlet, Route, RouterProvider, createBrowserRouter, createRoutesFromElements} from 'react-router-dom'
 import './App.css'
 import User from './pages/user/user'
 import Admin from './pages/admin/admin'
+import Login from './pages/login/login'
 
 function App() {
-  const [count, setCount] = useState(0)
-
-  return (
-    <BrowserRouter>
-    <Routes>
+  const router = createBrowserRouter(
+    createRoutesFromElements(
       <Route path='/' element={<Layout/>}>
-        <Route path='user' element={<User/>}/>
-        <Route path='admin' element={<Admin/>}/>
+        <Route path='login' element={<Login/>} />
+        <Route path='user' element={<User/>} />
+        <Route path='admin' element={<Admin/>} />
       </Route>
-    </Routes>
-    </BrowserRouter>
+    )
+  )
+  return (
+    <>
+      <RouterProvider router={router} />  
+    </>
   )
 }
 
 export default App
+
+const Layout = () => {
+  return (
+    <>
+      <div>NAV BAR</div>
+      <main><Outlet /></main>
+      <footer> Foo Ter</footer>
+    </>
+  );
+};
+
 {/* <>
       <div>
         <a href="https://vitejs.dev" target="_blank">
