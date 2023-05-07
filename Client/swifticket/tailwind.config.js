@@ -20,6 +20,22 @@ export default {
         'df-lg': '2rem',
         'df-xl': '4rem',
         'df-2xl': '8rem',
+      },
+      colors: {
+        'default': '#00052E',
+        'default-900': '#000421',
+        'default-400': '#00094F',
+        'primary': '#E6A410',
+        'primary-100': '#F4C560',
+        'primary-400': '#F0B22A',
+        'primary-700': '#C48A0E',
+        'primary-900': '#835C09',
+        'secondary': '#144580',
+        'secondary-100': '#2275D9',
+        'secondary-400': '#1B5DAD',
+        'secondary-700': '#0E315B',
+        'secondary-900': '#0A2240',
+        
       }
     },
   },
