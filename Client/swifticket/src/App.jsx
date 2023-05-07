@@ -13,11 +13,13 @@ import { NavBar } from "./components/NavBar";
 import Home from "./pages/home";
 import Footer from "./components/Footer";
 import OneUser from "./pages/user/id/oneUser";
+import { Colors } from "./pages/colors";
 
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
+        <Route path="/colors" element={<Colors></Colors>} />
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="user" element={<User />}/>
