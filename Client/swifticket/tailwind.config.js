@@ -6,20 +6,20 @@ export default {
   theme: {
     extend: {
       spacing: {
-        'df': '4rem',
-        'df-sm': '2rem',
-        'df-xs': '1rem',
-        'df-lg': '6rem',
-        'df-xl': '8rem',
-        'df-2xl': '16rem',
+        'default': '4rem',
+        'default-sm': '2rem',
+        'default-xs': '1rem',
+        'default-lg': '6rem',
+        'default-xl': '8rem',
+        'default-2xl': '16rem',
       },
       padding: {
-        'df': '1rem',
-        'df-sm': '0.5rem',
-        'df-xs': '0.25rem',
-        'df-lg': '2rem',
-        'df-xl': '4rem',
-        'df-2xl': '8rem',
+        'default': '1rem',
+        'default-sm': '0.5rem',
+        'default-xs': '0.25rem',
+        'default-lg': '2rem',
+        'default-xl': '4rem',
+        'default-2xl': '8rem',
       },
       colors: {
         'default': '#00052E',
