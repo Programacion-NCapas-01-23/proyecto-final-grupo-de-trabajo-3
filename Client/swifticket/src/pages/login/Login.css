@@ -1,0 +1,57 @@
+.bg-login {
+  background-color: #00052e;
+}
+
+.container-logo {
+  background-color: #eeedff;
+  border-radius: 2rem 0 0 2rem;
+}
+
+.container-login {
+  background-color: #144580;
+  background-color: rgba(20, 69, 128, 0.5);
+  border-radius: 0 2rem 2rem 0;
+}
+
+.btn-login {
+  background-color: #e6a410;
+  color: #fff;
+  border-radius: 2rem;
+}
+
+.btn-google {
+  background-color: #fff;
+  color: #000;
+  border-radius: 2rem;
+}
+
+.btn-guest {
+  background-color: transparent;
+  color: white;
+}
+
+.btn-forgot {
+  background-color: transparent;
+  color: white;
+}
+
+.img-google {
+  height: 50%;
+  margin-right: 1rem;
+}
+
+.img-logo {
+  height: 30%;
+}
+
+.input-username {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #000;
+  border-radius: 2rem;
+}
+
+.input-password {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #000;
+  border-radius: 2rem;
+}

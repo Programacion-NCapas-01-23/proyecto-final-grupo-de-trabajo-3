@@ -4,16 +4,16 @@ import {
   RouterProvider,
   createBrowserRouter,
   createRoutesFromElements,
-} from "react-router-dom";
-import "./App.css";
-import User from "./pages/user/user";
-import Admin from "./pages/admin/admin";
-import Login from "./pages/login/login";
-import { NavBar } from "./components/NavBar";
-import Home from "./pages/home";
-import Footer from "./components/Footer";
-import OneUser from "./pages/user/id/oneUser";
-import { Colors } from "./pages/colors";
+} from 'react-router-dom';
+import './App.css';
+import User from './pages/user/user';
+import Admin from './pages/admin/admin';
+import Login from './pages/login/Login';
+import { NavBar } from './components/NavBar';
+import Home from './pages/home';
+import Footer from './components/Footer';
+import OneUser from './pages/user/id/oneUser';
+import { Colors } from './pages/colors';
 
 function App() {
   const router = createBrowserRouter(
@@ -22,7 +22,7 @@ function App() {
         <Route path="/colors" element={<Colors></Colors>} />
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
-          <Route path="user" element={<User />}/>
+          <Route path="user" element={<User />} />
           <Route path="user/one" element={<OneUser />} />
           <Route path="admin" element={<Admin />} />
         </Route>
