@@ -22,7 +22,7 @@ function App() {
         <Route path="/colors" element={<Colors></Colors>} />
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
-          <Route path="user" element={<User />}/>
+          <Route path="user" element={<User />} />
           <Route path="user/one" element={<OneUser />} />
           <Route path="admin" element={<Admin />} />
         </Route>

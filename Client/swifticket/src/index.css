@@ -7,3 +7,13 @@
   padding: 0;
   box-sizing: border-box;
 }
+
+@layer base {
+  body {
+    font-family: "Roboto Condensed", sans-serif;
+    background-color: #00052e;
+    color: #ffffff;
+    min-height: 100vh;
+    min-width: 100vw;
+  }
+}

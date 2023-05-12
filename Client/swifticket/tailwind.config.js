@@ -4,7 +4,11 @@ export default {
     './src/*/*.{html,js,jsx}',
   ],
   theme: {
+   
     extend: {
+      screens: {
+        'xs' : '200px',
+      },
       spacing: {
         'default': '4rem',
         'default-sm': '2rem',
