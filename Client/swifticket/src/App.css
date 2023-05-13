@@ -9,12 +9,6 @@
   box-sizing: border-box;
 }
 
-@layer base {
-  body {
-    font-family: "Roboto Condensed", sans-serif;
-  }
-}
-
 @layer components {
   .title {
     font-size: 4rem;
