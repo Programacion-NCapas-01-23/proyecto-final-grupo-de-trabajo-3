@@ -5,27 +5,26 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/stats")
 @CrossOrigin("*")
-public class AuthController {
+public class StatsController {
 	
-	@GetMapping("/validate-token")
-	public ResponseEntity<?> validateToken() {
+	@GetMapping("/general")
+	public ResponseEntity<?> getGeneralStats() {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
-	@GetMapping("/validate-account/{code}")
-	public ResponseEntity<?> validateAccount(@PathVariable String code) {
+	@GetMapping("/event/{id}")
+	public ResponseEntity<?> getEventStats(@PathVariable String id) {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
-	@PostMapping("/signin")
-	public ResponseEntity<?> signIn() {
+	@GetMapping("/event/{id}/attendance")
+	public ResponseEntity<?> getEventAttendanceStats(@PathVariable String id) {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	

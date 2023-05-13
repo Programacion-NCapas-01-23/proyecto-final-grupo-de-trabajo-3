@@ -3,29 +3,36 @@ package com.swifticket.web.controllers;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/organizers")
 @CrossOrigin("*")
-public class AuthController {
-	
-	@GetMapping("/validate-token")
-	public ResponseEntity<?> validateToken() {
+public class OrganizerController {
+
+	@GetMapping("")
+	public ResponseEntity<?> getOrganizers() {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
-	@GetMapping("/validate-account/{code}")
-	public ResponseEntity<?> validateAccount(@PathVariable String code) {
+	@PostMapping("")
+	public ResponseEntity<?> createOrganizer() {
+		return new ResponseEntity<>(HttpStatus.CREATED);
+	}
+	
+	@PutMapping("/{id}")
+	public ResponseEntity<?> updateOrganizer(@PathVariable String id) {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
-	@PostMapping("/signin")
-	public ResponseEntity<?> signIn() {
+	@DeleteMapping("/{id}")
+	public ResponseEntity<?> deleteOrganizer(@PathVariable String id) {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	

@@ -13,42 +13,60 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/events")
+@RequestMapping("/users")
 @CrossOrigin("*")
-public class EventController {
+public class UserController {
 	
 	@GetMapping("")
-	public ResponseEntity<?> getEvents() {
+	public ResponseEntity<?> getUsers() {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<?> getEvent(@PathVariable String id) {
+	public ResponseEntity<?> getUser(@PathVariable String id) {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
 	@PostMapping("")
-	public ResponseEntity<?> createEvent() {
+	public ResponseEntity<?> createUser() {
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 	
-	@PutMapping("/{id}")
-	public ResponseEntity<?> updateEvent(@PathVariable String id) {
+	@PutMapping("")
+	public ResponseEntity<?> updateUser() {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
-	@PatchMapping("/change-status")
-	public ResponseEntity<?> patchEvent() {
+	@PatchMapping("/change-password")
+	public ResponseEntity<?> changePassword() {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
-	@PostMapping("/sponsors")
-	public ResponseEntity<?> assignSponsor() {
+	@PatchMapping("/toggle-status")
+	public ResponseEntity<?> toggleStatus() {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
-	@DeleteMapping("/sponsors")
-	public ResponseEntity<?> removeSponsor() {
+	
+	@PostMapping("/role")
+	public ResponseEntity<?> assignRole() {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
+	
+	@DeleteMapping("/role")
+	public ResponseEntity<?> removeRole() {
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
+	
+	@PostMapping("/assign-to-event")
+	public ResponseEntity<?> assignToEvent() {
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/remove-from-event")
+	public ResponseEntity<?> removeFromEvent() {
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
 }
