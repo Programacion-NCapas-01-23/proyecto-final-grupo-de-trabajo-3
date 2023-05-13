@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
 @RestController
 @RequestMapping("/events")
 @CrossOrigin("*")
@@ -42,6 +43,7 @@ public class EventController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
+	
 	@PostMapping("/sponsors")
 	public ResponseEntity<?> assignSponsor() {
 		return new ResponseEntity<>(HttpStatus.OK);
@@ -51,4 +53,26 @@ public class EventController {
 	public ResponseEntity<?> removeSponsor() {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
+	
+	
+	@GetMapping("/{id}/tiers")
+	public ResponseEntity<?> getEventTiers(@PathVariable String id) {
+		return new ResponseEntity<>("event tiers", HttpStatus.OK);
+	}
+	
+	@PostMapping("/tiers")
+	public ResponseEntity<?> createEventTier() {
+		return new ResponseEntity<>(HttpStatus.CREATED);
+	}
+	
+	@PutMapping("/tiers/{tierId}")
+	public ResponseEntity<?> createEventTier(@PathVariable String tierId) {
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/tiers/{tierId}")
+	public ResponseEntity<?> deleteEventTier(@PathVariable String tierId) {
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
 }
