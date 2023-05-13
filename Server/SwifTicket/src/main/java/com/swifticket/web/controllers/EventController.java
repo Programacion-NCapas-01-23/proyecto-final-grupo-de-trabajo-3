@@ -66,7 +66,7 @@ public class EventController {
 	}
 	
 	@PutMapping("/tiers/{tierId}")
-	public ResponseEntity<?> createEventTier(@PathVariable String tierId) {
+	public ResponseEntity<?> updateEventTier(@PathVariable String tierId) {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
