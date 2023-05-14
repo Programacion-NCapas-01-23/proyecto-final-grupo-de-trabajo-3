@@ -41,7 +41,7 @@ public class TicketController {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
-	@PostMapping("/transfer/{id}")
+	@PostMapping("/transfer")
 	public ResponseEntity<?> startTransferTicket() {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
