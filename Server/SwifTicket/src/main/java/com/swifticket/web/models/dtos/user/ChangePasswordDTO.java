@@ -11,13 +11,13 @@ import lombok.Data;
 public class ChangePasswordDTO {
 	@NotBlank(message = "email is required")
 	@Email(message = "email format is required")
-    private String email;
+	private String email;
 	
 	@NotBlank(message = "password is required")
 	@Size(min = 5, message = "password must be at least 5 characters long")
-    private String password;
+	private String password;
 	
 	@NotBlank(message = "password is required")
 	@Size(min = 5, message = "password must be at least 5 characters long")
-    private String newPassword;
+	private String newPassword;
 }

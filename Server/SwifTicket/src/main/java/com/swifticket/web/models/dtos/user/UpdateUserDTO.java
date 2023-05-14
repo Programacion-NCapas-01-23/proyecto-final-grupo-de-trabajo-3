@@ -11,5 +11,5 @@ public class UpdateUserDTO {
 	private String name;
 	
 	@NotBlank(message = "avatar is required")
-    private int avatarId;
+	private int avatarId;
 }
