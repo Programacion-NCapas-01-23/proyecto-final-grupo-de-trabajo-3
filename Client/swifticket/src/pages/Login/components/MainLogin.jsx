@@ -1,11 +1,10 @@
 import React from 'react';
-import googleLogo from '../../../assets/googleLogo.svg';
 
 const MainLogin = () => {
   return (
     <div className="container-login flex flex-col justify-between items-center w-full h-full">
       <div></div>
-      <div className="container-login-btn flex flex-col justify-evenly items-center h-3/5 w-full">
+      <div className="flex flex-col justify-evenly items-center h-3/5 w-full">
         <div className="flex flex-col justify-evenly items-center w-full h-1/2">
           <input
             type="text"

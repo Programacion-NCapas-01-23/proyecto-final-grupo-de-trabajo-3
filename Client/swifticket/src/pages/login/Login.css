@@ -19,6 +19,12 @@
   border-radius: 2rem;
 }
 
+.btn-recovery {
+  background-color: #e6a410;
+  color: #fff;
+  border-radius: 2rem;
+}
+
 .btn-google {
   background-color: #fff;
   color: #000;
@@ -31,6 +37,11 @@
 }
 
 .btn-forgot {
+  background-color: transparent;
+  color: white;
+}
+
+.btn-cancel {
   background-color: transparent;
   color: white;
 }
@@ -54,4 +65,15 @@
   background-color: rgba(255, 255, 255, 0.2);
   color: #000;
   border-radius: 2rem;
+}
+
+.input-recovery-email {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #000;
+  border-radius: 2rem;
+}
+
+.footer-login {
+  position: absolute;
+  bottom: 0;
 }
