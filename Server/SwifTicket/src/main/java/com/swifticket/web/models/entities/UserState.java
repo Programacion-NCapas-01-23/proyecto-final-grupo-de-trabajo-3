@@ -12,6 +12,6 @@ public class UserState {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "user_state_name", nullable = false, length = 50)
+    @Column(name = "name", nullable = false, length = 50)
     private String name;
 }

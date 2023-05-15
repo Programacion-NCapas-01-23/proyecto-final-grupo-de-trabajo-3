@@ -12,6 +12,6 @@ public class EventState {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "event_state_name", nullable = false, length = 50)
+    @Column(name = "name", nullable = false, length = 50)
     private String name;
 }
