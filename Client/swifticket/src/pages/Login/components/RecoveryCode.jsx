@@ -3,7 +3,7 @@ import React from 'react';
 const RecoveryCode = () => {
   return (
     <div className="container-login flex flex-col justify-around items-center w-full h-full">
-      <div className="flex flex-col justify-evenly items-center h-2/5 w-full">
+      <div className="flex flex-col justify-start sm:justify-evenly items-center gap-y-6 sm:gap-y-0 h-full sm:h-2/5 w-full">
         <p className="text-lg text-white w-4/5">
           Enter the code that was sent to{' '}
           <span style={{ color: '#e6a410' }}>******20@uca.edu.sv</span>

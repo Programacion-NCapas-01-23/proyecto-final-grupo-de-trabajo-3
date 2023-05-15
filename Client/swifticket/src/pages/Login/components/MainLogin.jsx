@@ -4,7 +4,7 @@ const MainLogin = () => {
   return (
     <div className="container-login flex flex-col justify-between items-center w-full h-full">
       <div></div>
-      <div className="flex flex-col justify-evenly items-center h-3/5 w-full">
+      <div className="flex flex-col justify-center sm:justify-evenly items-center gap-y-6 sm:gap-y-0 h-full sm:h-3/5 w-full">
         <div className="flex flex-col justify-evenly items-center w-full h-1/2">
           <input
             type="text"

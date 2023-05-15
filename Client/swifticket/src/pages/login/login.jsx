@@ -12,17 +12,17 @@ const Login = () => {
     <>
       <div className="bg-login w-screen h-screen flex justify-center items-center">
         {/* Main container */}
-        <div className="flex justify-center items-center w-3/5 h-3/5">
+        <div className="flex flex-col sm:flex-row justify-center items-center w-11/12 sm:w-3/5 h-11/12 sm:h-3/5">
           {/* Left container */}
-          <div className="container-logo flex justify-center items-center w-1/2 h-full">
+          <div className="container-logo flex justify-center items-center w-full sm:w-1/2 h-[35vh] sm:h-full">
             <img src={swifticketLogo} alt="logo" className="img-logo" />
           </div>
           {/* Right container */}
-          <div className="flex flex-col justify-center items-center w-1/2 h-full">
+          <div className="flex flex-col justify-center items-center w-full sm:w-1/2 h-[50vh] sm:h-full">
             {/* <PreLogin /> */}
             {/* <MainLogin /> */}
-            <ForgotPass />
-            {/* <RecoveryCode /> */}
+            {/* <ForgotPass /> */}
+            <RecoveryCode />
           </div>
         </div>
       </div>

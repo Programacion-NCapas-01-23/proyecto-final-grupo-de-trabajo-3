@@ -3,8 +3,8 @@ import googleLogo from '../../../assets/googleLogo.svg';
 
 const PreLogin = () => {
   return (
-    <div className="container-login flex justify-center items-center w-full  h-full">
-      <div className="flex flex-col justify-evenly items-center h-2/5 w-full">
+    <div className="container-login flex justify-center items-center w-full h-full">
+      <div className="flex flex-col justify-center sm:justify-evenly items-center gap-y-6 sm:gap-y-0 h-full sm:h-2/5 w-full">
         <button className="btn-login h-10 px-4 flex justify-center items-center w-4/5">
           Login
         </button>

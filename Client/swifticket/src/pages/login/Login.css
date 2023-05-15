@@ -3,14 +3,13 @@
 }
 
 .container-logo {
-  background-color: #eeedff;
-  border-radius: 2rem 0 0 2rem;
+  background-color: transparent;
+  border-radius: 2rem 2rem 0 0;
 }
 
 .container-login {
-  background-color: #144580;
-  background-color: rgba(20, 69, 128, 0.5);
-  border-radius: 0 2rem 2rem 0;
+  background-color: transparent;
+  border-radius: 0 0 2rem 2rem;
 }
 
 .btn-login {
@@ -52,7 +51,7 @@
 }
 
 .img-logo {
-  height: 30%;
+  height: 50%;
 }
 
 .input-username {
@@ -76,4 +75,20 @@
 .footer-login {
   position: absolute;
   bottom: 0;
+}
+
+@media (min-width: 640px) {
+  .container-logo {
+    background-color: #eeedff;
+    border-radius: 2rem 0 0 2rem;
+  }
+
+  .container-login {
+    background-color: rgba(20, 69, 128, 0.5);
+    border-radius: 0 2rem 2rem 0;
+  }
+
+  .img-logo {
+    height: 30%;
+  }
 }
