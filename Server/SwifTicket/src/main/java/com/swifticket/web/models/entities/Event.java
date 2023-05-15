@@ -1,7 +1,6 @@
 package com.swifticket.web.models.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.Date;
