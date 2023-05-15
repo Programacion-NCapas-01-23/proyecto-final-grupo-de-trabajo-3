@@ -35,7 +35,7 @@ public class Event {
     @Column(name = "date_time", nullable = false)
     private Date dateTime;
 
-    @Column(name = "image")
+    @Column(length = 100, name = "image")
     private String image;
 
     @ManyToOne

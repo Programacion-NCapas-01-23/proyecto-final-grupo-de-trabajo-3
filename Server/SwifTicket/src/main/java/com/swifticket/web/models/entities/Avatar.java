@@ -12,6 +12,6 @@ public class Avatar {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Column(name = "image")
+    @Column(name = "image",length = 100)
     private String image;
 }
