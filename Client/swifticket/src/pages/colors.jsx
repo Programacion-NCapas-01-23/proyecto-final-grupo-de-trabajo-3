@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 export const Colors = () => {
   return (
@@ -80,12 +80,34 @@ export const Colors = () => {
         </div>
       </section>
       <section className="grid grid-cols-1 col-span-2 p-default-lg text-center space-y-4">
-        <p className=" border rounded-md w-fit justify-self-center p-default title"> TITLE </p>
-        <p className=" border rounded-md w-fit justify-self-center p-default subtitle"> SUBTITLE </p>
-        <p className=" border rounded-md w-fit justify-self-center p-default heading-lg"> LARGE HEADING </p>
-        <p className=" border rounded-md w-fit justify-self-center p-default heading-md"> MEDIUM HEADING </p>
-        <p className=" border rounded-md w-fit justify-self-center p-default heading-sm"> SMALL HEADING </p>
-        <p className=" border rounded-md w-fit justify-self-center p-default"> BODY </p>
+        <p className=" border rounded-md w-fit justify-self-center p-default title">
+          {' '}
+          TITLE{' '}
+        </p>
+        <p className=" border rounded-md w-fit justify-self-center p-default subtitle">
+          {' '}
+          SUBTITLE{' '}
+        </p>
+        <p className=" border rounded-md w-fit justify-self-center p-default heading-xl">
+          {' '}
+          EXTRA LARGE HEADING{' '}
+        </p>
+        <p className=" border rounded-md w-fit justify-self-center p-default heading-lg">
+          {' '}
+          LARGE HEADING{' '}
+        </p>
+        <p className=" border rounded-md w-fit justify-self-center p-default heading-md">
+          {' '}
+          MEDIUM HEADING{' '}
+        </p>
+        <p className=" border rounded-md w-fit justify-self-center p-default heading-sm">
+          {' '}
+          SMALL HEADING{' '}
+        </p>
+        <p className=" border rounded-md w-fit justify-self-center p-default">
+          {' '}
+          BODY{' '}
+        </p>
       </section>
     </section>
   );
