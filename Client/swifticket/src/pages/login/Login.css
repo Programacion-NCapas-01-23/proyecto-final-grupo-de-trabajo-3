@@ -74,7 +74,10 @@
 
 .footer-login {
   position: absolute;
+  object-fit: cover;
   bottom: 0;
+  height: 10vh;
+  width: 100vw;
 }
 
 @media (min-width: 640px) {

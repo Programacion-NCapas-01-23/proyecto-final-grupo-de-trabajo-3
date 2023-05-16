@@ -13,6 +13,7 @@ import { NavBar } from './components/NavBar';
 import Home from './pages/home';
 import Footer from './components/Footer';
 import OneUser from './pages/user/id/oneUser';
+import ChangePass from './pages/ChangePass/ChangePass';
 import { Colors } from './pages/colors';
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
           <Route path="admin" element={<Admin />} />
         </Route>
         <Route path="/login" element={<Login />} />
+        <Route path="/changePassword" element={<ChangePass />} />
       </>
     )
   );

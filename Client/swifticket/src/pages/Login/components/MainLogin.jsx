@@ -12,7 +12,7 @@ const MainLogin = () => {
             placeholder="Username"
           />
           <input
-            type="text"
+            type="password"
             className="input-password h-10 px-4 flex justify-center items-center w-4/5"
             placeholder="Password"
           />

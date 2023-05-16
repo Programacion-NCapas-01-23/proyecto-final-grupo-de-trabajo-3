@@ -20,9 +20,9 @@ const Login = () => {
           {/* Right container */}
           <div className="flex flex-col justify-center items-center w-full sm:w-1/2 h-[50vh] sm:h-full">
             {/* <PreLogin /> */}
-            {/* <MainLogin /> */}
+            <MainLogin />
             {/* <ForgotPass /> */}
-            <RecoveryCode />
+            {/* <RecoveryCode /> */}
           </div>
         </div>
       </div>
