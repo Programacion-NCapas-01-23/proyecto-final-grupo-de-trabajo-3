@@ -13,6 +13,7 @@ import { NavBar } from './components/NavBar';
 import Home from './pages/home';
 import Footer from './components/Footer';
 import OneUser from './pages/user/id/oneUser';
+import EventMainCard from './components/EventMainCard';
 import { Colors } from './pages/colors';
 
 function App() {
@@ -27,6 +28,7 @@ function App() {
         </Route>
         <Route path="user" element={<User />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/development" element={<EventMainCard />} />
       </>
     )
   );
