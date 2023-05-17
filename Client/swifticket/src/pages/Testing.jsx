@@ -1,4 +1,4 @@
-import EventCard from "../components/EventCards/Standard/EventCard";
+import EventCard from "../components/EventCards/Shoping/EventCard";
 
 const devEvents = [
   {
@@ -18,8 +18,8 @@ const devEvents = [
 export default function Testing() {
   return (
     <div className="flex flex-col w-full h-screen items-center justify-center">
-      <EventCard event={devEvents[0]}/>
-      <EventCard event={devEvents[1]}/>
+      <EventCard count={1} event={devEvents[0]}/>
+      <EventCard count={2} event={devEvents[1]}/>
     </div>
   );
 }
