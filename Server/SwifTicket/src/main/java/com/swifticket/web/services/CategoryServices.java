@@ -7,6 +7,6 @@ import com.swifticket.web.models.entities.Category;
 public interface CategoryServices {
 	List<Category> findAll();
 	void save(String name);
-	void update(String id, String name);
-	void delete(String id);
+	void update(int id, String name);
+	void delete(int id);
 }
