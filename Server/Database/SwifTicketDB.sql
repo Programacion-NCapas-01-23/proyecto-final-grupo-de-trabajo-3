@@ -157,3 +157,11 @@ CREATE TABLE system_state (
   id INT PRIMARY KEY,
   state INT NOT NULL DEFAULT 1
 );
+
+CREATE TABLE bill (
+  id uuid NOT NULL DEFAULT gen_random_uuid(),
+  ticket_id INT NOT NULL,
+  user_id INT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  total INT NOT NULL
+);
