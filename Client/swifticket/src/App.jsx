@@ -8,7 +8,7 @@ import {
 import './App.css';
 import User from './pages/user/user';
 import Admin from './pages/admin/admin';
-import Login from './pages/Login/Login';
+import Login from './pages/Login/login';
 import { NavBar } from './components/NavBar';
 import Home from './pages/home';
 import Footer from './components/Footer';
