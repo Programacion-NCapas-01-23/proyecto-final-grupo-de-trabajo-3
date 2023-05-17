@@ -151,3 +151,9 @@ CREATE TABLE role_x_users (
   FOREIGN KEY (role_id) REFERENCES roles (id) ON UPDATE CASCADE,
   FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE CASCADE
 );
+
+-- Tablas auxiliares
+CREATE TABLE system_state (
+  id INT PRIMARY KEY,
+  state INT NOT NULL DEFAULT 1
+);
