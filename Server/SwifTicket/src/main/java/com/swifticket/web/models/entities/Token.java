@@ -4,14 +4,17 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.UUID;
+
+import org.hibernate.annotations.GenericGenerator;
 
 @Data
 @Entity
-    @Table(name = "tokens")
+@Table(name = "tokens")
 public class Token {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ticket_id", referencedColumnName = "id", nullable = false)

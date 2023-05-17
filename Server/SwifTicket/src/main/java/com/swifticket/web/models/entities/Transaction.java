@@ -5,15 +5,18 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.UUID;
+
+import org.hibernate.annotations.GenericGenerator;
 
 @Data
 @Entity
 @Table(name = "transactions")
 public class Transaction {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(name = "id")
-    private int id;
+    private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "from_id", referencedColumnName = "id",nullable = false)

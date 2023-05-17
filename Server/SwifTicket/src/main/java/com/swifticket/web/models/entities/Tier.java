@@ -1,5 +1,9 @@
 package com.swifticket.web.models.entities;
 
+import java.util.UUID;
+
+import org.hibernate.annotations.GenericGenerator;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -8,8 +12,8 @@ import lombok.Data;
 @Table(name = "tiers")
 public class Tier {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    private UUID id;
 
     @ManyToOne
     @JoinColumn(name = "event_id", referencedColumnName = "id", nullable = false)

@@ -4,14 +4,17 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.UUID;
+
+import org.hibernate.annotations.GenericGenerator;
 
 @Data
 @Entity
 @Table(name = "tickets")
 public class Ticket {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    private UUID id;
 
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)

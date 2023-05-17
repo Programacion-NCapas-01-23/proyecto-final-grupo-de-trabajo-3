@@ -8,12 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.swifticket.web.models.dtos.category.SaveCategoryDTO;
 import com.swifticket.web.models.entities.Category;
 import com.swifticket.web.services.CategoryServices;
 
@@ -32,7 +34,8 @@ public class CategoryController {
 	}
 	
 	@PostMapping("")
-	public ResponseEntity<?> createCategory() {
+	public ResponseEntity<?> createCategory(@ModelAttribute SaveCategoryDTO data) {
+		categoryService.save(data.getName());
 		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 	

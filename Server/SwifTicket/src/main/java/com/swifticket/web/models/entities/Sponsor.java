@@ -17,7 +17,9 @@ public class Sponsor {
     @Column(name = "image", length = 100, nullable = false)
     private String image;
 
+    /*
     @ManyToOne
     @JoinColumn(name = "event_id", referencedColumnName = "id")
     private Event event;
+    */
 }
