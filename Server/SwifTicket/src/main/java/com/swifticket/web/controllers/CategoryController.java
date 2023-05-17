@@ -40,13 +40,25 @@ public class CategoryController {
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<?> updateCategory(@PathVariable String id) {
-		return new ResponseEntity<>(HttpStatus.OK);
+	public ResponseEntity<?> updateCategory(@PathVariable int id, @ModelAttribute SaveCategoryDTO data) {
+		Category category = categoryService.findById(id);
+		
+		if (category == null)
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		
+		categoryService.update(id, data.getName());
+		return new ResponseEntity<>("Category updated", HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/{id}")
-	public ResponseEntity<?> deleteCategory(@PathVariable String id) {
-		return new ResponseEntity<>(HttpStatus.OK);
+	public ResponseEntity<?> deleteCategory(@PathVariable int id) {
+		Category category = categoryService.findById(id);
+		
+		if (category == null)
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		
+		categoryService.delete(id);
+		return new ResponseEntity<>("Category deleted", HttpStatus.OK);
 	}
 	
 }

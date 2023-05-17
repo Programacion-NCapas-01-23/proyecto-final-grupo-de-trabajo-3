@@ -19,6 +19,11 @@ public class CategoryServiceImpl implements CategoryServices {
 	public List<Category> findAll() {
 		return repository.findAll();
 	}
+	
+	@Override
+	public Category findById(int id) {
+		return repository.findById(id).orElse(null);
+	}
 
 	@Override
 	public void save(String name) {
@@ -31,6 +36,8 @@ public class CategoryServiceImpl implements CategoryServices {
 	@Override
 	public void update(int id, String name) {
 		Category category = repository.findById(id).orElse(null);
+		category.setName(name);
+		
 		repository.save(category);
 	}
 
