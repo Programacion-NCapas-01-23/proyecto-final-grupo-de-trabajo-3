@@ -1,4 +1,4 @@
-import EventCard from "../components/EventCards/Shoping/EventCard";
+import EventCard from "../components/EventCards/Minimized/EventCard";
 
 const devEvents = [
   {
