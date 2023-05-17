@@ -1,16 +1,16 @@
 import EventInfo from "../components/EventInfo";
 
-export default function EventCard() {
+export default function EventCard(props) {
   return (
-    <div className="flex">
-      <div className="relative border-lime-400 border overflow-hidden">
+    <div className="flex mx-default-xs max-w-[32rem] ">
+      <div className="relative md:w-[16rem] w-40">
         <img
-          className="min-h-full rounded-l-2xl"
-          src="https://cdn.hobbyconsolas.com/sites/navi.axelspringer.es/public/styles/hc_1440x810/public/media/image/2023/02/mandalorian-2964862.jpg?itok=ZMtIO9yv"
+          className="object-cover transition-all h-full w-full rounded-l-2xl"
+          src={props.event.img}
           alt="event_img"
         />
       </div>
-        <EventInfo></EventInfo>
+        <EventInfo event={props.event}></EventInfo>
     </div>
   );
 }
