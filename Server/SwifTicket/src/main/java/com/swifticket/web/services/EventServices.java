@@ -1,6 +1,7 @@
 package com.swifticket.web.services;
 
 import java.util.List;
+import java.util.UUID;
 
 import com.swifticket.web.models.dtos.event.SaveEventDTO;
 import com.swifticket.web.models.entities.Event;
@@ -18,6 +19,6 @@ public interface EventServices {
 	
 	List<Tier> findEventTiers(String eventId);	
 	void createTier(String eventId, Tier tier);
-	void updateTier(String tierId, Tier tier);
-	void deleteTier(String tierId);
+	void updateTier(UUID tierId, Tier tier);
+	void deleteTier(UUID tierId);
 }

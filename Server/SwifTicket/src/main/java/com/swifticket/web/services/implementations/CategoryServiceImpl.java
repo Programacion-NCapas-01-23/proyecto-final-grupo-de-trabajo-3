@@ -12,8 +12,11 @@ import com.swifticket.web.services.CategoryServices;
 @Service
 public class CategoryServiceImpl implements CategoryServices {
 	
+	private final CategoryRepository repository;
 	@Autowired
-	private CategoryRepository repository;
+	public CategoryServiceImpl(CategoryRepository repository) {
+		this.repository = repository;
+	}
 
 	@Override
 	public List<Category> findAll() {
@@ -31,12 +34,10 @@ public class CategoryServiceImpl implements CategoryServices {
 	@Override
 	public void update(int id, String name) {
 		Category category = repository.findById(id).orElse(null);
+		assert category != null;
 		repository.save(category);
 	}
 
 	@Override
-	public void delete(int id) {
-		repository.deleteById(id);
-	}
-
+	public void delete(int id) {repository.deleteById(id);}
 }

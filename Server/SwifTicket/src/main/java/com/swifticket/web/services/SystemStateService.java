@@ -1,6 +1,6 @@
 package com.swifticket.web.services;
 
-public interface SystemService {
+public interface SystemStateService {
 	void toggleStatus();
 	int getStatus();
 }

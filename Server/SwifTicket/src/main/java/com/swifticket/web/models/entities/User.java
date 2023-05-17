@@ -1,7 +1,6 @@
 package com.swifticket.web.models.entities;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.Date;
@@ -19,7 +18,7 @@ public class User {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
-    private Rol rol;
+    private Role role;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "state_id", referencedColumnName = "id", nullable = false)
