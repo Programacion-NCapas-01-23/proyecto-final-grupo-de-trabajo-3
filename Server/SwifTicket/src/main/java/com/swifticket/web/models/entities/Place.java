@@ -16,4 +16,11 @@ public class Place {
 
     @Column(name = "address", length = 100, nullable = false)
     private String address;
+
+	public Place(String name, String address) {
+		super();
+		this.name = name;
+		this.address = address;
+	}
+    
 }

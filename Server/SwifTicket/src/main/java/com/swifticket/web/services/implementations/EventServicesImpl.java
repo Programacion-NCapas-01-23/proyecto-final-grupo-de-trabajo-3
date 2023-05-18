@@ -1,8 +1,11 @@
 package com.swifticket.web.services.implementations;
 
 import com.swifticket.web.models.dtos.event.SaveEventDTO;
+import com.swifticket.web.models.entities.Category;
 import com.swifticket.web.models.entities.Event;
 import com.swifticket.web.models.entities.EventState;
+import com.swifticket.web.models.entities.Organizer;
+import com.swifticket.web.models.entities.Place;
 import com.swifticket.web.models.entities.Sponsor;
 import com.swifticket.web.models.entities.Tier;
 import com.swifticket.web.repositories.EventRepository;
@@ -10,9 +13,15 @@ import com.swifticket.web.repositories.EventStateRepository;
 import com.swifticket.web.repositories.SponsorRepository;
 import com.swifticket.web.repositories.TierRepository;
 import com.swifticket.web.services.EventServices;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -23,6 +32,8 @@ public class EventServicesImpl implements EventServices {
     private final EventStateRepository eventStateRepository;
     private final TierRepository tierRepository;
     private final SponsorRepository sponsorRepository;
+    
+    
 
     @Autowired
     public EventServicesImpl(EventRepository eventRepository, EventStateRepository eventStateRepository, TierRepository tierRepository, SponsorRepository sponsorRepository) {
@@ -39,10 +50,19 @@ public class EventServicesImpl implements EventServices {
     public Event findOneById(String id) {return eventRepository.findById(id).orElse(null);}
 
     @Override
-    public void save(SaveEventDTO eventInfo) {
-        Event event = new Event();
-        // TODO: Assign data to the object
-        // ...
+    @Transactional(rollbackOn = Exception.class)
+    public void save(SaveEventDTO eventInfo, Category category, Organizer organizer, Place place) throws Exception {
+    	Event event = new Event(
+        		category,
+        		organizer,
+        		eventInfo.getTitle(),
+        		Double.parseDouble(eventInfo.getDuration()),
+        		// TODO: must define a date format for the app
+        		new SimpleDateFormat("dd/MM/yyyy").parse(eventInfo.getDateTime()),
+        		eventInfo.getImage(),
+        		place
+        		);
+        
 
         eventRepository.save(event);
     }

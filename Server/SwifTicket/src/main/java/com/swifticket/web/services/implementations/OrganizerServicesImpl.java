@@ -20,6 +20,11 @@ public class OrganizerServicesImpl implements OrganizerServices {
 
     @Override
     public List<Organizer> findAll() {return repository.findAll();}
+    
+	@Override
+	public Organizer findById(int id) {
+		return repository.findById(id).orElse(null);
+	}
 
     @Override
     public void save(String name) {
@@ -39,4 +44,5 @@ public class OrganizerServicesImpl implements OrganizerServices {
     @Override
     public void delete(int id) {repository.deleteById(id);
     }
+
 }

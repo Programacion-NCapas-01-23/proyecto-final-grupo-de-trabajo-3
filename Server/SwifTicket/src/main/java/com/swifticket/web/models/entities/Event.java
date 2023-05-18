@@ -43,4 +43,18 @@ public class Event {
     @ManyToOne
     @JoinColumn(name = "place_id", nullable = false)
     private Place place;
+
+	public Event(Category category, Organizer organizer, String title, double duration, Date dateTime, String image,
+			Place place) {
+		super();
+		this.category = category;
+		this.organizer = organizer;
+		this.title = title;
+		this.duration = duration;
+		this.dateTime = dateTime;
+		this.image = image;
+		this.place = place;
+	}
+    
+    
 }
