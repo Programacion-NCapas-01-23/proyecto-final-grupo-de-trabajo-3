@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { MdShoppingCart, MdMenu, MdHome, MdSearch } from "react-icons/md";
 import ShoppingSideBar from "./ShoppingSideBar";
+import SideBar from "./SideBar/SideBar";
 
 export const NavBar = () => {
   const [shoppingCart, setShoppingCart] = useState(false);
@@ -39,6 +40,7 @@ export const NavBar = () => {
           <MdShoppingCart fontSize={24} />
         </button>
       </div>
+      <SideBar open={sidebar} setOpen={setSidebar} />
       <ShoppingSideBar open={shoppingCart} setOpen={setShoppingCart} />
     </nav>
   );
