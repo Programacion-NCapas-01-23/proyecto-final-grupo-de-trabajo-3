@@ -1,5 +1,9 @@
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
+import AdminActions from "./components/AdminActions";
+import UserActions from "./components/UserActions";
+import ModActions from "./components/ModActions"
+import CollabActions from "./components/CollabActions";
 import { MdAccountCircle, MdClose, MdPerson } from "react-icons/md";
 
 
@@ -62,7 +66,14 @@ export default function SideBar(props) {
                             Log In OR My Profile
                           </a>
                         </li>
+
                         {/* HERE GOES MAPPING OF ROLE's ACTIONS */}
+
+                        <UserActions />
+                        <CollabActions />
+                        <AdminActions />
+                        <ModActions />
+
                       </ul>
                     </div>
 
