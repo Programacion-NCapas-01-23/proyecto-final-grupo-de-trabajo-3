@@ -1,7 +1,7 @@
-import { Fragment, useState } from "react";
+import { Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { MdClose } from "react-icons/md";
-import EventCard from "./EventCards/Shoping/EventCard";
+import EventCardSh from "./EventCards/Shoping/EventCardSh";
 
 const devEvents = [
   {
@@ -74,10 +74,10 @@ export default function ShoppingSideBar(props) {
                             role="list"
                           >
                             <li>
-                              <EventCard count={1} event={devEvents[0]} />
+                              <EventCardSh count={1} event={devEvents[0]} />
                             </li>
                             <li>
-                              <EventCard count={2} event={devEvents[1]} />
+                              <EventCardSh count={2} event={devEvents[1]} />
                             </li>
                           </ul>
                         </div>

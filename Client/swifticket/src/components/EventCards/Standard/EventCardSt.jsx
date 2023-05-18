@@ -1,6 +1,6 @@
-import EventInfo from "../components/EventInfo";
+import EventInfo from "./components/EventInfo";
 
-export default function EventCard(props) {
+export default function EventCardSt(props) {
   return (
     <div className="flex mx-default-xs max-w-[32rem] m-default-xs shadow-md shadow-black rounded-2xl transition-all hover:shadow-neutral-800 hover:scale-105">
       <div className="relative md:w-[16rem] w-40">
