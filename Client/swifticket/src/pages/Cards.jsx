@@ -1,4 +1,7 @@
 import EventCardSt from "../components/EventCards/Standard/EventCardSt";
+import EventCardCh from "../components/EventCards/Checkout/EventCardCh";
+import EventCardMi from "../components/EventCards/Minimized/EventCardMi";
+import EventCardSh from "../components/EventCards/Shoping/EventCardSh";
 
 const devEvents = [
   {
@@ -171,15 +174,33 @@ const devEvents = [
   }
 ];
 
-export default function Testing() {
+export default function Cards() {
   return (
-    <div className="flex flex-wrap w-full h-screen items-center justify-center">
-      {devEvents.map((event, index) => (
-        <EventCardSt key={index} event={event} />
-      ))}
+    <>
+      <div className="flex flex-wrap w-full h-screen items-center justify-center">
+        {devEvents.map((event, index) => (
+          <EventCardSt key={index} event={event} />
+        ))}
+      </div>
       <hr />
-
-    </div>
-
+      <div className="flex flex-wrap w-full h-screen items-center justify-center">
+        {devEvents.map((event, index) => (
+          <EventCardCh key={index} event={event} />
+        ))}
+      </div>
+      <hr />
+      <div className="flex flex-wrap w-full h-screen items-center justify-center">
+        {devEvents.map((event, index) => (
+          <EventCardMi key={index} event={event} />
+        ))}
+      </div>
+      <hr />
+      <div className="flex flex-wrap overflow-auto w-full h-screen items-center justify-center">
+        {devEvents.map((event, index) => (
+          <EventCardSh key={index} event={event} />
+        ))}
+      </div>
+      <hr />
+    </>
   );
 }

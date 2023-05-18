@@ -15,7 +15,7 @@ import Footer from './components/Footer';
 import OneUser from './pages/user/id/oneUser';
 import EventMainCard from './components/EventMainCard';
 import { Colors } from './pages/colors';
-import Testing from './pages/Testing';
+import Cards from './pages/Cards';
 
 function App() {
   const router = createBrowserRouter(
@@ -26,7 +26,7 @@ function App() {
           <Route index element={<Home />} />
           <Route path="user/one" element={<OneUser />} />
           <Route path="admin" element={<Admin />} />
-          <Route path="test" element={<Testing />} />
+          <Route path="cards" element={<Cards />} />
         </Route>
         <Route path="user" element={<User />} />
         <Route path="/login" element={<Login />} />
