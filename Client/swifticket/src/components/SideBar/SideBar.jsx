@@ -4,7 +4,7 @@ import AdminActions from "./components/AdminActions";
 import UserActions from "./components/UserActions";
 import ModActions from "./components/ModActions"
 import CollabActions from "./components/CollabActions";
-import { MdAccountCircle, MdClose, MdPerson } from "react-icons/md";
+import { MdAccountCircle, MdClose, MdLogout, MdPerson } from "react-icons/md";
 
 
 export default function SideBar(props) {
@@ -62,7 +62,7 @@ export default function SideBar(props) {
                       <ul className="divide-y-2 divide-gray-200">
                         <li className="py-default text-xl">
                           <a className="flex items-center" href="">
-                            <span className="mr-default-xs"> <MdPerson size={"2rem"}/> </span>
+                            <span className="mr-default-xs"> <MdPerson size={"2rem"} /> </span>
                             Log In OR My Profile
                           </a>
                         </li>
@@ -75,6 +75,14 @@ export default function SideBar(props) {
                         <ModActions />
 
                       </ul>
+                    </div>
+
+                      {/* THIS SHOULDN'T SHOW UP ON isGuest  */}
+                    <div className="m-auto px-4 py-6 sm:px-6">
+                      <button className="flex items-center">
+                        <span> <MdLogout size={"2rem"} /> </span>
+                        <p className="heading-sm px-default"> Log Out</p>
+                      </button>
                     </div>
 
                   </div>
