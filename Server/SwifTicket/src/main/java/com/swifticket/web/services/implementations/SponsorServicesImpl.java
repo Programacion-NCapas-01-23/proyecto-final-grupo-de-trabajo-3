@@ -40,5 +40,5 @@ public class SponsorServicesImpl implements SponsorServices {
     }
 
     @Override
-    public void delete(int id) {repository.deleteById(id);}
+    public void delete(int id) { repository.deleteById(id); }
 }

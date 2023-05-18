@@ -39,15 +39,12 @@ public class CategoryServiceImpl implements CategoryServices {
 	@Override
 	public void update(int id, String name) {
 		Category category = repository.findById(id).orElse(null);
-<<<<<<< HEAD
 		assert category != null;
-=======
+
 		category.setName(name);
-		
->>>>>>> 428bfe48977f8367fcd32affd5c22f311fe5af47
 		repository.save(category);
 	}
 
 	@Override
-	public void delete(int id) {repository.deleteById(id);}
+	public void delete(int id) { repository.deleteById(id); }
 }
