@@ -1,4 +1,4 @@
-import EventCard from "../components/EventCards/Checkout/EventCard";
+import EventCardSt from "../components/EventCards/Standard/EventCardSt";
 
 const devEvents = [
   {
@@ -6,7 +6,7 @@ const devEvents = [
     title: "Mando Cosplays",
     place: "Richard Vermont Plaza",
     date_time: new Date("2023-06-16T13:00:00"),
-    tiers:[
+    tiers: [
       {
         tier: "Super",
         price: 19.99,
@@ -22,7 +22,7 @@ const devEvents = [
         price: 4.99,
         count: 0
       },
-      
+
     ]
   },
   {
@@ -30,7 +30,7 @@ const devEvents = [
     title: "I am the DANGER",
     place: "Hell",
     date_time: new Date("2023-10-06T22:00:00"),
-    tiers:[
+    tiers: [
       {
         tier: "Super",
         price: 19.99,
@@ -46,7 +46,7 @@ const devEvents = [
         price: 4.99,
         count: 3
       },
-      
+
     ]
   },
   {
@@ -54,7 +54,7 @@ const devEvents = [
     title: "PS5 Giveaway",
     place: "Hidden Leaf Village",
     date_time: new Date("2023-10-08T09:00:00"),
-    tiers:[
+    tiers: [
       {
         tier: "Super",
         price: 19.99,
@@ -70,7 +70,7 @@ const devEvents = [
         price: 4.99,
         count: 1
       },
-      
+
     ]
   },
   {
@@ -78,7 +78,7 @@ const devEvents = [
     title: "Hot Labradoodle Eating Contest",
     place: "El Muelle",
     date_time: new Date("2023-04-30T12:00:00"),
-    tiers:[
+    tiers: [
       {
         tier: "Super",
         price: 19.99,
@@ -94,7 +94,7 @@ const devEvents = [
         price: 4.99,
         count: 1
       },
-      
+
     ]
   },
   {
@@ -102,7 +102,7 @@ const devEvents = [
     title: "Travesti Escote Concert",
     place: "Tilted Towers",
     date_time: new Date("2023-09-06T16:00:00"),
-    tiers:[
+    tiers: [
       {
         tier: "Super",
         price: 19.99,
@@ -118,7 +118,7 @@ const devEvents = [
         price: 4.99,
         count: 12
       },
-      
+
     ]
   },
   {
@@ -126,7 +126,7 @@ const devEvents = [
     title: "Cheesse and Wine",
     place: "MAGNA VII",
     date_time: new Date("2023-07-21T18:00:00"),
-    tiers:[
+    tiers: [
       {
         tier: "Super",
         price: 19.99,
@@ -142,7 +142,7 @@ const devEvents = [
         price: 4.99,
         count: 1
       },
-      
+
     ]
   },
   {
@@ -150,7 +150,7 @@ const devEvents = [
     title: "React Dev Convention",
     place: "UCA",
     date_time: new Date("2023-08-23T09:00:00"),
-    tiers:[
+    tiers: [
       {
         tier: "Super",
         price: 19.99,
@@ -166,7 +166,7 @@ const devEvents = [
         price: 4.99,
         count: 0
       },
-      
+
     ],
   }
 ];
@@ -175,8 +175,11 @@ export default function Testing() {
   return (
     <div className="flex flex-wrap w-full h-screen items-center justify-center">
       {devEvents.map((event, index) => (
-        <EventCard key={index} event={event} />
+        <EventCardSt key={index} event={event} />
       ))}
+      <hr />
+
     </div>
+
   );
 }

@@ -1,5 +1,5 @@
 
-export default function EventCard(props) {
+export default function EventCardMi(props) {
   const event = props.event
 
   return (

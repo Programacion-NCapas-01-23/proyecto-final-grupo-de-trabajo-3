@@ -1,7 +1,7 @@
 import EventInfo from "./components/EventInfo";
 
 
-export default function EventCard(props) {
+export default function EventCardCh(props) {
     let total = 0;
     
     props.event.tiers.forEach(element => {
@@ -11,7 +11,7 @@ export default function EventCard(props) {
     
     return (
         <section className="flex flex-col">
-            <div className="flex mx-default-xs max-w-[32rem] m-default-xs shadow-md shadow-black rounded-2xl transition-all hover:shadow-neutral-800 hover:scale-105">
+            <div className="flex mx-default-xs max-w-[32rem] m-default-xs shadow-md shadow-black rounded-2xl">
                 <div className="relative h-48 md:w-[16rem] w-40">
                     <img
                         className="object-cover h-48 md:w-[16rem] w-40 shadow-md rounded-l-2xl"

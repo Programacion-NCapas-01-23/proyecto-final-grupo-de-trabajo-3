@@ -1,5 +1,5 @@
 
-export default function EventCard(props) {
+export default function EventCardSh(props) {
   const event = props.event;
 
   return (
