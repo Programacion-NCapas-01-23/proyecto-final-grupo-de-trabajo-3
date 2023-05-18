@@ -1,4 +1,4 @@
-import EventInfo from "../components/EventInfo";
+import EventInfo from "./components/EventInfo";
 
 export default function EventCard(props) {
   return (
