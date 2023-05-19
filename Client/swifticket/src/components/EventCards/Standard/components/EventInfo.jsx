@@ -6,9 +6,9 @@ export default function EventInfo(props) {
   const eventLocation = props.event.place
 
   return (
-    <div className="relative pl-default-lg pr-1 md:pr-default-lg ">
-      <span className="w-full h-full z-0 right-0 absolute bg-secondary opacity-30 rounded-r-2xl" />
-      <div className="w-full relative py-default max-h-48 overflow-scroll">
+    <div className="relative pl-default-lg pr-1 md:pr-default-lg">
+      <span className="w-full h-full z-0 right-0 absolute bg-secondary opacity-30 rounded-r-2xl"/>
+      <div className="w-full relative py-default max-h-48 overflow-auto">
         <h1 className="subtitle">{eventTitle}</h1>
         <div>
           <LinnedText text={eventLocation} />
