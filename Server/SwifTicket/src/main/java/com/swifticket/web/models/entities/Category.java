@@ -1,5 +1,9 @@
 package com.swifticket.web.models.entities;
 
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -13,4 +17,8 @@ public class Category {
 
     @Column(name = "name", length = 50, nullable = false)
     private String name;
+    
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY)
+	@JsonIgnore
+	private List<Event> events;
 }

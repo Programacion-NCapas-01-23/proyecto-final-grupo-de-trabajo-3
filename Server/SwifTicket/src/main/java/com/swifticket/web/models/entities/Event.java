@@ -4,10 +4,13 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Data
 @NoArgsConstructor
@@ -45,6 +48,10 @@ public class Event {
     @ManyToOne
     @JoinColumn(name = "place_id", nullable = false)
     private Place place;
+    
+    @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
+	@JsonIgnore
+	private List<Tier> tiers;
 
 	public Event(Category category, Organizer organizer, String title, double duration, Date dateTime, String image,
 			Place place) {

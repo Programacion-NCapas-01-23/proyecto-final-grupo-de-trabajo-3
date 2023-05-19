@@ -27,5 +27,14 @@ public class Tier {
 
     @Column(name = "price", nullable = false)
     private int price;
+
+	public Tier(Event event, String name, int capacity, int price) {
+		super();
+		this.event = event;
+		this.name = name;
+		this.capacity = capacity;
+		this.price = price;
+	}
+    
 }
 
