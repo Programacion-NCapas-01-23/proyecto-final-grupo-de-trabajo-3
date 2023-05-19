@@ -9,24 +9,18 @@ export const NavBar = () => {
   const [sidebar, setSidebar] = useState(false);
 
   return (
-    <nav className="p-default bg-default-900 flex justify-between">
-      <button
-        onClick={() => {
-          setSidebar(true);
-        }}
-        className="px-default"
-      >
-        <MdMenu fontSize={24} />
-      </button>
-      <div className="xs:hidden md:grid grid-flow-col">
-        <Link className="px-default" to="/">
+    <nav className="px-default bg-default-900 flex justify-between items-center w-full fixed z-10">
+      <div className="flex">
+        <button
+          onClick={() => {
+            setSidebar(true);
+          }}
+          className="px-default"
+        >
+          <MdMenu fontSize={24} />
+        </button>
+        <Link className="ml-default-xs" to="/">
           <MdHome fontSize={24} />
-        </Link>
-        <Link className="px-default" to="/admin">
-          ADMIN
-        </Link>
-        <Link className="px-default" to="/user">
-          USER
         </Link>
       </div>
       <div className="flex align-middle">
@@ -51,7 +45,7 @@ const Search = () => {
   const [searchClicked, setSearchClicked] = useState(false);
   const [searchFocused, setSearchFocused] = useState(false);
   const [showSearchInput, setShowSearchInput] = useState(false);
-  
+
   const handleOutsideClick = (event) => {
     if (searchTarget.current && !searchTarget.current.contains(event.target)) {
       setShowSearchInput(false);

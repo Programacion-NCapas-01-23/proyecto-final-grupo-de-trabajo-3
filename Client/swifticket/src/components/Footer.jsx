@@ -3,9 +3,8 @@ import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
-    <footer>
-      <p>FOOTER</p>
-      <Link to="/login"> LOG OUT</Link>
+    <footer className="bg-gradient-to-t from-default-900 to-default bottom-0 w-full text-center p-default">
+      <p className="text-sm" >©2023 Swifticket, Inc. All rights reserved.</p>
     </footer>
   );
 }
