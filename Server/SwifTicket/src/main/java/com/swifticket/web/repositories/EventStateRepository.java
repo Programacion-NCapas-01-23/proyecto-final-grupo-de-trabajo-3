@@ -6,6 +6,6 @@ import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.query.Param;
 
 public interface EventStateRepository extends ListCrudRepository<EventState, Integer>{
-    @Query("SELECT es FROM EventState es WHERE es.status = :status")
-    EventState findByStatus(@Param("status") String status);
+    @Query("SELECT es FROM EventState es WHERE es.name = :name")
+    EventState findByState(@Param("name") String name);
 }

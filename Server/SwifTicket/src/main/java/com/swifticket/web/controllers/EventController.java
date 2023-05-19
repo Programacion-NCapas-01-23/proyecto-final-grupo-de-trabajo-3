@@ -1,5 +1,7 @@
 package com.swifticket.web.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.swifticket.web.models.dtos.event.SaveEventDTO;
 import com.swifticket.web.models.entities.Category;
+import com.swifticket.web.models.entities.Event;
 import com.swifticket.web.models.entities.Organizer;
 import com.swifticket.web.models.entities.Place;
 import com.swifticket.web.services.CategoryServices;
@@ -40,7 +43,8 @@ public class EventController {
 	
 	@GetMapping("")
 	public ResponseEntity<?> getEvents() {
-		return new ResponseEntity<>(HttpStatus.OK);
+		List<Event> events = eventServices.findAll();
+		return new ResponseEntity<>(events, HttpStatus.OK);
 	}
 	
 	@GetMapping("/{id}")

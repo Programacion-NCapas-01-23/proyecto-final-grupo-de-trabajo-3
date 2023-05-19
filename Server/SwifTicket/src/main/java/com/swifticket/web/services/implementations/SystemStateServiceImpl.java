@@ -16,7 +16,7 @@ public class SystemStateServiceImpl implements SystemStateService {
     }
 
     @Override
-    public void toggleStatus() {
+    public void toggleStatus() throws Exception {
         SystemState systemState = repository.findById(1).orElse(null);
         if (systemState != null) {
             int status = systemState.getState();
