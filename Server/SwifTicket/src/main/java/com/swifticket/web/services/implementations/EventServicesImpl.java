@@ -83,7 +83,7 @@ public class EventServicesImpl implements EventServices {
     public void changeStatus(UUID id, String status) {
         Event event = eventRepository.findById(id).orElse(null);
         if (event != null) {
-            EventState eventState = eventStateRepository.findByStatus(status);
+            EventState eventState = eventStateRepository.findByState(status);
             // Set the new status to the event
             if (eventState != null) {
                 event.setState(eventState);
@@ -123,7 +123,7 @@ public class EventServicesImpl implements EventServices {
 
     @Override
     public List<Tier> findEventTiers(UUID eventId) {
-        return eventRepository.findByEventId(eventId);
+        return null;
     }
 
     // TODO - CHECK: I think that the event need the information of the tiers and not the tier the information of the event.

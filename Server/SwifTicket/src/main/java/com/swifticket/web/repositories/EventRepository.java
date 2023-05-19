@@ -11,5 +11,4 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface EventRepository extends ListCrudRepository<Event, UUID> {
-    List<Tier> findByEventId(UUID eventId);
 }
