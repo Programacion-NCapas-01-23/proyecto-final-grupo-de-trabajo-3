@@ -41,7 +41,7 @@ export default function SideBar(props) {
                 leaveTo="-translate-x-full"
               >
                 <Dialog.Panel className="pointer-events-auto w-screen max-w-md mr-default">
-                  <div className="flex h-full flex-col overflow-y-scroll bg-black shadow-xl">
+                  <div className="flex h-full flex-col overflow-y-auto bg-black shadow-xl">
                     <div className="overflow-y-auto px-4 py-6 sm:px-6">
                       <Dialog.Title>
                         <p className="subtitle">
@@ -58,7 +58,7 @@ export default function SideBar(props) {
                       </Dialog.Title>
                     </div>
 
-                    <div className="px-default-lg flex-1 overflow-y-scroll">
+                    <div className="px-default-lg flex-1 overflow-y-auto">
                       <ul className="divide-y-2 divide-gray-200">
                         <li className="py-default text-xl">
                           <a className="flex items-center" href="">

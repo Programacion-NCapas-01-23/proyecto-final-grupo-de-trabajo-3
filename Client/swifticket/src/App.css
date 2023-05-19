@@ -9,6 +9,22 @@
   box-sizing: border-box;
 }
 
+/* Chrome, Edge, and Safari Scroll Bar*/
+*::-webkit-scrollbar {
+  width: 0.25rem;
+}
+
+*::-webkit-scrollbar-track {
+  background: rgb(54, 54, 54);
+  border-radius: 1rem;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #835C09;
+  border-radius: 1rem;
+  border: 3px solid #835C09;
+}
+
 @layer components {
   .title {
     font-size: 4rem;
