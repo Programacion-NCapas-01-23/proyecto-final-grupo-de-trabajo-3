@@ -106,6 +106,8 @@ public class EventServicesImpl implements EventServices {
 
     @Override
     public void removeSponsor(UUID id, String sponsor) {
+    	// TODO: fix this...
+    	/*
         Event event = eventRepository.findById(id).orElse(null);
         if (event != null) {
             // Get the sponsor from the event and remove it
@@ -117,6 +119,7 @@ public class EventServicesImpl implements EventServices {
             }
             eventRepository.save(event);
         }
+        */
     }
 
 

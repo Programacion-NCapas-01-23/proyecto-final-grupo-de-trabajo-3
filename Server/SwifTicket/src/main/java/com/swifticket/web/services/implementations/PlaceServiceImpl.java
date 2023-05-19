@@ -3,6 +3,7 @@ package com.swifticket.web.services.implementations;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.swifticket.web.models.dtos.place.SavePlaceDTO;
 import com.swifticket.web.models.entities.Place;
@@ -11,6 +12,7 @@ import com.swifticket.web.services.PlaceServices;
 
 import jakarta.transaction.Transactional;
 
+@Service
 public class PlaceServiceImpl implements PlaceServices {
 	
 	@Autowired

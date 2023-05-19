@@ -42,7 +42,6 @@ public class OrganizerServicesImpl implements OrganizerServices {
     }
 
     @Override
-    public void delete(int id) {repository.deleteById(id);
-    }
+    public void delete(int id) {repository.deleteById(id);}
 
 }
