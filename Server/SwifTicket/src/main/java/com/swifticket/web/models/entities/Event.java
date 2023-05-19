@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.UUID;
 
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -15,6 +16,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Data
 @NoArgsConstructor
 @Entity
+@ToString(exclude={"tiers"})
 @Table(name = "events")
 public class Event {
     @Id

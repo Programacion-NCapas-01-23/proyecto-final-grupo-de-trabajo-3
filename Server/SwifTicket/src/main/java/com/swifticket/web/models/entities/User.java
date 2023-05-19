@@ -6,9 +6,11 @@ import lombok.Data;
 import java.util.Date;
 import java.util.UUID;
 
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 @Data
+@NoArgsConstructor
 @Entity
 @Table(name = "users")
 public class User {
@@ -16,9 +18,11 @@ public class User {
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     private UUID id;
 
+    /*
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
     private Role role;
+    */
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "state_id", referencedColumnName = "id", nullable = false)

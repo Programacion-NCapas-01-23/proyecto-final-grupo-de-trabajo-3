@@ -7,9 +7,12 @@ import lombok.Data;
 import java.util.Date;
 import java.util.UUID;
 
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
 @Data
+@NoArgsConstructor
 @Entity
 @Table(name = "transactions")
 public class Transaction {

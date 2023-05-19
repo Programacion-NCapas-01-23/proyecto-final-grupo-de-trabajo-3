@@ -2,12 +2,14 @@ package com.swifticket.web.models.entities;
 
 import java.util.UUID;
 
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 import jakarta.persistence.*;
 import lombok.Data;
 
 @Data
+@NoArgsConstructor
 @Entity
 @Table(name = "tiers")
 public class Tier {
