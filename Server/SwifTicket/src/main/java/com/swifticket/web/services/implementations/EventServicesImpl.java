@@ -21,11 +21,8 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -118,7 +115,7 @@ public class EventServicesImpl implements EventServices {
     public void assignSponsor(String id, String sponsor) throws Exception {
     	UUID eventId = UUID.fromString(id);
         Event event = eventRepository.findById(eventId).orElse(null);
-        
+
         if (event != null) {
         	// List<Sponsor> sponsors = sponsorRepository.
             // TODO: Assign a sponsor to the event (add it to the list)
@@ -154,7 +151,8 @@ public class EventServicesImpl implements EventServices {
     	try {
     		UUID id = UUID.fromString(eventId);
             Event event = eventRepository.findById(id).orElse(null);
-            
+
+            assert event != null;
             return event.getTiers();
 		} catch (Exception e) {
 	        return null;

@@ -3,6 +3,8 @@ package com.swifticket.web.models.entities;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -23,12 +25,12 @@ public class Token {
     private Ticket ticket;
 
     @Column(name = "verified_at", nullable = false)
-    private Date verifiedAt;
+    private Timestamp verifiedAt;
 
     @Column(name = "expires_at", nullable = false)
-    private Date expiresAt;
+    private Timestamp expiresAt;
 
     @Column(name = "created_at", nullable = false)
-    private Date createdAt;
+    private Timestamp createdAt;
 
 }
