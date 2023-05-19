@@ -7,7 +7,9 @@ import org.springframework.data.repository.ListCrudRepository;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
-public interface EventRepository extends ListCrudRepository<Event, String> {
-    List<Tier> findByEventId(String eventId);
+public interface EventRepository extends ListCrudRepository<Event, UUID> {
+    List<Tier> findByEventId(UUID eventId);
 }

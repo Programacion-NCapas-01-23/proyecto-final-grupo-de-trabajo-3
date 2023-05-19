@@ -6,9 +6,11 @@ import lombok.Data;
 import java.util.Date;
 import java.util.UUID;
 
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
 @Data
+@NoArgsConstructor
 @Entity
 @Table(name = "events")
 public class Event {
@@ -55,6 +57,4 @@ public class Event {
 		this.image = image;
 		this.place = place;
 	}
-    
-    
 }

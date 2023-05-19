@@ -47,7 +47,8 @@ public class EventServicesImpl implements EventServices {
     public List<Event> findAll() {return eventRepository.findAll();}
 
     @Override
-    public Event findOneById(String id) {return eventRepository.findById(id).orElse(null);}
+    public Event findOneById(UUID id) {return eventRepository.findById(id).orElse(null);}
+
 
     @Override
     @Transactional(rollbackOn = Exception.class)
@@ -68,7 +69,7 @@ public class EventServicesImpl implements EventServices {
     }
 
     @Override
-    public void update(String id, SaveEventDTO eventInfo) {
+    public void update(UUID id, SaveEventDTO eventInfo) {
         Event event = eventRepository.findById(id).orElse(null);
         if (event != null) {
             // TODO: Update the event data with the new data from eventInfo
@@ -79,7 +80,7 @@ public class EventServicesImpl implements EventServices {
     }
 
     @Override
-    public void changeStatus(String id, String status) {
+    public void changeStatus(UUID id, String status) {
         Event event = eventRepository.findById(id).orElse(null);
         if (event != null) {
             EventState eventState = eventStateRepository.findByStatus(status);
@@ -93,7 +94,7 @@ public class EventServicesImpl implements EventServices {
 
 
     @Override
-    public void assignSponsor(String id, String sponsor) {
+    public void assignSponsor(UUID id, String sponsor) {
         Event event = eventRepository.findById(id).orElse(null);
         if (event != null) {
             // TODO: Assign a sponsor to the event (add it to the list)
@@ -104,7 +105,7 @@ public class EventServicesImpl implements EventServices {
     }
 
     @Override
-    public void removeSponsor(String id, String sponsor) {
+    public void removeSponsor(UUID id, String sponsor) {
         Event event = eventRepository.findById(id).orElse(null);
         if (event != null) {
             // Get the sponsor from the event and remove it
@@ -121,13 +122,13 @@ public class EventServicesImpl implements EventServices {
 
 
     @Override
-    public List<Tier> findEventTiers(String eventId) {
+    public List<Tier> findEventTiers(UUID eventId) {
         return eventRepository.findByEventId(eventId);
     }
 
     // TODO - CHECK: I think that the event need the information of the tiers and not the tier the information of the event.
     @Override
-    public void createTier(String eventId, Tier tier) {
+    public void createTier(UUID eventId, Tier tier) {
         Event event = eventRepository.findById(eventId).orElse(null);
         if (event != null) {
             tier.setEvent(event);

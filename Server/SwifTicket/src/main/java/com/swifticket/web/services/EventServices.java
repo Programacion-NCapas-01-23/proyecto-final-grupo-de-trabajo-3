@@ -12,16 +12,16 @@ import com.swifticket.web.models.entities.Tier;
 
 public interface EventServices {
 	List<Event> findAll();
-	Event findOneById(String id);
+	Event findOneById(UUID id);
 	void save(SaveEventDTO eventInfo, Category category, Organizer organizer, Place place) throws Exception;
-	void update(String id, SaveEventDTO eventInfo);
-	void changeStatus(String id, String status);
+	void update(UUID id, SaveEventDTO eventInfo);
+	void changeStatus(UUID id, String status);
 	
-	void assignSponsor(String id, String sponsor);
-	void removeSponsor(String id, String sponsor);
+	void assignSponsor(UUID id, String sponsor);
+	void removeSponsor(UUID id, String sponsor);
 	
-	List<Tier> findEventTiers(String eventId);	
-	void createTier(String eventId, Tier tier);
+	List<Tier> findEventTiers(UUID eventId);
+	void createTier(UUID eventId, Tier tier);
 	void updateTier(UUID tierId, Tier tier);
 	void deleteTier(UUID tierId);
 }
