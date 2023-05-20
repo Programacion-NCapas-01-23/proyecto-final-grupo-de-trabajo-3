@@ -3,6 +3,9 @@ package com.swifticket.web.services.implementations;
 import com.swifticket.web.models.entities.Organizer;
 import com.swifticket.web.repositories.OrganizerRepository;
 import com.swifticket.web.services.OrganizerServices;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,6 +30,7 @@ public class OrganizerServicesImpl implements OrganizerServices {
 	}
 
     @Override
+    @Transactional(rollbackOn = Exception.class)
     public void save(String name) throws Exception {
         Organizer organizer = new Organizer();
         organizer.setName(name);
@@ -35,6 +39,7 @@ public class OrganizerServicesImpl implements OrganizerServices {
     }
 
     @Override
+    @Transactional(rollbackOn = Exception.class)
     public void update(int id, String name) throws Exception {
         Organizer organizer = repository.findById(id).orElse(null);
         assert organizer != null;
@@ -44,6 +49,7 @@ public class OrganizerServicesImpl implements OrganizerServices {
     }
 
     @Override
+    @Transactional(rollbackOn = Exception.class)
     public void delete(int id) throws Exception {repository.deleteById(id);}
 
 }
