@@ -22,6 +22,7 @@ public class AuthServicesImpl implements AuthServices {
     private final TokenRepository tokenRepository;
     private final RandomCode randomCode;
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    
     @Autowired
     public AuthServicesImpl(UserRepository userRepository, EmailServices emailService, TokenRepository tokenRepository, RandomCode randomCode) {
         this.userRepository = userRepository;
@@ -31,15 +32,20 @@ public class AuthServicesImpl implements AuthServices {
     }
 
     @Override
-    public Boolean isTokenValid(UUID id) {
-        Token token = tokenRepository.findById(id).orElse(null);
-        if (token != null) {
-            Timestamp createdAt = token.getCreatedAt();
-            Timestamp expiresAt = token.getExpiresAt();
-            Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
-            return currentTimestamp.before(expiresAt) && currentTimestamp.after(createdAt);
-        }
-        return false;
+    public Boolean isTokenValid(String id) {
+    	try {
+    		UUID _id = UUID.fromString(id);
+            Token token = tokenRepository.findById(_id).orElse(null);
+            if (token != null) {
+                Timestamp createdAt = token.getCreatedAt();
+                Timestamp expiresAt = token.getExpiresAt();
+                Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
+                return currentTimestamp.before(expiresAt) && currentTimestamp.after(createdAt);
+            }
+            return false;
+		} catch (Exception e) {
+			return false;
+		}
     }
 
     // TODO: This method requires a temporal attribute to the User for the confirmationCode
@@ -60,6 +66,7 @@ public class AuthServicesImpl implements AuthServices {
     @Override
     public User signIn(String email, String password) {
         User user = userRepository.findByEmail(email);
+        // TODO: Validate user state to sign in
         if (user != null && passwordEncoder.matches(password, user.getPassword())) {
             return user;
         }

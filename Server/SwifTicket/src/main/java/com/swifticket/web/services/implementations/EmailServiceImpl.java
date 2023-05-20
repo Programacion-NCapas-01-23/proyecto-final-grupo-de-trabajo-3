@@ -18,6 +18,7 @@ public class EmailServiceImpl implements EmailServices {
     // Default message configuration (subject and text)
     private static final String MESSAGE_SUBJECT = "Swifticket - Código de confirmación";
     private static final String MESSAGE_TEXT = "Tu código de confirmación es: ";
+    
     @Override
     public void sendConfirmationCode(String email, String confirmationCode) {
         // Configure the SMTP connection
