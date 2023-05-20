@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,8 +17,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.swifticket.web.models.dtos.category.SaveCategoryDTO;
+import com.swifticket.web.models.dtos.response.MessageDTO;
 import com.swifticket.web.models.entities.Category;
 import com.swifticket.web.services.CategoryServices;
+import com.swifticket.web.utils.ErrorHandler;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/categories")
@@ -26,6 +31,8 @@ public class CategoryController {
 	
 	@Autowired
 	private CategoryServices categoryService;
+	@Autowired
+	private ErrorHandler errorHandler;
 
 	@GetMapping("")
 	public ResponseEntity<?> getCategories() {
@@ -34,17 +41,34 @@ public class CategoryController {
 	}
 	
 	@PostMapping("")
-	public ResponseEntity<?> createCategory(@ModelAttribute SaveCategoryDTO data) {
-		try{
+	public ResponseEntity<?> createCategory(
+			@ModelAttribute @Valid SaveCategoryDTO data,
+			BindingResult validations) {
+		
+		if (validations.hasErrors()) {
+			return new ResponseEntity<>(
+					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
+		}
+		
+		try {
 			categoryService.save(data.getName());
-			return new ResponseEntity<>(HttpStatus.CREATED);
+			return new ResponseEntity<>(new MessageDTO("Category created"), HttpStatus.CREATED);
 		} catch (Exception e) {
-			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<?> updateCategory(@PathVariable int id, @ModelAttribute SaveCategoryDTO data) {
+	public ResponseEntity<?> updateCategory(
+			@PathVariable int id, 
+			@ModelAttribute @Valid SaveCategoryDTO data,
+			BindingResult validations) {
+		
+		if (validations.hasErrors()) {
+			return new ResponseEntity<>(
+					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
+		}
+		
 		Category category = categoryService.findById(id);
 		
 		if (category == null)
@@ -52,9 +76,9 @@ public class CategoryController {
 
 		try {
 			categoryService.update(id, data.getName());
-			return new ResponseEntity<>("Category updated", HttpStatus.OK);
+			return new ResponseEntity<>(new MessageDTO("Category updated"), HttpStatus.OK);
 		} catch (Exception e) {
-			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
@@ -67,9 +91,9 @@ public class CategoryController {
 
 		try {
 			categoryService.delete(id);
-			return new ResponseEntity<>("Category deleted", HttpStatus.OK);
+			return new ResponseEntity<>(new MessageDTO("Category deleted"), HttpStatus.OK);
 		} catch (Exception e) {
-			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
