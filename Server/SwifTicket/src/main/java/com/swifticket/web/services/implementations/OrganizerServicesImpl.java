@@ -27,7 +27,7 @@ public class OrganizerServicesImpl implements OrganizerServices {
 	}
 
     @Override
-    public void save(String name) {
+    public void save(String name) throws Exception {
         Organizer organizer = new Organizer();
         organizer.setName(name);
 
@@ -35,13 +35,15 @@ public class OrganizerServicesImpl implements OrganizerServices {
     }
 
     @Override
-    public void update(int id, String name) {
+    public void update(int id, String name) throws Exception {
         Organizer organizer = repository.findById(id).orElse(null);
         assert organizer != null;
+        
+        organizer.setName(name);
         repository.save(organizer);
     }
 
     @Override
-    public void delete(int id) {repository.deleteById(id);}
+    public void delete(int id) throws Exception {repository.deleteById(id);}
 
 }
