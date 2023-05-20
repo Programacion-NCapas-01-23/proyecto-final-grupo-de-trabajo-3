@@ -9,4 +9,7 @@ import lombok.Data;
 public class ToggleStatusDTO {
 	@NotBlank(message = "user id is required")
 	private String userId;
+
+	@NotBlank(message = "user new status is required")
+	private String status;
 }

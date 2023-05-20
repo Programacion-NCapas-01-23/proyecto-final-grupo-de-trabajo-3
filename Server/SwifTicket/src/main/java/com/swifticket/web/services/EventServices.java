@@ -17,10 +17,10 @@ public interface EventServices {
 	void save(SaveEventDTO eventInfo, Category category, Organizer organizer, Place place) throws Exception;
 	void update(String id, SaveEventDTO eventInfo, Category category, Organizer organizer, Place place) throws Exception;
 	void changeStatus(String id, String status) throws Exception;
-	
+
 	void assignSponsor(String id, String sponsor) throws Exception;
 	void removeSponsor(String id, String sponsor) throws Exception;
-	
+
 	List<Tier> findEventTiers(String eventId);
 	void createTier(String eventId, SaveTierDTO tierData) throws Exception;
 	void updateTier(String tierId, UpdateTierDTO tierData) throws Exception;

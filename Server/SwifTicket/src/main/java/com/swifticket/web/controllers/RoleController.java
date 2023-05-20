@@ -17,9 +17,12 @@ import com.swifticket.web.services.RoleServices;
 @RequestMapping("/roles")
 @CrossOrigin("*")
 public class RoleController {
+	private final RoleServices roleServices;
 	@Autowired
-	private RoleServices roleServices;
-	
+	public RoleController(RoleServices roleServices) {
+		this.roleServices = roleServices;
+	}
+
 	@GetMapping("")
 	public ResponseEntity<?> getRoles() {
 		List<Role> roles = roleServices.findAll();

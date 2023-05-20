@@ -3,6 +3,7 @@ package com.swifticket.web.services.implementations;
 import com.swifticket.web.models.entities.Sponsor;
 import com.swifticket.web.repositories.SponsorRepository;
 import com.swifticket.web.services.SponsorServices;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,11 +20,17 @@ public class SponsorServicesImpl implements SponsorServices {
 
     @Override
     public List<Sponsor> findAll() {
-        return null;
+        return repository.findAll();
     }
 
     @Override
-    public void save(String name, String image) {
+    public Sponsor findById(int id) {
+        return repository.findById(id).orElse(null);
+    }
+
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public void save(String name, String image) throws Exception{
         Sponsor sponsor = new Sponsor();
         sponsor.setName(name);
         sponsor.setImage(image);
@@ -32,7 +39,8 @@ public class SponsorServicesImpl implements SponsorServices {
     }
 
     @Override
-    public void update(int id, String name, String image) {
+    @Transactional(rollbackOn = Exception.class)
+    public void update(int id, String name, String image) throws Exception{
         Sponsor sponsor = repository.findById(id).orElse(null);
         assert sponsor != null;
 
@@ -40,5 +48,6 @@ public class SponsorServicesImpl implements SponsorServices {
     }
 
     @Override
-    public void delete(int id) { repository.deleteById(id); }
+    @Transactional(rollbackOn = Exception.class)
+    public void delete(int id) throws Exception { repository.deleteById(id);}
 }

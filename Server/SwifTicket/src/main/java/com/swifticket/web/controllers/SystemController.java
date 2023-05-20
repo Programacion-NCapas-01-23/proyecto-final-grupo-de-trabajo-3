@@ -18,9 +18,12 @@ import com.swifticket.web.services.SystemStateService;
 @CrossOrigin("*")
 public class SystemController {
 	
+	private final SystemStateService systemService;
 	@Autowired
-	private SystemStateService systemService;
-	
+	public SystemController(SystemStateService systemService) {
+		this.systemService = systemService;
+	}
+
 	@PostMapping("/suspend-service")
 	public ResponseEntity<?> suspendService() {
 		try {

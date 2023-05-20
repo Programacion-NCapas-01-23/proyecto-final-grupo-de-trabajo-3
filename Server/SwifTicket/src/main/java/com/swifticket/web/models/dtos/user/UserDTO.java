@@ -1,5 +1,6 @@
 package com.swifticket.web.models.dtos.user;
 
+import com.swifticket.web.models.entities.Avatar;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -8,5 +9,6 @@ import lombok.Data;
 public class UserDTO {
     private String name;
     private String email;
-    private int avatarId;
+    private String encryptedPass;
+    private Avatar avatar;
 }

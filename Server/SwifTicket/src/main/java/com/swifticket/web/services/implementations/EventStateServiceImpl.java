@@ -17,12 +17,10 @@ public class EventStateServiceImpl implements EventStateServices {
 		this.repository = repository;
 	}
 
-
 	@Override
 	public EventState findById(int id) {
 		return repository.findById(id).orElse(null);
 	}
-
 
 	@Override
 	public List<EventState> findAll() {

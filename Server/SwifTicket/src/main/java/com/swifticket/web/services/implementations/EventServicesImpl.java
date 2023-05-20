@@ -31,8 +31,8 @@ public class EventServicesImpl implements EventServices {
     private final EventStateRepository eventStateRepository;
     private final TierRepository tierRepository;
     private final SponsorRepository sponsorRepository;
-    
-    
+
+
 
     @Autowired
     public EventServicesImpl(EventRepository eventRepository, EventStateRepository eventStateRepository, TierRepository tierRepository, SponsorRepository sponsorRepository) {
@@ -47,29 +47,29 @@ public class EventServicesImpl implements EventServices {
 
     @Override
     public Event findOneById(String id) {
-    	try {
-    		UUID eventId = UUID.fromString(id);
-    		return eventRepository.findById(eventId).orElse(null);
-		} catch (Exception e) {
-			return null;
-		}
+        try {
+            UUID eventId = UUID.fromString(id);
+            return eventRepository.findById(eventId).orElse(null);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
 
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void save(SaveEventDTO eventInfo, Category category, Organizer organizer, Place place) throws Exception {
-    	Event event = new Event(
-        		category,
-        		organizer,
-        		eventInfo.getTitle(),
-        		Double.parseDouble(eventInfo.getDuration()),
-        		// TODO: must define a date format for the app
-        		new SimpleDateFormat("dd/MM/yyyy").parse(eventInfo.getDateTime()),
-        		eventInfo.getImage(),
-        		place
-        		);
-        
+        Event event = new Event(
+                category,
+                organizer,
+                eventInfo.getTitle(),
+                Double.parseDouble(eventInfo.getDuration()),
+                // TODO: must define a date format for the app
+                new SimpleDateFormat("dd/MM/yyyy").parse(eventInfo.getDateTime()),
+                eventInfo.getImage(),
+                place
+        );
+
 
         eventRepository.save(event);
     }
@@ -77,12 +77,12 @@ public class EventServicesImpl implements EventServices {
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void update(String id, SaveEventDTO eventInfo, Category category, Organizer organizer, Place place) throws Exception {
-    	UUID eventId = UUID.fromString(id);
+        UUID eventId = UUID.fromString(id);
         Event event = eventRepository.findById(eventId).orElse(null);
-        
+
         if (event != null) {
-        	event.setCategory(category);
-        	event.setOrganizer(organizer);
+            event.setCategory(category);
+            event.setOrganizer(organizer);
             event.setTitle(eventInfo.getTitle());
             event.setDuration(Double.parseDouble(eventInfo.getDuration()));
             event.setDateTime(new SimpleDateFormat("dd/MM/yyyy").parse(eventInfo.getDateTime()));
@@ -96,9 +96,9 @@ public class EventServicesImpl implements EventServices {
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void changeStatus(String id, String status) throws Exception {
-    	UUID eventId = UUID.fromString(id);
+        UUID eventId = UUID.fromString(id);
         Event event = eventRepository.findById(eventId).orElse(null);
-        
+
         if (event != null) {
             EventState eventState = eventStateRepository.findByState(status);
             // Set the new status to the event
@@ -113,11 +113,11 @@ public class EventServicesImpl implements EventServices {
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void assignSponsor(String id, String sponsor) throws Exception {
-    	UUID eventId = UUID.fromString(id);
+        UUID eventId = UUID.fromString(id);
         Event event = eventRepository.findById(eventId).orElse(null);
 
         if (event != null) {
-        	// List<Sponsor> sponsors = sponsorRepository.
+            // List<Sponsor> sponsors = sponsorRepository.
             // TODO: Assign a sponsor to the event (add it to the list)
             // ...
 
@@ -128,7 +128,7 @@ public class EventServicesImpl implements EventServices {
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void removeSponsor(String id, String sponsor) throws Exception {
-    	// TODO: fix this...
+        // TODO: fix this...
     	/*
         Event event = eventRepository.findById(id).orElse(null);
         if (event != null) {
@@ -148,15 +148,15 @@ public class EventServicesImpl implements EventServices {
 
     @Override
     public List<Tier> findEventTiers(String eventId)  {
-    	try {
-    		UUID id = UUID.fromString(eventId);
+        try {
+            UUID id = UUID.fromString(eventId);
             Event event = eventRepository.findById(id).orElse(null);
 
             assert event != null;
             return event.getTiers();
-		} catch (Exception e) {
-	        return null;
-		}
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     // TODO - CHECK: I think that the event need the information of the tiers and not the tier the information of the event.
@@ -164,14 +164,14 @@ public class EventServicesImpl implements EventServices {
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void createTier(String eventId, SaveTierDTO tierData) throws Exception {
-    	UUID id = UUID.fromString(eventId);
+        UUID id = UUID.fromString(eventId);
         Event event = eventRepository.findById(id).orElse(null);
-        
+
         if (event != null) {
             Tier newTier = new Tier(event, tierData.getName(), tierData.getCapacity(), tierData.getPrice());
             List<Tier> currentTiers = event.getTiers();
             currentTiers.add(newTier);
-            
+
             event.setTiers(currentTiers);
             eventRepository.save(event);
         }
@@ -181,9 +181,9 @@ public class EventServicesImpl implements EventServices {
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void updateTier(String tierId, UpdateTierDTO tierData) throws Exception {
-    	UUID id = UUID.fromString(tierId);
+        UUID id = UUID.fromString(tierId);
         Tier existingTier = tierRepository.findById(id).orElse(null);
-        
+
         if (existingTier != null) {
             existingTier.setName(tierData.getName());
             existingTier.setCapacity(tierData.getCapacity());
@@ -197,7 +197,7 @@ public class EventServicesImpl implements EventServices {
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void deleteTier(String tierId) throws Exception {
-    	UUID id = UUID.fromString(tierId);
-    	tierRepository.deleteById(id);
+        UUID id = UUID.fromString(tierId);
+        tierRepository.deleteById(id);
     }
 }

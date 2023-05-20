@@ -28,11 +28,14 @@ import jakarta.validation.Valid;
 @RequestMapping("/organizers")
 @CrossOrigin("*")
 public class OrganizerController {
+	private final OrganizerServices organizerServices;
+	private final ErrorHandler errorHandler;
 	@Autowired
-	private OrganizerServices organizerServices;
-	@Autowired
-	private ErrorHandler errorHandler;
-	
+	public OrganizerController(OrganizerServices organizerServices, ErrorHandler errorHandler) {
+		this.organizerServices = organizerServices;
+		this.errorHandler = errorHandler;
+	}
+
 	@GetMapping("")
 	public ResponseEntity<?> getOrganizers() {
 		List<Organizer> organizers = organizerServices.findAll();
@@ -48,7 +51,6 @@ public class OrganizerController {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
-		
 		try {
 			organizerServices.save(data.getName());
 			return new ResponseEntity<>(new MessageDTO("organizer created"), HttpStatus.CREATED);
@@ -67,11 +69,9 @@ public class OrganizerController {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
-		
 		Organizer organizer = organizerServices.findById(id);
 		if (organizer == null)
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		
 		try {
 			organizerServices.update(id, data.getName());
 			return new ResponseEntity<>(new MessageDTO("organizer updated"), HttpStatus.OK);
@@ -89,5 +89,4 @@ public class OrganizerController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
 }

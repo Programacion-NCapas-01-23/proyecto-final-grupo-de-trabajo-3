@@ -47,7 +47,7 @@ public class TicketController {
 	}
 	
 	@PutMapping("/transfer/{id}")
-	public ResponseEntity<?> acceptTransferTicket() {
+	public ResponseEntity<?> acceptTransferTicket(@PathVariable String id) {
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
