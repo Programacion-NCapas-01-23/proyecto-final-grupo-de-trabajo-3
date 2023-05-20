@@ -15,8 +15,11 @@ import jakarta.transaction.Transactional;
 @Service
 public class PlaceServiceImpl implements PlaceServices {
 	
+	private final PlaceRepository repository;
 	@Autowired
-	private PlaceRepository repository;
+	public PlaceServiceImpl(PlaceRepository repository) {
+		this.repository = repository;
+	}
 
 	@Override
 	public List<Place> findAll() {

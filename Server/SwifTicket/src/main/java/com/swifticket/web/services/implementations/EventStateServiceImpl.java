@@ -11,8 +11,11 @@ import com.swifticket.web.services.EventStateServices;
 @Service
 public class EventStateServiceImpl implements EventStateServices {
 	
+	private final EventStateRepository repository;
 	@Autowired
-	private EventStateRepository repository;
+	public EventStateServiceImpl(EventStateRepository repository) {
+		this.repository = repository;
+	}
 
 
 	@Override

@@ -35,8 +35,12 @@ public class CategoryController {
 	
 	@PostMapping("")
 	public ResponseEntity<?> createCategory(@ModelAttribute SaveCategoryDTO data) {
-		categoryService.save(data.getName());
-		return new ResponseEntity<>(HttpStatus.CREATED);
+		try{
+			categoryService.save(data.getName());
+			return new ResponseEntity<>(HttpStatus.CREATED);
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
 	}
 	
 	@PutMapping("/{id}")
@@ -45,9 +49,13 @@ public class CategoryController {
 		
 		if (category == null)
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		
-		categoryService.update(id, data.getName());
-		return new ResponseEntity<>("Category updated", HttpStatus.OK);
+
+		try {
+			categoryService.update(id, data.getName());
+			return new ResponseEntity<>("Category updated", HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
 	}
 	
 	@DeleteMapping("/{id}")
@@ -56,9 +64,13 @@ public class CategoryController {
 		
 		if (category == null)
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		
-		categoryService.delete(id);
-		return new ResponseEntity<>("Category deleted", HttpStatus.OK);
+
+		try {
+			categoryService.delete(id);
+			return new ResponseEntity<>("Category deleted", HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+		}
 	}
 	
 }
