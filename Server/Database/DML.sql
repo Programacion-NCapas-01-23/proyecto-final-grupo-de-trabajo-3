@@ -2,6 +2,7 @@
 -- user_states
 INSERT INTO user_states (name) VALUES ('Activo');
 INSERT INTO user_states (name) VALUES ('Bloqueado');
+INSERT INTO user_states (name) VALUES ('No-verificado');
 
 -- categories
 INSERT INTO categories (name) VALUES ('Tecnología');

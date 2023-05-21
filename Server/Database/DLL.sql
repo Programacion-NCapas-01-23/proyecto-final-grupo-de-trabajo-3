@@ -124,6 +124,15 @@ CREATE TABLE tokens (
   FOREIGN KEY (ticket_id) REFERENCES tickets (id) ON UPDATE CASCADE
 );
 
+CREATE TABLE verify_account_tokens (
+  code uuid NOT NULL DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL,
+  verified_at TIMESTAMP,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT verify_account_tokens_pk PRIMARY KEY (code),
+  FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE CASCADE
+);
+
 -- Tablas relación N:N
 CREATE TABLE event_x_validator (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
