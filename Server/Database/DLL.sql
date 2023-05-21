@@ -125,9 +125,10 @@ CREATE TABLE tokens (
 );
 
 CREATE TABLE verify_account_tokens (
-  code uuid NOT NULL DEFAULT gen_random_uuid(),
+  code VARCHAR NOT NULL,
   user_id uuid NOT NULL,
   verified_at TIMESTAMP,
+  expires_at TIMESTAMP NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT verify_account_tokens_pk PRIMARY KEY (code),
   FOREIGN KEY (user_id) REFERENCES users (id) ON UPDATE CASCADE
