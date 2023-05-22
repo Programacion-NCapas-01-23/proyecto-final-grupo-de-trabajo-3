@@ -73,7 +73,7 @@
 }
 
 .footer-login {
-  position: absolute;
+  position: fixed;
   object-fit: cover;
   bottom: 0;
   height: 10vh;

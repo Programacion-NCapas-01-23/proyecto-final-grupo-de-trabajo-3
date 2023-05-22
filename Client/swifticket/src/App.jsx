@@ -15,7 +15,7 @@ import Footer from './components/Footer';
 import OneUser from './pages/user/id/oneUser';
 import { Colors } from './pages/colors';
 import Cards from './pages/Cards';
-import OwnedTickets from './pages/OwnedTickets/OwnedTickets';
+import OneEvent from './pages/OneEvent/OneEvent';
 
 function App() {
   const router = createBrowserRouter(
@@ -30,7 +30,7 @@ function App() {
         </Route>
         <Route path="user" element={<User />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/development" element={<OwnedTickets />} />
+        <Route path="/development" element={<OneEvent />} />
       </>
     )
   );
