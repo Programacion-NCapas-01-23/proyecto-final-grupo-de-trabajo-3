@@ -16,6 +16,7 @@ import OneUser from './pages/user/id/oneUser';
 import { Colors } from './pages/colors';
 import Cards from './pages/Cards';
 import OneEvent from './pages/OneEvent/OneEvent';
+import Checkout from './pages/Checkout/Checkout';
 
 function App() {
   const router = createBrowserRouter(
@@ -27,6 +28,7 @@ function App() {
           <Route path="user/one" element={<OneUser />} />
           <Route path="admin" element={<Admin />} />
           <Route path="cards" element={<Cards />} />
+          <Route path="checkout" element={<Checkout />} />
         </Route>
         <Route path="user" element={<User />} />
         <Route path="/login" element={<Login />} />
