@@ -9,12 +9,14 @@ import java.util.List;
 import java.util.UUID;
 
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 import org.hibernate.annotations.GenericGenerator;
 
 @Data
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
+@ToString(exclude = {"rolexUsers"})
 public class User {
     @Id
     @GenericGenerator(name = "uuid2", strategy = "uuid2")

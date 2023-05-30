@@ -9,7 +9,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "rolexuser")
+@Table(name = "role_x_users")
 public class RolexUser {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
