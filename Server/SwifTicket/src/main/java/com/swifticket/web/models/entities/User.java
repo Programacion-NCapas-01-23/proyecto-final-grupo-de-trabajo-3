@@ -10,7 +10,7 @@ import java.util.UUID;
 
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Data
 @NoArgsConstructor
@@ -19,19 +19,19 @@ import org.hibernate.annotations.GenericGenerator;
 @ToString(exclude = {"rolexUsers"})
 public class User {
     @Id
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<RolexUser> rolexUsers;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "state_id", referencedColumnName = "id", nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "state_id", nullable = false)
     private UserState state;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "avatar_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "avatar_id")
     private Avatar avatar;
 
     @Column(length = 50, nullable = false)
@@ -43,8 +43,8 @@ public class User {
     @Column(nullable = false)
     private String password;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
+    @CreationTimestamp
     private Date createdAt;
 
     public User(UserState state, Avatar avatar, String name, String email, String password) {

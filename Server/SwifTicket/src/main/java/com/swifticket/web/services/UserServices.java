@@ -5,11 +5,12 @@ import java.util.UUID;
 
 import com.swifticket.web.models.entities.Avatar;
 import com.swifticket.web.models.entities.User;
+import com.swifticket.web.models.entities.UserState;
 
 public interface UserServices {
 	List<User> findAll();
 	User findOneById(String id);
-	void register(String name, String email, String password, Avatar avatar) throws Exception;
+	void register(String name, String email, String password, Avatar avatar, UserState state) throws Exception;
 	void update(String id, String name, Avatar avatar) throws Exception;
 	void changePassword(String id, String password) throws Exception;
 	void toggleStatus(String id, String status) throws Exception;

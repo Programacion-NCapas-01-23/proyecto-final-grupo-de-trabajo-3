@@ -2,10 +2,13 @@ package com.swifticket.web.services.implementations;
 
 import com.swifticket.web.models.entities.Avatar;
 import com.swifticket.web.models.entities.User;
+import com.swifticket.web.models.entities.UserState;
 import com.swifticket.web.repositories.UserRepository;
 import com.swifticket.web.services.UserServices;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,6 +18,7 @@ import java.util.UUID;
 public class UserServicesImpl implements UserServices {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Autowired
     public UserServicesImpl(UserRepository userRepository) {
@@ -34,13 +38,8 @@ public class UserServicesImpl implements UserServices {
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public void register(String name, String email, String password, Avatar avatar) throws Exception {
-        User user = new User();
-        user.setName(name);
-        user.setEmail(email);
-        user.setPassword(password);
-        user.setAvatar(avatar);
-
+    public void register(String name, String email, String password, Avatar avatar, UserState state) throws Exception {
+        User user = new User(state, avatar, name, email, passwordEncoder.encode(password));
         userRepository.save(user);
     }
 

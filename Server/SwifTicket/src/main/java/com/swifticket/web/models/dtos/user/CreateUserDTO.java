@@ -1,6 +1,7 @@
 package com.swifticket.web.models.dtos.user;
 
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -19,7 +20,7 @@ public class CreateUserDTO {
 	@NotBlank(message = "password is required")
 	@Size(min = 5, message = "password must be at least 5 characters long")
 	private String password;
-	
-	@NotBlank(message = "avatar is required")
+
+	@Min(value = 1, message = "Invalid avatar key")
 	private int avatarId;
 }

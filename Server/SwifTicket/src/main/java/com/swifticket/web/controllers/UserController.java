@@ -47,20 +47,6 @@ public class UserController {
 		return new ResponseEntity<>(user, HttpStatus.OK);
 	}
 
-	@PostMapping("")
-	public ResponseEntity<?> registerUser(@RequestBody @Valid UserDTO userDTO, BindingResult bindingResult) {
-		if (bindingResult.hasErrors()) {
-			return new ResponseEntity<>(
-					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
-		}
-		try {
-			userService.register(userDTO.getName(), userDTO.getEmail(), userDTO.getEncryptedPass(), userDTO.getAvatar());
-			return new ResponseEntity<>(new MessageDTO("User registered"), HttpStatus.CREATED);
-		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
 	@PutMapping("/{id}")
 	public ResponseEntity<?> updateUser(@PathVariable String id, @RequestBody @Valid UserDTO userDTO,
 										BindingResult bindingResult) {

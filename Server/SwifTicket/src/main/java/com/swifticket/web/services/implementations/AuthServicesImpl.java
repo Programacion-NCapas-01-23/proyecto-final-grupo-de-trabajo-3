@@ -119,7 +119,7 @@ public class AuthServicesImpl implements AuthServices {
         
         if (user != null 
         		&& passwordEncoder.matches(password, user.getPassword()) 
-        		&& user.getState().getName() == ACTIVE) {
+        		&& user.getState().getName().equals(ACTIVE)) {
             return user;
         }
         return null;
