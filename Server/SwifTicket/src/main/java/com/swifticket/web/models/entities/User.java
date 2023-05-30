@@ -1,9 +1,11 @@
 package com.swifticket.web.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import lombok.NoArgsConstructor;
@@ -18,11 +20,9 @@ public class User {
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     private UUID id;
 
-    /*
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
-    private Role role;
-    */
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<RolexUser> rolexUsers;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "state_id", referencedColumnName = "id", nullable = false)
@@ -44,4 +44,12 @@ public class User {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
     private Date createdAt;
+
+    public User(UserState state, Avatar avatar, String name, String email, String password) {
+        this.state = state;
+        this.avatar = avatar;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+    }
 }
