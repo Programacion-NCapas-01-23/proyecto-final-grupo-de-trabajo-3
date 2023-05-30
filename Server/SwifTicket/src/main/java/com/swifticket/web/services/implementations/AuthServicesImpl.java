@@ -115,7 +115,7 @@ public class AuthServicesImpl implements AuthServices {
 
     @Override
     public User signIn(String email, String password) {
-        User user = userRepository.findByEmail(email);
+        User user = userRepository.findOneByEmail(email);
         
         if (user != null 
         		&& passwordEncoder.matches(password, user.getPassword()) 

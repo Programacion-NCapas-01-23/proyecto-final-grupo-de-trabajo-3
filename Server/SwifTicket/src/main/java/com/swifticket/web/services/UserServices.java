@@ -10,6 +10,7 @@ import com.swifticket.web.models.entities.UserState;
 public interface UserServices {
 	List<User> findAll();
 	User findOneById(String id);
+	User findOneByEmail(String email);
 	void register(String name, String email, String password, Avatar avatar, UserState state) throws Exception;
 	void update(String id, String name, Avatar avatar) throws Exception;
 	void changePassword(String id, String password) throws Exception;

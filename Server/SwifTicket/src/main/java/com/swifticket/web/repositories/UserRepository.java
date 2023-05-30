@@ -6,7 +6,7 @@ import org.springframework.data.repository.ListCrudRepository;
 import java.util.UUID;
 
 public interface UserRepository extends ListCrudRepository<User, UUID> {
-    User findByEmail(String email);
+    User findOneByEmail(String email);
 
     //User findByConfirmationCode(String code);
 }

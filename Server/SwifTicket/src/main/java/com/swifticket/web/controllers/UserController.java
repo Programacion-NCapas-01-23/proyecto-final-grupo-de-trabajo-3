@@ -43,7 +43,7 @@ public class UserController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getUser(@PathVariable String id) {
-		User user = userService.findOneById(id);
+		User user = userService.findOneByEmail(id);
 		return new ResponseEntity<>(user, HttpStatus.OK);
 	}
 

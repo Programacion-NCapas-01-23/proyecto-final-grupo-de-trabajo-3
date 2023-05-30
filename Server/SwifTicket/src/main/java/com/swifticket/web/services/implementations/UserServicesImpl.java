@@ -37,6 +37,11 @@ public class UserServicesImpl implements UserServices {
     }
 
     @Override
+    public User findOneByEmail(String email) {
+        return userRepository.findOneByEmail(email);
+    }
+
+    @Override
     @Transactional(rollbackOn = Exception.class)
     public void register(String name, String email, String password, Avatar avatar, UserState state) throws Exception {
         User user = new User(state, avatar, name, email, passwordEncoder.encode(password));
