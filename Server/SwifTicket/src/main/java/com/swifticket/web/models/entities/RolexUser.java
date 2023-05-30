@@ -23,4 +23,9 @@ public class RolexUser {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
+
+    public RolexUser(Role role, User user) {
+        this.role = role;
+        this.user = user;
+    }
 }

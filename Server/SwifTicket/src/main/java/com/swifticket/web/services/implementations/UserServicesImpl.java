@@ -1,8 +1,7 @@
 package com.swifticket.web.services.implementations;
 
-import com.swifticket.web.models.entities.Avatar;
-import com.swifticket.web.models.entities.User;
-import com.swifticket.web.models.entities.UserState;
+import com.swifticket.web.models.entities.*;
+import com.swifticket.web.repositories.RolexUserRepository;
 import com.swifticket.web.repositories.UserRepository;
 import com.swifticket.web.services.UserServices;
 import jakarta.transaction.Transactional;
@@ -18,11 +17,13 @@ import java.util.UUID;
 public class UserServicesImpl implements UserServices {
 
     private final UserRepository userRepository;
+    private final RolexUserRepository rolexUserRepository;
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Autowired
-    public UserServicesImpl(UserRepository userRepository) {
+    public UserServicesImpl(UserRepository userRepository, RolexUserRepository rolexUserRepository) {
         this.userRepository = userRepository;
+        this.rolexUserRepository = rolexUserRepository;
     }
 
     @Override
@@ -91,26 +92,19 @@ public class UserServicesImpl implements UserServices {
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public void assignRole(String id, String role) throws Exception {
-        UUID userId = UUID.fromString(id);
-        User user = userRepository.findById(userId).orElse(null);
-        if (user != null) {
-            // TODO Logic to assign a role to the user
-        } else {
-            throw new Exception("User not found");
-        }
+    public void assignRole(User user, Role role) throws Exception {
+        RolexUser relation = new RolexUser(role, user);
+        rolexUserRepository.save(relation);
     }
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public void removeRole(String id, String role) throws Exception {
-        UUID userId = UUID.fromString(id);
-        User user = userRepository.findById(userId).orElse(null);
-        if (user != null) {
-            // TODO Logic to remove a role from the user
-        } else {
-            throw new Exception("User not found");
-        }
+    public void removeRole(User user, Role role) throws Exception {
+        RolexUser relation = rolexUserRepository.findOneByRoleAndUser(role, user);
+        if (relation == null)
+            throw new Exception("Relation found");
+
+        rolexUserRepository.deleteById(relation.getId());
     }
 
     @Override
