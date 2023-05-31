@@ -5,13 +5,11 @@ import com.swifticket.web.models.dtos.user.AssignRoleDTO;
 import com.swifticket.web.models.dtos.user.RemoveRoleDTO;
 import com.swifticket.web.models.dtos.user.ToggleStatusDTO;
 import com.swifticket.web.models.dtos.user.UserDTO;
-import com.swifticket.web.models.entities.Avatar;
-import com.swifticket.web.models.entities.Role;
-import com.swifticket.web.models.entities.RolexUser;
-import com.swifticket.web.models.entities.User;
+import com.swifticket.web.models.entities.*;
 import com.swifticket.web.services.AvatarServices;
 import com.swifticket.web.services.RoleServices;
 import com.swifticket.web.services.UserServices;
+import com.swifticket.web.services.UserStateServices;
 import com.swifticket.web.utils.ErrorHandler;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,13 +28,15 @@ public class UserController {
 	private final UserServices userService;
 	private final AvatarServices avatarServices;
 	private final RoleServices roleServices;
+	private final UserStateServices userStateServices;
 	private final ErrorHandler errorHandler;
 
 	@Autowired
-	public UserController(UserServices userService, AvatarServices avatarServices, RoleServices roleServices, ErrorHandler errorHandler) {
+	public UserController(UserServices userService, AvatarServices avatarServices, RoleServices roleServices, UserStateServices userStateServices, ErrorHandler errorHandler) {
 		this.userService = userService;
 		this.avatarServices = avatarServices;
 		this.roleServices = roleServices;
+		this.userStateServices = userStateServices;
 		this.errorHandler = errorHandler;
 	}
 
@@ -93,13 +93,24 @@ public class UserController {
 	}
 	
 	@PatchMapping("/toggle-status")
-	public ResponseEntity<?> toggleStatus(@ModelAttribute ToggleStatusDTO data) {
-		User user = userService.findOneById(data.getUserId());
+	public ResponseEntity<?> toggleStatus(
+			@ModelAttribute @Valid ToggleStatusDTO data, BindingResult validations) {
+		if (validations.hasErrors()) {
+			return new ResponseEntity<>(
+					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
+		}
+
+		User user = userService.findOneByEmail(data.getUserId());
 		if (user == null)
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(new MessageDTO("user not found"), HttpStatus.NOT_FOUND);
+
+		UserState state = userStateServices.findById(data.getState());
+		if (state == null)
+			return new ResponseEntity<>(new MessageDTO("user state not found"), HttpStatus.NOT_FOUND);
+
 		try {
-			userService.toggleStatus(data.getUserId(), data.getStatus());
-			return new ResponseEntity<>(HttpStatus.OK);
+			userService.toggleStatus(user, state);
+			return new ResponseEntity<>(new MessageDTO("user state updated"), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}

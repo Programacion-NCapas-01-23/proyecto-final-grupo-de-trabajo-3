@@ -15,7 +15,7 @@ public interface UserServices {
 	void register(String name, String email, String password, Avatar avatar, UserState state) throws Exception;
 	void update(String id, String name, Avatar avatar) throws Exception;
 	void changePassword(String id, String password) throws Exception;
-	void toggleStatus(String id, String status) throws Exception;
+	void toggleStatus(User user, UserState state) throws Exception;
 	
 	void assignRole(User user, Role role) throws Exception;
 	void removeRole(User user, Role role) throws Exception;

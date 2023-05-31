@@ -78,16 +78,9 @@ public class UserServicesImpl implements UserServices {
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public void toggleStatus(String id, String status) throws Exception {
-        UUID userId = UUID.fromString(id);
-        User user = userRepository.findById(userId).orElse(null);
-        if (user != null) {
-            // TODO Change the status of the user
-            //user.setStatus(status);
-            userRepository.save(user);
-        } else {
-            throw new Exception("User not found");
-        }
+    public void toggleStatus(User user, UserState state) throws Exception {
+        user.setState(state);
+        userRepository.save(user);
     }
 
     @Override
