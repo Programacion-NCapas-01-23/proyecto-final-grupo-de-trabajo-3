@@ -69,7 +69,7 @@ public class EventController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getEvent(@PathVariable String id) {
-		Event event = eventServices.findOneById(id);
+		Event event = eventServices.findById(id);
 		return new ResponseEntity<>(event, HttpStatus.OK);
 	}
 
@@ -160,7 +160,7 @@ public class EventController {
 
 	@PatchMapping("/change-status")
 	public ResponseEntity<?> patchEvent(@ModelAttribute ChangeEventStatusDTO data) {
-		Event event = eventServices.findOneById(data.getId());
+		Event event = eventServices.findById(data.getId());
 		if (event == null)
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
