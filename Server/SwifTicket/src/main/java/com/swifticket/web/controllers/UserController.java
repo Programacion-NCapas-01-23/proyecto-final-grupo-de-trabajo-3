@@ -77,20 +77,24 @@ public class UserController {
 		}
 	}
 
-	@PatchMapping("/change-password/{id}")
-	public ResponseEntity<?> changePassword(@PathVariable String id, @RequestBody @Valid UserDTO userDTO,
-											BindingResult bindingResult) {
+	@PatchMapping("/change-password")
+	public ResponseEntity<?> changePassword(
+			@ModelAttribute @Valid ChangePasswordDTO data, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
-		User user = userService.findOneById(id);
+
+		User user = userService.findOneByEmail(data.getEmail());
 		if (user == null)
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(new MessageDTO("invalid credentials"), HttpStatus.NOT_FOUND);
+
 		try {
-			// TODO: CHECK - Receive old password and check if it matches the one in the database then update the password
-			userService.changePassword(id, userDTO.getEncryptedPass());
-			return new ResponseEntity<>(new MessageDTO("Password changed"), HttpStatus.OK);
+			Boolean response = userService.changePassword(user, data);
+			if (!response)
+				return new ResponseEntity<>(new MessageDTO("invalid credentials!"), HttpStatus.NOT_FOUND);
+
+			return new ResponseEntity<>(new MessageDTO("password changed"), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}

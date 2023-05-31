@@ -1,5 +1,6 @@
 package com.swifticket.web.services.implementations;
 
+import com.swifticket.web.models.dtos.user.ChangePasswordDTO;
 import com.swifticket.web.models.dtos.user.UpdateUserDTO;
 import com.swifticket.web.models.entities.*;
 import com.swifticket.web.repositories.RolexUserRepository;
@@ -62,15 +63,13 @@ public class UserServicesImpl implements UserServices {
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public void changePassword(String id, String password) throws Exception {
-        UUID userId = UUID.fromString(id);
-        User user = userRepository.findById(userId).orElse(null);
-        if (user != null) {
-            user.setPassword(password);
-            userRepository.save(user);
-        } else {
-            throw new Exception("User not found");
-        }
+    public Boolean changePassword(User user, ChangePasswordDTO data) throws Exception {
+        if (!passwordEncoder.matches(data.getPassword(), user.getPassword()))
+            return false;
+
+        user.setPassword(passwordEncoder.encode(data.getNewPassword()));
+        userRepository.save(user);
+        return true;
     }
 
     @Override
