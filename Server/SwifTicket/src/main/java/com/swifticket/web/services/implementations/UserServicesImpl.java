@@ -3,6 +3,7 @@ package com.swifticket.web.services.implementations;
 import com.swifticket.web.models.dtos.user.ChangePasswordDTO;
 import com.swifticket.web.models.dtos.user.UpdateUserDTO;
 import com.swifticket.web.models.entities.*;
+import com.swifticket.web.repositories.EventxValidatorRepository;
 import com.swifticket.web.repositories.RolexUserRepository;
 import com.swifticket.web.repositories.UserRepository;
 import com.swifticket.web.services.UserServices;
@@ -20,12 +21,14 @@ public class UserServicesImpl implements UserServices {
 
     private final UserRepository userRepository;
     private final RolexUserRepository rolexUserRepository;
+    private final EventxValidatorRepository eventxValidatorRepository;
     private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Autowired
-    public UserServicesImpl(UserRepository userRepository, RolexUserRepository rolexUserRepository) {
+    public UserServicesImpl(UserRepository userRepository, RolexUserRepository rolexUserRepository, EventxValidatorRepository eventxValidatorRepository) {
         this.userRepository = userRepository;
         this.rolexUserRepository = rolexUserRepository;
+        this.eventxValidatorRepository = eventxValidatorRepository;
     }
 
     @Override
@@ -91,33 +94,26 @@ public class UserServicesImpl implements UserServices {
     public void removeRole(User user, Role role) throws Exception {
         RolexUser relation = rolexUserRepository.findOneByRoleAndUser(role, user);
         if (relation == null)
-            throw new Exception("Relation found");
+            throw new Exception("Relation not found");
 
         rolexUserRepository.deleteById(relation.getId());
     }
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public void assignToEvent(String id, String eventId) throws Exception {
-        UUID userId = UUID.fromString(id);
-        User user = userRepository.findById(userId).orElse(null);
-        if (user != null) {
-            // TODO Logic to assign user to an event
-        } else {
-            throw new Exception("User not found");
-        }
+    public void assignToEvent(User user, Event event) throws Exception {
+        EventxValidator relation = new EventxValidator(event, user);
+        eventxValidatorRepository.save(relation);
     }
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public void removeFromEvent(String id, String eventId) throws Exception {
-        UUID userId = UUID.fromString(id);
-        User user = userRepository.findById(userId).orElse(null);
-        if (user != null) {
-            // TODO Logic to remove user from an event
-        } else {
-            throw new Exception("User not found");
-        }
+    public void removeFromEvent(User user, Event event) throws Exception {
+        EventxValidator relation = eventxValidatorRepository.findOneByEventAndUser(event, user);
+        if (relation == null)
+            throw new Exception("Relation not found");
+
+        eventxValidatorRepository.deleteById(relation.getId());
     }
 }
 

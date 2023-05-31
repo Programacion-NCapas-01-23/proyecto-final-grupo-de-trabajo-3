@@ -5,10 +5,7 @@ import java.util.UUID;
 
 import com.swifticket.web.models.dtos.user.ChangePasswordDTO;
 import com.swifticket.web.models.dtos.user.UpdateUserDTO;
-import com.swifticket.web.models.entities.Avatar;
-import com.swifticket.web.models.entities.Role;
-import com.swifticket.web.models.entities.User;
-import com.swifticket.web.models.entities.UserState;
+import com.swifticket.web.models.entities.*;
 
 public interface UserServices {
 	List<User> findAll();
@@ -22,6 +19,6 @@ public interface UserServices {
 	void assignRole(User user, Role role) throws Exception;
 	void removeRole(User user, Role role) throws Exception;
 	
-	void assignToEvent(String id, String eventId) throws Exception;
-	void removeFromEvent(String id, String eventId) throws Exception;
+	void assignToEvent(User user, Event event) throws Exception;
+	void removeFromEvent(User user, Event event) throws Exception;
 }

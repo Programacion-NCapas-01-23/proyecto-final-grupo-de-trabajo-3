@@ -16,7 +16,7 @@ import org.hibernate.annotations.CreationTimestamp;
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
-@ToString(exclude = {"rolexUsers"})
+@ToString(exclude = {"rolexUsers", "eventxValidators"})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -25,6 +25,10 @@ public class User {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<RolexUser> rolexUsers;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<EventxValidator> eventxValidators;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "state_id", nullable = false)
