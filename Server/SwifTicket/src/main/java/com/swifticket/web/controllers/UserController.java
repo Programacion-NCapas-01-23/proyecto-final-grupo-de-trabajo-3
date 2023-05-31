@@ -1,13 +1,16 @@
 package com.swifticket.web.controllers;
 
-import com.swifticket.web.models.dtos.event.ChangeEventStatusDTO;
 import com.swifticket.web.models.dtos.response.MessageDTO;
+import com.swifticket.web.models.dtos.user.AssignRoleDTO;
+import com.swifticket.web.models.dtos.user.RemoveRoleDTO;
 import com.swifticket.web.models.dtos.user.ToggleStatusDTO;
 import com.swifticket.web.models.dtos.user.UserDTO;
 import com.swifticket.web.models.entities.Avatar;
-import com.swifticket.web.models.entities.Event;
+import com.swifticket.web.models.entities.Role;
+import com.swifticket.web.models.entities.RolexUser;
 import com.swifticket.web.models.entities.User;
 import com.swifticket.web.services.AvatarServices;
+import com.swifticket.web.services.RoleServices;
 import com.swifticket.web.services.UserServices;
 import com.swifticket.web.utils.ErrorHandler;
 import jakarta.validation.Valid;
@@ -26,12 +29,14 @@ public class UserController {
 
 	private final UserServices userService;
 	private final AvatarServices avatarServices;
+	private final RoleServices roleServices;
 	private final ErrorHandler errorHandler;
 
 	@Autowired
-	public UserController(UserServices userService, AvatarServices avatarServices, ErrorHandler errorHandler) {
+	public UserController(UserServices userService, AvatarServices avatarServices, RoleServices roleServices, ErrorHandler errorHandler) {
 		this.userService = userService;
 		this.avatarServices = avatarServices;
+		this.roleServices = roleServices;
 		this.errorHandler = errorHandler;
 	}
 
@@ -101,16 +106,57 @@ public class UserController {
 	}
 	
 	@PostMapping("/role")
-	public ResponseEntity<?> assignRole() {
-		return new ResponseEntity<>(HttpStatus.OK);
+	public ResponseEntity<?> assignRole(
+			@ModelAttribute @Valid AssignRoleDTO data, BindingResult validations) {
+		if (validations.hasErrors()) {
+			return new ResponseEntity<>(
+					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
+		}
+
+		User user = userService.findOneByEmail(data.getUserId());
+		if (user == null)
+			return new ResponseEntity<>(new MessageDTO("user not found"), HttpStatus.NOT_FOUND);
+
+		Role role = roleServices.findById(data.getRole());
+		if (role == null)
+			return new ResponseEntity<>(new MessageDTO("role not found"), HttpStatus.NOT_FOUND);
+
+		// TODO: validate if relation exists
+
+		try {
+			userService.assignRole(user, role);
+			return new ResponseEntity<>(new MessageDTO("role successfully assigned"), HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 	
 	@DeleteMapping("/role")
-	public ResponseEntity<?> removeRole() {
-		return new ResponseEntity<>(HttpStatus.OK);
+	public ResponseEntity<?> removeRole(
+			@ModelAttribute @Valid RemoveRoleDTO data, BindingResult validations) {
+		if (validations.hasErrors()) {
+			return new ResponseEntity<>(
+					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
+		}
+
+		User user = userService.findOneByEmail(data.getUserId());
+		if (user == null)
+			return new ResponseEntity<>(new MessageDTO("user not found"), HttpStatus.NOT_FOUND);
+
+		Role role = roleServices.findById(data.getRole());
+		if (role == null)
+			return new ResponseEntity<>(new MessageDTO("role not found"), HttpStatus.NOT_FOUND);
+
+		// TODO: validate if relation exists
+
+		try {
+			userService.removeRole(user, role);
+			return new ResponseEntity<>(new MessageDTO("role successfully removed"), HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
-	
-	
+
 	@PostMapping("/assign-to-event")
 	public ResponseEntity<?> assignToEvent() {
 		return new ResponseEntity<>(HttpStatus.OK);

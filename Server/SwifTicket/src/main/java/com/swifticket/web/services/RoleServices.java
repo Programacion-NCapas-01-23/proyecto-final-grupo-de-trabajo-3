@@ -5,4 +5,5 @@ import com.swifticket.web.models.entities.Role;
 
 public interface RoleServices {
 	List<Role> findAll();
+	Role findById(int id);
 }
