@@ -6,7 +6,9 @@ import com.swifticket.web.models.dtos.event.RemoveSponsorFromEventDTO;
 import com.swifticket.web.models.dtos.response.MessageDTO;
 import com.swifticket.web.models.dtos.sponsor.SaveSponsorDTO;
 import com.swifticket.web.models.dtos.tier.SaveTierDTO;
+import com.swifticket.web.models.dtos.tier.UpdateTierDTO;
 import com.swifticket.web.services.*;
+import com.swifticket.web.services.implementations.SponsorServicesImpl;
 import com.swifticket.web.utils.ErrorHandler;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +48,7 @@ public class EventController {
 	private final EventStateServices eventStateService;
 	private final ErrorHandler errorHandler;
 	private final SponsorServices sponsorServices;
+	private TierServices tierServices;
 
 	@Autowired
 	public EventController(EventServices eventServices, CategoryServices categoryServices, PlaceServices placeService, OrganizerServices organizerService, EventStateServices eventStateService, ErrorHandler errorHandler, SponsorServices sponsorServices) {
@@ -126,31 +129,26 @@ public class EventController {
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
 
-		Event event = eventServices.findOneById(id);
-		Category category = categoryServices.findById(data.getCategoryId());
-		Place place = placeService.findById(data.getPlaceId());
-		Organizer organizer = organizerService.findById(data.getOrganizerId());
-
-		if (event == null || category == null || place == null || organizer == null)
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		// TODO: Se devolveran errores especificos para cada caso??
-		/*
-		Event event = eventServices.findOneById(id);
-		if (event == null)
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		Event event = eventServices.findById(id);
+		if (event == null) {
+			return new ResponseEntity<>(new MessageDTO("Event not found"), HttpStatus.NOT_FOUND);
+		}
 
 		Category category = categoryServices.findById(data.getCategoryId());
-		if (category == null)
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		if (category == null) {
+			return new ResponseEntity<>(new MessageDTO("Category not found"), HttpStatus.NOT_FOUND);
+		}
 
 		Place place = placeService.findById(data.getPlaceId());
-		if (place == null)
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		if (place == null) {
+			return new ResponseEntity<>(new MessageDTO("Place not found"), HttpStatus.NOT_FOUND);
+		}
 
 		Organizer organizer = organizerService.findById(data.getOrganizerId());
-		if (organizer == null)
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		*/
+		if (organizer == null) {
+			return new ResponseEntity<>(new MessageDTO("Organizer not found"), HttpStatus.NOT_FOUND);
+		}
+
 
 		try {
 			eventServices.update(id, data, category, organizer, place);
@@ -196,10 +194,14 @@ public class EventController {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
-		if (eventServices.findOneById(data.getEventId()) == null)
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		if (sponsorServices.findById(data.getSponsorId()) == null)
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+		if (eventServices.findById(data.getEventId()) == null) {
+			return new ResponseEntity<>(new MessageDTO("Event not found"), HttpStatus.NOT_FOUND);
+		}
+
+		if (sponsorServices.findById(data.getSponsorId()) == null) {
+			return new ResponseEntity<>(new MessageDTO("Sponsor not found"), HttpStatus.NOT_FOUND);
+		}
 
 		try {
 			eventServices.removeSponsor(data.getEventId(), data.getSponsorId());
@@ -208,12 +210,10 @@ public class EventController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-
-
-
+	
 	@GetMapping("/{id}/tiers")
 	public ResponseEntity<?> getEventTiers(@PathVariable String id) {
-		Event event = eventServices.findOneById(id);
+		Event event = eventServices.findById(id);
 		List<Tier> tiers = event.getTiers();
 		return new ResponseEntity<>(tiers, HttpStatus.OK);
 	}
@@ -233,15 +233,24 @@ public class EventController {
 	}
 
 	@PutMapping("/tiers/{tierId}")
-	public ResponseEntity<?> updateEventTier(@PathVariable String tierId, @ModelAttribute @Valid SaveTierDTO data, BindingResult bindingResult) {
+	public ResponseEntity<?> updateEventTier(@PathVariable String tierId, @ModelAttribute @Valid UpdateTierDTO data, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
+		/*
+		Event event = eventServices.findById(data.getEventId());
+		if (event == null) {
+			return new ResponseEntity<>(new MessageDTO("Event not found"), HttpStatus.NOT_FOUND);
+		}
+		*/
+		Tier tier = tierServices.findById(tierId);
+		if (tier == null) {
+			return new ResponseEntity<>(new MessageDTO("Tier not found"), HttpStatus.NOT_FOUND);
+		}
 
 		try {
-
-
+			eventServices.updateTier(tierId, data);
 			return new ResponseEntity<>(HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -250,10 +259,13 @@ public class EventController {
 
 	@DeleteMapping("/tiers/{tierId}")
 	public ResponseEntity<?> deleteEventTier(@PathVariable String tierId) {
-
+		Tier tier = tierServices.findById(tierId);
+		if (tier == null) {
+			return new ResponseEntity<>(new MessageDTO("Tier not found"), HttpStatus.NOT_FOUND);
+		}
 
 		try {
-
+			eventServices.deleteTier(tierId);
 			return new ResponseEntity<>(HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

@@ -1,11 +1,16 @@
 package com.swifticket.web.services.implementations;
 
-import com.swifticket.web.models.entities.Avatar;
-import com.swifticket.web.models.entities.User;
+import com.swifticket.web.models.dtos.user.ChangePasswordDTO;
+import com.swifticket.web.models.dtos.user.UpdateUserDTO;
+import com.swifticket.web.models.entities.*;
+import com.swifticket.web.repositories.EventxValidatorRepository;
+import com.swifticket.web.repositories.RolexUserRepository;
 import com.swifticket.web.repositories.UserRepository;
 import com.swifticket.web.services.UserServices;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,10 +20,15 @@ import java.util.UUID;
 public class UserServicesImpl implements UserServices {
 
     private final UserRepository userRepository;
+    private final RolexUserRepository rolexUserRepository;
+    private final EventxValidatorRepository eventxValidatorRepository;
+    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Autowired
-    public UserServicesImpl(UserRepository userRepository) {
+    public UserServicesImpl(UserRepository userRepository, RolexUserRepository rolexUserRepository, EventxValidatorRepository eventxValidatorRepository) {
         this.userRepository = userRepository;
+        this.rolexUserRepository = rolexUserRepository;
+        this.eventxValidatorRepository = eventxValidatorRepository;
     }
 
     @Override
@@ -33,12 +43,22 @@ public class UserServicesImpl implements UserServices {
     }
 
     @Override
+    public User findOneByEmail(String email) {
+        return userRepository.findOneByEmail(email);
+    }
+
+    @Override
     @Transactional(rollbackOn = Exception.class)
-    public void register(String name, String email, String password, Avatar avatar) throws Exception {
-        User user = new User();
-        user.setName(name);
-        user.setEmail(email);
-        user.setPassword(password);
+    public void register(String name, String email, String password, Avatar avatar, UserState state) throws Exception {
+        User user = new User(state, avatar, name, email, passwordEncoder.encode(password));
+        userRepository.save(user);
+    }
+
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public void update(User user, UpdateUserDTO data, Avatar avatar) throws Exception {
+        user.setEmail(data.getEmail());
+        user.setName(data.getName());
         user.setAvatar(avatar);
 
         userRepository.save(user);
@@ -46,91 +66,54 @@ public class UserServicesImpl implements UserServices {
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public void update(String id, String name, Avatar avatar) throws Exception {
-        UUID userId = UUID.fromString(id);
-        User user = userRepository.findById(userId).orElse(null);
-        if (user != null) {
-            user.setName(name);
-            user.setAvatar(avatar);
-            userRepository.save(user);
-        } else {
-            throw new Exception("User not found");
-        }
+    public Boolean changePassword(User user, ChangePasswordDTO data) throws Exception {
+        if (!passwordEncoder.matches(data.getPassword(), user.getPassword()))
+            return false;
+
+        user.setPassword(passwordEncoder.encode(data.getNewPassword()));
+        userRepository.save(user);
+        return true;
     }
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public void changePassword(String id, String password) throws Exception {
-        UUID userId = UUID.fromString(id);
-        User user = userRepository.findById(userId).orElse(null);
-        if (user != null) {
-            user.setPassword(password);
-            userRepository.save(user);
-        } else {
-            throw new Exception("User not found");
-        }
+    public void toggleStatus(User user, UserState state) throws Exception {
+        user.setState(state);
+        userRepository.save(user);
     }
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public void toggleStatus(String id, String status) throws Exception {
-        UUID userId = UUID.fromString(id);
-        User user = userRepository.findById(userId).orElse(null);
-        if (user != null) {
-            // TODO Change the status of the user
-            //user.setStatus(status);
-            userRepository.save(user);
-        } else {
-            throw new Exception("User not found");
-        }
+    public void assignRole(User user, Role role) throws Exception {
+        RolexUser relation = new RolexUser(role, user);
+        rolexUserRepository.save(relation);
     }
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public void assignRole(String id, String role) throws Exception {
-        UUID userId = UUID.fromString(id);
-        User user = userRepository.findById(userId).orElse(null);
-        if (user != null) {
-            // TODO Logic to assign a role to the user
-        } else {
-            throw new Exception("User not found");
-        }
+    public void removeRole(User user, Role role) throws Exception {
+        RolexUser relation = rolexUserRepository.findOneByRoleAndUser(role, user);
+        if (relation == null)
+            throw new Exception("Relation not found");
+
+        rolexUserRepository.deleteById(relation.getId());
     }
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public void removeRole(String id, String role) throws Exception {
-        UUID userId = UUID.fromString(id);
-        User user = userRepository.findById(userId).orElse(null);
-        if (user != null) {
-            // TODO Logic to remove a role from the user
-        } else {
-            throw new Exception("User not found");
-        }
+    public void assignToEvent(User user, Event event) throws Exception {
+        EventxValidator relation = new EventxValidator(event, user);
+        eventxValidatorRepository.save(relation);
     }
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public void assignToEvent(String id, String eventId) throws Exception {
-        UUID userId = UUID.fromString(id);
-        User user = userRepository.findById(userId).orElse(null);
-        if (user != null) {
-            // TODO Logic to assign user to an event
-        } else {
-            throw new Exception("User not found");
-        }
-    }
+    public void removeFromEvent(User user, Event event) throws Exception {
+        EventxValidator relation = eventxValidatorRepository.findOneByEventAndUser(event, user);
+        if (relation == null)
+            throw new Exception("Relation not found");
 
-    @Override
-    @Transactional(rollbackOn = Exception.class)
-    public void removeFromEvent(String id, String eventId) throws Exception {
-        UUID userId = UUID.fromString(id);
-        User user = userRepository.findById(userId).orElse(null);
-        if (user != null) {
-            // TODO Logic to remove user from an event
-        } else {
-            throw new Exception("User not found");
-        }
+        eventxValidatorRepository.deleteById(relation.getId());
     }
 }
 

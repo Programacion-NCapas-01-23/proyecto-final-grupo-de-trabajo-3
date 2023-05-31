@@ -47,7 +47,7 @@ public class EventServicesImpl implements EventServices {
     public List<Event> findAll() { return eventRepository.findAll(); }
 
     @Override
-    public Event findOneById(String id) {
+    public Event findById(String id) {
         try {
             UUID eventId = UUID.fromString(id);
             return eventRepository.findById(eventId).orElse(null);

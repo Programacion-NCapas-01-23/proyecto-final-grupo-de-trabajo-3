@@ -14,7 +14,7 @@ import com.swifticket.web.models.entities.Tier;
 
 public interface EventServices {
 	List<Event> findAll();
-	Event findOneById(String id);
+	Event findById(String id);
 	void save(SaveEventDTO eventInfo, Category category, Organizer organizer, Place place) throws Exception;
 	void update(String id, SaveEventDTO eventInfo, Category category, Organizer organizer, Place place) throws Exception;
 	void changeStatus(String id, String status) throws Exception;

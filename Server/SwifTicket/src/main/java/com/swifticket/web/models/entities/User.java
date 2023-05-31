@@ -1,35 +1,41 @@
 package com.swifticket.web.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
+import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Data
 @NoArgsConstructor
 @Entity
 @Table(name = "users")
+@ToString(exclude = {"rolexUsers", "eventxValidators"})
 public class User {
     @Id
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    /*
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "role_id", referencedColumnName = "id", nullable = false)
-    private Role role;
-    */
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<RolexUser> rolexUsers;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "state_id", referencedColumnName = "id", nullable = false)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<EventxValidator> eventxValidators;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "state_id", nullable = false)
     private UserState state;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "avatar_id", referencedColumnName = "id")
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "avatar_id")
     private Avatar avatar;
 
     @Column(length = 50, nullable = false)
@@ -39,9 +45,18 @@ public class User {
     private String email;
 
     @Column(nullable = false)
+    @JsonIgnore
     private String password;
 
-    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "created_at")
+    @CreationTimestamp
     private Date createdAt;
+
+    public User(UserState state, Avatar avatar, String name, String email, String password) {
+        this.state = state;
+        this.avatar = avatar;
+        this.name = name;
+        this.email = email;
+        this.password = password;
+    }
 }
