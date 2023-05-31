@@ -53,6 +53,10 @@ public class AuthController {
 		if (state == null)
 			return new ResponseEntity<>(new MessageDTO("state not found"), HttpStatus.NOT_FOUND);
 
+		User userByEmail = userServices.findOneByEmail(userData.getEmail());
+		if (userByEmail != null)
+			return new ResponseEntity<>(new MessageDTO("email is already taken"), HttpStatus.BAD_REQUEST);
+
 		try {
 			userServices.register(userData.getName(), userData.getEmail(), userData.getPassword(), avatar, state);
 			return new ResponseEntity<>(new MessageDTO("User registered"), HttpStatus.CREATED);
