@@ -3,6 +3,7 @@ package com.swifticket.web.services;
 import java.util.List;
 import java.util.UUID;
 
+import com.swifticket.web.models.dtos.user.UpdateUserDTO;
 import com.swifticket.web.models.entities.Avatar;
 import com.swifticket.web.models.entities.Role;
 import com.swifticket.web.models.entities.User;
@@ -13,7 +14,7 @@ public interface UserServices {
 	User findOneById(String id);
 	User findOneByEmail(String email);
 	void register(String name, String email, String password, Avatar avatar, UserState state) throws Exception;
-	void update(String id, String name, Avatar avatar) throws Exception;
+	void update(User user, UpdateUserDTO data, Avatar avatar) throws Exception;
 	void changePassword(String id, String password) throws Exception;
 	void toggleStatus(User user, UserState state) throws Exception;
 	

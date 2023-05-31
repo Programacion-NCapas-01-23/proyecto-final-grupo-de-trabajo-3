@@ -1,10 +1,7 @@
 package com.swifticket.web.controllers;
 
 import com.swifticket.web.models.dtos.response.MessageDTO;
-import com.swifticket.web.models.dtos.user.AssignRoleDTO;
-import com.swifticket.web.models.dtos.user.RemoveRoleDTO;
-import com.swifticket.web.models.dtos.user.ToggleStatusDTO;
-import com.swifticket.web.models.dtos.user.UserDTO;
+import com.swifticket.web.models.dtos.user.*;
 import com.swifticket.web.models.entities.*;
 import com.swifticket.web.services.AvatarServices;
 import com.swifticket.web.services.RoleServices;
@@ -53,20 +50,27 @@ public class UserController {
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<?> updateUser(@PathVariable String id, @RequestBody @Valid UserDTO userDTO,
-										BindingResult bindingResult) {
+	public ResponseEntity<?> updateUser(
+			@PathVariable String id, @ModelAttribute @Valid UpdateUserDTO data, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
-		User user = userService.findOneById(id);
+
+		User user = userService.findOneByEmail(id);
 		if (user == null)
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		Avatar avatar = avatarServices.findById(userDTO.getAvatar().getId());
+			return new ResponseEntity<>(new MessageDTO("user not found"), HttpStatus.NOT_FOUND);
+
+		Avatar avatar = avatarServices.findById(data.getAvatar());
 		if (avatar == null)
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(new MessageDTO("avatar not found"), HttpStatus.NOT_FOUND);
+
+		User userByNewEmail = userService.findOneByEmail(data.getEmail());
+		if (userByNewEmail != null)
+			return new ResponseEntity<>(new MessageDTO("email is already taken"), HttpStatus.BAD_REQUEST);
+
 		try {
-			userService.update(id, userDTO.getName(), avatar);
+			userService.update(user, data, avatar);
 			return new ResponseEntity<>(new MessageDTO("User updated"), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

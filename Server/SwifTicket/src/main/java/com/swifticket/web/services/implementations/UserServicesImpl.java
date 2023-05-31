@@ -1,5 +1,6 @@
 package com.swifticket.web.services.implementations;
 
+import com.swifticket.web.models.dtos.user.UpdateUserDTO;
 import com.swifticket.web.models.entities.*;
 import com.swifticket.web.repositories.RolexUserRepository;
 import com.swifticket.web.repositories.UserRepository;
@@ -51,16 +52,12 @@ public class UserServicesImpl implements UserServices {
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public void update(String id, String name, Avatar avatar) throws Exception {
-        UUID userId = UUID.fromString(id);
-        User user = userRepository.findById(userId).orElse(null);
-        if (user != null) {
-            user.setName(name);
-            user.setAvatar(avatar);
-            userRepository.save(user);
-        } else {
-            throw new Exception("User not found");
-        }
+    public void update(User user, UpdateUserDTO data, Avatar avatar) throws Exception {
+        user.setEmail(data.getEmail());
+        user.setName(data.getName());
+        user.setAvatar(avatar);
+
+        userRepository.save(user);
     }
 
     @Override
