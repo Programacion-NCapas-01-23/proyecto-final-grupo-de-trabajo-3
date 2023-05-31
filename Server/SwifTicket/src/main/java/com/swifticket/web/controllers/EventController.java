@@ -2,9 +2,17 @@ package com.swifticket.web.controllers;
 
 import java.util.List;
 
+import com.swifticket.web.models.dtos.event.RemoveSponsorFromEventDTO;
+import com.swifticket.web.models.dtos.response.MessageDTO;
+import com.swifticket.web.models.dtos.sponsor.SaveSponsorDTO;
+import com.swifticket.web.models.dtos.tier.SaveTierDTO;
+import com.swifticket.web.services.*;
+import com.swifticket.web.utils.ErrorHandler;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,11 +32,6 @@ import com.swifticket.web.models.entities.EventState;
 import com.swifticket.web.models.entities.Organizer;
 import com.swifticket.web.models.entities.Place;
 import com.swifticket.web.models.entities.Tier;
-import com.swifticket.web.services.CategoryServices;
-import com.swifticket.web.services.EventServices;
-import com.swifticket.web.services.EventStateServices;
-import com.swifticket.web.services.OrganizerServices;
-import com.swifticket.web.services.PlaceServices;
 
 
 @RestController
@@ -36,16 +39,24 @@ import com.swifticket.web.services.PlaceServices;
 @CrossOrigin("*")
 public class EventController {
 
+	private final EventServices eventServices;
+	private final CategoryServices categoryServices;
+	private final PlaceServices placeService;
+	private final OrganizerServices organizerService;
+	private final EventStateServices eventStateService;
+	private final ErrorHandler errorHandler;
+	private final SponsorServices sponsorServices;
+
 	@Autowired
-	private EventServices eventServices;
-	@Autowired
-	private CategoryServices categoryServices;
-	@Autowired
-	private PlaceServices placeService;
-	@Autowired
-	private OrganizerServices organizerService;
-	@Autowired
-	private EventStateServices eventStateService;
+	public EventController(EventServices eventServices, CategoryServices categoryServices, PlaceServices placeService, OrganizerServices organizerService, EventStateServices eventStateService, ErrorHandler errorHandler, SponsorServices sponsorServices) {
+		this.eventServices = eventServices;
+		this.categoryServices = categoryServices;
+		this.placeService = placeService;
+		this.organizerService = organizerService;
+		this.eventStateService = eventStateService;
+		this.errorHandler = errorHandler;
+		this.sponsorServices = sponsorServices;
+	}
 
 	@GetMapping("")
 	public ResponseEntity<?> getEvents() {
@@ -56,7 +67,7 @@ public class EventController {
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getEvent(@PathVariable String id) {
 		Event event = eventServices.findOneById(id);
-		return new ResponseEntity<>(HttpStatus.OK);
+		return new ResponseEntity<>(event, HttpStatus.OK);
 	}
 
 	@GetMapping("/category/{categoryId}")
@@ -82,7 +93,11 @@ public class EventController {
 	}
 
 	@PostMapping("")
-	public ResponseEntity<?> createEvent(@ModelAttribute SaveEventDTO data) {
+	public ResponseEntity<?> createEvent(@ModelAttribute @Valid SaveEventDTO data, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			return new ResponseEntity<>(
+					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
+		}
 		Category category = categoryServices.findById(data.getCategoryId());
 		if (category == null)
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -105,7 +120,21 @@ public class EventController {
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<?> updateEvent(@PathVariable String id, @ModelAttribute SaveEventDTO data) {
+	public ResponseEntity<?> updateEvent(@PathVariable String id, @ModelAttribute @Valid SaveEventDTO data, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			return new ResponseEntity<>(
+					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
+		}
+
+		Event event = eventServices.findOneById(id);
+		Category category = categoryServices.findById(data.getCategoryId());
+		Place place = placeService.findById(data.getPlaceId());
+		Organizer organizer = organizerService.findById(data.getOrganizerId());
+
+		if (event == null || category == null || place == null || organizer == null)
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		// TODO: Se devolveran errores especificos para cada caso??
+		/*
 		Event event = eventServices.findOneById(id);
 		if (event == null)
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -121,6 +150,7 @@ public class EventController {
 		Organizer organizer = organizerService.findById(data.getOrganizerId());
 		if (organizer == null)
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		*/
 
 		try {
 			eventServices.update(id, data, category, organizer, place);
@@ -138,7 +168,7 @@ public class EventController {
 
 		try {
 			eventServices.changeStatus(data.getId(), data.getStatus());
-			return new ResponseEntity<>(HttpStatus.OK);
+			return new ResponseEntity<>(new MessageDTO("Status changed"), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -146,14 +176,39 @@ public class EventController {
 
 
 	@PostMapping("/sponsors")
-	public ResponseEntity<?> assignSponsor() {
-		return new ResponseEntity<>(HttpStatus.OK);
+	public ResponseEntity<?> assignSponsor(@ModelAttribute @Valid SaveSponsorDTO data, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			return new ResponseEntity<>(
+					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
+		}
+		try {
+			eventServices.assignSponsor(data.getEventId(), data);
+			return new ResponseEntity<>(new MessageDTO("Sponsor assigned"), HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
+
 	@DeleteMapping("/sponsors")
-	public ResponseEntity<?> removeSponsor() {
-		return new ResponseEntity<>(HttpStatus.OK);
+	public ResponseEntity<?> removeSponsor(@ModelAttribute @Valid RemoveSponsorFromEventDTO data, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			return new ResponseEntity<>(
+					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
+		}
+		if (eventServices.findOneById(data.getEventId()) == null)
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		if (sponsorServices.findById(data.getSponsorId()) == null)
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+		try {
+			eventServices.removeSponsor(data.getEventId(), data.getSponsorId());
+			return new ResponseEntity<>(new MessageDTO("Sponsor removed"), HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
+
 
 
 	@GetMapping("/{id}/tiers")
@@ -164,18 +219,45 @@ public class EventController {
 	}
 
 	@PostMapping("/tiers")
-	public ResponseEntity<?> createEventTier() {
-		return new ResponseEntity<>(HttpStatus.CREATED);
+	public ResponseEntity<?> createEventTier(@ModelAttribute @Valid SaveTierDTO data, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			return new ResponseEntity<>(
+					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
+		}
+		try {
+			eventServices.createTier(data.getEventId(), data);
+			return new ResponseEntity<>(new MessageDTO("Tier has been added"), HttpStatus.CREATED);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@PutMapping("/tiers/{tierId}")
-	public ResponseEntity<?> updateEventTier(@PathVariable String tierId) {
-		return new ResponseEntity<>(HttpStatus.OK);
+	public ResponseEntity<?> updateEventTier(@PathVariable String tierId, @ModelAttribute @Valid SaveTierDTO data, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			return new ResponseEntity<>(
+					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
+		}
+
+		try {
+
+
+			return new ResponseEntity<>(HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@DeleteMapping("/tiers/{tierId}")
 	public ResponseEntity<?> deleteEventTier(@PathVariable String tierId) {
-		return new ResponseEntity<>(HttpStatus.OK);
+
+
+		try {
+
+			return new ResponseEntity<>(HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 }

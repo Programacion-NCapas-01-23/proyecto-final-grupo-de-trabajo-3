@@ -1,6 +1,7 @@
 package com.swifticket.web.services.implementations;
 
 import com.swifticket.web.models.dtos.event.SaveEventDTO;
+import com.swifticket.web.models.dtos.sponsor.SaveSponsorDTO;
 import com.swifticket.web.models.dtos.tier.SaveTierDTO;
 import com.swifticket.web.models.dtos.tier.UpdateTierDTO;
 import com.swifticket.web.models.entities.Category;
@@ -109,25 +110,18 @@ public class EventServicesImpl implements EventServices {
         }
     }
 
-
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public void assignSponsor(String id, String sponsor) throws Exception {
-        UUID eventId = UUID.fromString(id);
-        Event event = eventRepository.findById(eventId).orElse(null);
-
-        if (event != null) {
-            // List<Sponsor> sponsors = sponsorRepository.
-            // TODO: Assign a sponsor to the event (add it to the list)
-            // ...
-
-            eventRepository.save(event);
-        }
+    public void assignSponsor(String eventId, SaveSponsorDTO sponsorData) throws Exception {
+        UUID id = UUID.fromString(eventId);
+        Event event = eventRepository.findById(id).orElse(null);
+        //event.getSponsors().add(new Sponsor(event, sponsorData.getName(), sponsorData.getImage());
+        eventRepository.save(event);
     }
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public void removeSponsor(String id, String sponsor) throws Exception {
+    public void removeSponsor(String id, int sponsor) throws Exception {
         // TODO: fix this...
     	/*
         Event event = eventRepository.findById(id).orElse(null);

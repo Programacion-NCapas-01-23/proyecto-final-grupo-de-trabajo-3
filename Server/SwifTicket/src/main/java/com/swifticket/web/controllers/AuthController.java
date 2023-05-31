@@ -29,11 +29,14 @@ import jakarta.validation.Valid;
 @RequestMapping("/auth")
 @CrossOrigin("*")
 public class AuthController {
+	private final AuthServices authServices;
+	private final ErrorHandler errorHandler;
 	@Autowired
-	private AuthServices authServices;
-	@Autowired
-	private ErrorHandler errorHandler;
-	
+	public AuthController(ErrorHandler errorHandler, AuthServices authServices) {
+		this.errorHandler = errorHandler;
+		this.authServices = authServices;
+	}
+
 	@GetMapping("/validate-token")
 	public ResponseEntity<?> validateToken(@ModelAttribute ValidateTokenDTO data) {
 		Boolean response = authServices.validateAccount(data.getToken());

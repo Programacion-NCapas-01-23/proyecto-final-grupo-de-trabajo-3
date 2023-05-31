@@ -1,6 +1,7 @@
 package com.swifticket.web.models.dtos.event;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -11,6 +12,7 @@ public class SaveEventDTO {
 	private String title;
 	
 	@NotBlank(message = "duration is required")
+	@Positive(message = "duration must be a positive number")
 	private String duration;
 	
 	@NotBlank(message = "date and time is required")

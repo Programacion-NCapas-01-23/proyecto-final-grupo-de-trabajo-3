@@ -55,7 +55,7 @@ CREATE TABLE events (
   state_id INT NOT NULL,
   place_id INT NOT NULL,
   title VARCHAR(50) NOT NULL,
-  duration VARCHAR(50) NOT NULL,
+  duration int NOT NULL,
   date_time DATE NOT NULL,
   image VARCHAR(100) NOT NULL,
   CONSTRAINT event_pk PRIMARY KEY (id),

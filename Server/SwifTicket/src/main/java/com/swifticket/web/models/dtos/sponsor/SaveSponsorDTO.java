@@ -7,6 +7,9 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class SaveSponsorDTO {
+	@NotBlank(message = "event id is required")
+	private String eventId;
+
 	@NotBlank(message = "sponsor name is required")
 	private String name;
 	

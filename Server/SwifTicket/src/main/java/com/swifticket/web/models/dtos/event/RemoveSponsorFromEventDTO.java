@@ -11,5 +11,5 @@ public class RemoveSponsorFromEventDTO {
 	private String eventId;
 	
 	@NotBlank(message = "sponsor id is required")
-	private String sponsorId;
+	private int sponsorId;
 }

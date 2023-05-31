@@ -29,10 +29,13 @@ import jakarta.validation.Valid;
 @CrossOrigin("*")
 public class CategoryController {
 	
+	private final CategoryServices categoryService;
+	private final ErrorHandler errorHandler;
 	@Autowired
-	private CategoryServices categoryService;
-	@Autowired
-	private ErrorHandler errorHandler;
+	public CategoryController(CategoryServices categoryService, ErrorHandler errorHandler) {
+		this.categoryService = categoryService;
+		this.errorHandler = errorHandler;
+	}
 
 	@GetMapping("")
 	public ResponseEntity<?> getCategories() {

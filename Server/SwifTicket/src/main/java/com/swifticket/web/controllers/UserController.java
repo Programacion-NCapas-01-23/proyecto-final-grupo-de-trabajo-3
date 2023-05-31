@@ -69,10 +69,8 @@ public class UserController {
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
 		User user = userService.findOneById(id);
-		if (user == null)
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		Avatar avatar = avatarServices.findById(userDTO.getAvatar().getId());
-		if (avatar == null)
+		if (user == null || avatar == null)
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		try {
 			userService.update(id, userDTO.getName(), avatar);

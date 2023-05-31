@@ -27,11 +27,14 @@ import jakarta.validation.Valid;
 @RequestMapping("/places")
 @CrossOrigin("*")
 public class PlaceController {
+	private final PlaceServices placeServices;
+	private final ErrorHandler errorHandler;
 	@Autowired
-	private PlaceServices placeServices;
-	@Autowired
-	private ErrorHandler errorHandler;
-	
+	public PlaceController(PlaceServices placeServices, ErrorHandler errorHandler) {
+		this.placeServices = placeServices;
+		this.errorHandler = errorHandler;
+	}
+
 	@GetMapping("")
 	public ResponseEntity<?> getPlaces() {
 		List<Place> places = placeServices.findAll();
