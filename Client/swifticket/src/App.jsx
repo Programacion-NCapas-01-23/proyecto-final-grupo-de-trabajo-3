@@ -17,22 +17,22 @@ import { Colors } from './pages/colors';
 import Cards from './pages/Cards';
 import OneEvent from './pages/OneEvent/OneEvent';
 import Checkout from './pages/Checkout/Checkout';
+import Landing from './Landing';
 
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
-        <Route path="/colors" element={<Colors></Colors>} />
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="user/one" element={<OneUser />} />
           <Route path="admin" element={<Admin />} />
-          <Route path="cards" element={<Cards />} />
           <Route path="checkout" element={<Checkout />} />
         </Route>
         <Route path="user" element={<User />} />
         <Route path="/login" element={<Login />} />
         <Route path="/development" element={<OneEvent />} />
+        <Route path="/error" element={<Landing />} />
       </>
     )
   );
