@@ -6,6 +6,6 @@ import org.springframework.data.repository.ListCrudRepository;
 
 import com.swifticket.web.models.entities.VerifyAccountToken;
 
-public interface VerifyAccountTokenRepository extends ListCrudRepository<VerifyAccountToken, UUID> {
+public interface VerifyAccountTokenRepository extends ListCrudRepository<VerifyAccountToken, String> {
 
 }

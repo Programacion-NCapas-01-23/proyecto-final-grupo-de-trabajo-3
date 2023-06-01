@@ -3,6 +3,7 @@ package com.swifticket.web.controllers;
 import java.util.List;
 
 import com.swifticket.web.models.dtos.user.CreateUserDTO;
+import com.swifticket.web.models.dtos.user.RequestValidationToken;
 import com.swifticket.web.models.dtos.user.UserDTO;
 import com.swifticket.web.models.entities.*;
 import com.swifticket.web.services.AvatarServices;
@@ -52,7 +53,7 @@ private final AuthServices authServices;
 		if (avatar == null)
 			return new ResponseEntity<>(new MessageDTO("invalid avatar"), HttpStatus.NOT_FOUND);
 
-		UserState state = userStateServices.findById(1);
+		UserState state = userStateServices.findById(3);
 		if (state == null)
 			return new ResponseEntity<>(new MessageDTO("state not found"), HttpStatus.NOT_FOUND);
 
@@ -62,28 +63,68 @@ private final AuthServices authServices;
 
 		try {
 			userServices.register(userData.getName(), userData.getEmail(), userData.getPassword(), avatar, state);
+			String code = authServices.generateVerifyAccountToken(userData.getEmail());
+			// TODO: send code to user via email
+
 			return new ResponseEntity<>(new MessageDTO("User registered"), HttpStatus.CREATED);
 		} catch (Exception e) {
-			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
+	// TODO: When using spring security this method will be DEPRECATED
 	@GetMapping("/validate-token")
 	public ResponseEntity<?> validateToken(@ModelAttribute ValidateTokenDTO data) {
-		Boolean response = authServices.validateAccount(data.getToken());
-		if (!response)
-			return new ResponseEntity<>(new MessageDTO("invalid token"), HttpStatus.UNAUTHORIZED);
-		
-		return new ResponseEntity<>(new MessageDTO("valid token"), HttpStatus.OK);
+		try {
+			User user = authServices.validateAccount(data.getToken());
+			if (user == null)
+				return new ResponseEntity<>(new MessageDTO("invalid token"), HttpStatus.UNAUTHORIZED);
+
+			return new ResponseEntity<>(new MessageDTO("valid token"), HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 	
 	@GetMapping("/validate-account/{code}")
 	public ResponseEntity<?> validateAccount(@PathVariable String code) {
-		Boolean response = authServices.validateAccount(code);
-		if (!response)
-			return new ResponseEntity<>(new MessageDTO("invalid validation code"), HttpStatus.NOT_FOUND);
-		
-		return new ResponseEntity<>(new MessageDTO("account validated"), HttpStatus.OK);
+		try {
+			User user = authServices.validateAccount(code);
+			if (user == null)
+				return new ResponseEntity<>(new MessageDTO("invalid validation code"), HttpStatus.NOT_FOUND);
+
+			// Update user state to Active
+			UserState state = userStateServices.findById(1);
+			userServices.toggleStatus(user, state);
+
+			return new ResponseEntity<>(new MessageDTO("account validated"), HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@PostMapping("/validate-account")
+	public ResponseEntity<?> requestValidationAccountToken(
+			@ModelAttribute RequestValidationToken data, BindingResult validations) {
+		if (validations.hasErrors()) {
+			return new ResponseEntity<>(
+					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
+		}
+
+		User user = userServices.findOneByEmail(data.getEmail());
+		if (user == null)
+			return new ResponseEntity<>(new MessageDTO("user not found"), HttpStatus.NOT_FOUND);
+		if (user.getState().getId() != 3)
+			return new ResponseEntity<>(new MessageDTO("user already validated"), HttpStatus.CONFLICT);
+
+		try {
+			String code = authServices.generateVerifyAccountToken(data.getEmail());
+			// TODO: send code to user via email
+
+			return new ResponseEntity<>(new MessageDTO("validation code sent to email"), HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 	
 	@PostMapping("/signin")

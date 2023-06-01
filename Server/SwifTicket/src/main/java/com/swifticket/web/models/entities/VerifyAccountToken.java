@@ -3,6 +3,7 @@ package com.swifticket.web.models.entities;
 import java.util.Date;
 import java.util.UUID;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
 import jakarta.persistence.Column;
@@ -33,7 +34,8 @@ public class VerifyAccountToken {
 	@Column(name = "expires_at", nullable = false)
 	private Date expiresAt;
 	
-	@Column(name = "created_at", nullable = false)
+	@Column(name = "created_at")
+	@CreationTimestamp
 	private Date createdAt;
 
 	public VerifyAccountToken(String code, User user, Date expiresAt) {
