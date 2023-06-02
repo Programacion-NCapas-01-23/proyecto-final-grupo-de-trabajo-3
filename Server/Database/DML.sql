@@ -53,7 +53,7 @@ INSERT INTO places (name, address) VALUES ('Galería de Arte Moderno', 'Calle de
 
 -- events
 INSERT INTO events (category_id, organizer_id, state_id, place_id, title, duration, date_time, image)
-VALUES (1, 1, 1, 1, 'Conferencia de Tecnología de Mayo', '2 horas', '2023-05-20', 'evento1.jpg');
+VALUES (1, 1, 1, 1, 'Conferencia de Tecnología de Mayo', 2, '2023-05-20', 'evento1.jpg');
 
 -- tiers
 

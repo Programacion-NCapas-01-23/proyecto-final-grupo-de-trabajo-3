@@ -1,6 +1,6 @@
 -- #############################################################################################################
 -- Crear BD
-CREATE DATABASE swift_ticket;
+-- CREATE DATABASE swift_ticket;
 
 -- Crear Entidades
 
