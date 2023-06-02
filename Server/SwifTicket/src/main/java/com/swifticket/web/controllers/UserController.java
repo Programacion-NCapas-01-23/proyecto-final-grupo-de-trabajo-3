@@ -138,7 +138,9 @@ public class UserController {
 		if (role == null)
 			return new ResponseEntity<>(new MessageDTO("role not found"), HttpStatus.NOT_FOUND);
 
-		// TODO: validate if relation exists
+		RolexUser relation = userService.findByRoleAndUser(user, role);
+		if (relation != null) // TODO: check this response status code
+			return new ResponseEntity<>(new MessageDTO("role is already assigned to user"), HttpStatus.OK);
 
 		try {
 			userService.assignRole(user, role);
@@ -164,7 +166,9 @@ public class UserController {
 		if (role == null)
 			return new ResponseEntity<>(new MessageDTO("role not found"), HttpStatus.NOT_FOUND);
 
-		// TODO: validate if relation exists
+		RolexUser relation = userService.findByRoleAndUser(user, role);
+		if (relation == null) // TODO: check this response status code
+			return new ResponseEntity<>(new MessageDTO("role wasn't assigned to user"), HttpStatus.OK);
 
 		try {
 			userService.removeRole(user, role);
@@ -220,7 +224,7 @@ public class UserController {
 
 		EventxValidator relation = userService.findByEventAndUser(event, user);
 		if (relation == null) // TODO: check this response status code
-			return new ResponseEntity<>(new MessageDTO("user wasn't assigned to event event"), HttpStatus.OK);
+			return new ResponseEntity<>(new MessageDTO("user wasn't assigned to event"), HttpStatus.OK);
 
 		try {
 			userService.removeFromEvent(user, event);
