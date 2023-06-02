@@ -83,6 +83,11 @@ public class UserServicesImpl implements UserServices {
     }
 
     @Override
+    public RolexUser findByRoleAndUser(User user, Role role) {
+        return rolexUserRepository.findOneByRoleAndUser(role, user);
+    }
+
+    @Override
     @Transactional(rollbackOn = Exception.class)
     public void assignRole(User user, Role role) throws Exception {
         RolexUser relation = new RolexUser(role, user);
@@ -97,6 +102,11 @@ public class UserServicesImpl implements UserServices {
             throw new Exception("Relation not found");
 
         rolexUserRepository.deleteById(relation.getId());
+    }
+
+    @Override
+    public EventxValidator findByEventAndUser(Event event, User user) {
+        return eventxValidatorRepository.findOneByEventAndUser(event, user);
     }
 
     @Override
