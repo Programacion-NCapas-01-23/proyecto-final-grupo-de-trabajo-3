@@ -39,6 +39,7 @@ public class SponsorController {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
+
 		try {
 			sponsorServices.save(data.getName(), data.getImage());
 			return new ResponseEntity<>(new MessageDTO("sponsor created"), HttpStatus.CREATED);
@@ -52,9 +53,11 @@ public class SponsorController {
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
+
 		Sponsor sponsor = sponsorServices.findById(id);
 		if (sponsor == null)
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(new MessageDTO("sponsor not found"), HttpStatus.NOT_FOUND);
+
 		try {
 			sponsorServices.update(id, data.getName(), data.getImage());
 			return new ResponseEntity<>(new MessageDTO("sponsor updated"), HttpStatus.OK);
@@ -65,7 +68,11 @@ public class SponsorController {
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteSponsor(@PathVariable int id) {
-		try{
+		Sponsor sponsor = sponsorServices.findById(id);
+		if (sponsor == null)
+			return new ResponseEntity<>(new MessageDTO("sponsor not found"), HttpStatus.NOT_FOUND);
+
+		try {
 			sponsorServices.delete(id);
 			return new ResponseEntity<>(new MessageDTO("sponsor deleted"), HttpStatus.OK);
 		} catch (Exception e) {

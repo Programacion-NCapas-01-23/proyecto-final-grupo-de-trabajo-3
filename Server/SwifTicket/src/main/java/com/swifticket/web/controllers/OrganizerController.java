@@ -51,6 +51,7 @@ public class OrganizerController {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
+		
 		try {
 			organizerServices.save(data.getName());
 			return new ResponseEntity<>(new MessageDTO("organizer created"), HttpStatus.CREATED);
@@ -69,9 +70,11 @@ public class OrganizerController {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
+
 		Organizer organizer = organizerServices.findById(id);
 		if (organizer == null)
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(new MessageDTO("organizer not found"), HttpStatus.NOT_FOUND);
+
 		try {
 			organizerServices.update(id, data.getName());
 			return new ResponseEntity<>(new MessageDTO("organizer updated"), HttpStatus.OK);
@@ -82,6 +85,10 @@ public class OrganizerController {
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteOrganizer(@PathVariable int id) {
+		Organizer organizer = organizerServices.findById(id);
+		if (organizer == null)
+			return new ResponseEntity<>(new MessageDTO("organizer not found"), HttpStatus.NOT_FOUND);
+
 		try {
 			organizerServices.delete(id);
 			return new ResponseEntity<>(new MessageDTO("organizer deleted"), HttpStatus.OK);

@@ -73,9 +73,8 @@ public class CategoryController {
 		}
 		
 		Category category = categoryService.findById(id);
-		
 		if (category == null)
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(new MessageDTO("Category not found"), HttpStatus.NOT_FOUND);
 
 		try {
 			categoryService.update(id, data.getName());
@@ -88,9 +87,8 @@ public class CategoryController {
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteCategory(@PathVariable int id) {
 		Category category = categoryService.findById(id);
-		
 		if (category == null)
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(new MessageDTO("Category not found"), HttpStatus.NOT_FOUND);
 
 		try {
 			categoryService.delete(id);

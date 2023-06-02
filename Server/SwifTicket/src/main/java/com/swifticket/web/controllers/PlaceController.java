@@ -46,7 +46,7 @@ public class PlaceController {
 		Place place = placeServices.findById(id);
 		
 		if (place == null)
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(new MessageDTO("place not found"), HttpStatus.NOT_FOUND);
 		
 		return new ResponseEntity<>(place, HttpStatus.OK);
 	}
@@ -74,7 +74,7 @@ public class PlaceController {
 		Place place = placeServices.findById(id);
 		
 		if (place == null)
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(new MessageDTO("place not found"), HttpStatus.NOT_FOUND);
 		
 		try {
 			placeServices.deleteById(id);
