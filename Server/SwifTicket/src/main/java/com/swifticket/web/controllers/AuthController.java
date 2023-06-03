@@ -72,18 +72,10 @@ private final AuthServices authServices;
 		}
 	}
 
-	// TODO: When using spring security this method will be DEPRECATED
 	@GetMapping("/validate-token")
-	public ResponseEntity<?> validateToken(@ModelAttribute ValidateTokenDTO data) {
-		try {
-			User user = authServices.validateAccount(data.getToken());
-			if (user == null)
-				return new ResponseEntity<>(new MessageDTO("invalid token"), HttpStatus.UNAUTHORIZED);
-
-			return new ResponseEntity<>(new MessageDTO("valid token"), HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+	public ResponseEntity<?> validateAuthToken(@ModelAttribute ValidateTokenDTO data) {
+		// TODO: When using spring security this method will be DEPRECATED
+		return new ResponseEntity<>(new MessageDTO("valid auth token"), HttpStatus.OK);
 	}
 	
 	@GetMapping("/validate-account/{code}")

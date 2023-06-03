@@ -1,15 +1,13 @@
 package com.swifticket.web.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
-
-import java.sql.Timestamp;
-import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
-
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Data
 @NoArgsConstructor
@@ -17,7 +15,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Table(name = "tokens")
 public class Token {
     @Id
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -25,12 +23,17 @@ public class Token {
     private Ticket ticket;
 
     @Column(name = "verified_at", nullable = false)
-    private Timestamp verifiedAt;
+    private Date verifiedAt;
 
     @Column(name = "expires_at", nullable = false)
-    private Timestamp expiresAt;
+    private Date expiresAt;
 
-    @Column(name = "created_at", nullable = false)
-    private Timestamp createdAt;
+    @Column(name = "created_at")
+    @CreationTimestamp
+    private Date createdAt;
 
+    public Token(Ticket ticket, Date expiresAt) {
+        this.ticket = ticket;
+        this.expiresAt = expiresAt;
+    }
 }

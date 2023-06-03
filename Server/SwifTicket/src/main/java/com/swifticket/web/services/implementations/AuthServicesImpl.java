@@ -49,6 +49,8 @@ public class AuthServicesImpl implements AuthServices {
 
     @Override
     public Boolean isTokenValid(String id) {
+        // TODO: When using spring security this method will be DEPRECATED
+        /*
     	try {
     		UUID _id = UUID.fromString(id);
             Token token = tokenRepository.findById(_id).orElse(null);
@@ -62,6 +64,8 @@ public class AuthServicesImpl implements AuthServices {
 		} catch (Exception e) {
 			return false;
 		}
+         */
+        return true;
     }
 
     @Override
