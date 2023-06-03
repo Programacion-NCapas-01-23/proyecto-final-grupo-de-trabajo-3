@@ -8,7 +8,6 @@ import com.swifticket.web.models.dtos.sponsor.SaveSponsorDTO;
 import com.swifticket.web.models.dtos.tier.SaveTierDTO;
 import com.swifticket.web.models.dtos.tier.UpdateTierDTO;
 import com.swifticket.web.services.*;
-import com.swifticket.web.services.implementations.SponsorServicesImpl;
 import com.swifticket.web.utils.ErrorHandler;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,10 +47,10 @@ public class EventController {
 	private final EventStateServices eventStateService;
 	private final ErrorHandler errorHandler;
 	private final SponsorServices sponsorServices;
-	private TierServices tierServices;
+	private final TierServices tierServices;
 
 	@Autowired
-	public EventController(EventServices eventServices, CategoryServices categoryServices, PlaceServices placeService, OrganizerServices organizerService, EventStateServices eventStateService, ErrorHandler errorHandler, SponsorServices sponsorServices) {
+	public EventController(EventServices eventServices, CategoryServices categoryServices, PlaceServices placeService, OrganizerServices organizerService, EventStateServices eventStateService, ErrorHandler errorHandler, SponsorServices sponsorServices, TierServices tierServices) {
 		this.eventServices = eventServices;
 		this.categoryServices = categoryServices;
 		this.placeService = placeService;
@@ -59,6 +58,7 @@ public class EventController {
 		this.eventStateService = eventStateService;
 		this.errorHandler = errorHandler;
 		this.sponsorServices = sponsorServices;
+		this.tierServices = tierServices;
 	}
 
 	@GetMapping("")
@@ -241,20 +241,19 @@ public class EventController {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
-		/*
-		Event event = eventServices.findById(data.getEventId());
-		if (event == null) {
-			return new ResponseEntity<>(new MessageDTO("Event not found"), HttpStatus.NOT_FOUND);
-		}
-		*/
+
 		Tier tier = tierServices.findById(tierId);
-		if (tier == null) {
+		if (tier == null)
 			return new ResponseEntity<>(new MessageDTO("Tier not found"), HttpStatus.NOT_FOUND);
-		}
+
+		// TODO: Tell how many tickets have been sold?
+		// Validate capacity availability
+		if (tier.getTickets().size() > data.getCapacity())
+			return new ResponseEntity<>(new MessageDTO("more tickets have been sold than the new capacity"), HttpStatus.CONFLICT);
 
 		try {
 			eventServices.updateTier(tierId, data);
-			return new ResponseEntity<>(HttpStatus.OK);
+			return new ResponseEntity<>(new MessageDTO("Tier updated"), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}

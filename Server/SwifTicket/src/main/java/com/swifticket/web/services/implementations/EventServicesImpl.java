@@ -169,16 +169,16 @@ public class EventServicesImpl implements EventServices {
     @Transactional(rollbackOn = Exception.class)
     public void updateTier(String tierId, UpdateTierDTO tierData) throws Exception {
         UUID id = UUID.fromString(tierId);
-        Tier existingTier = tierRepository.findById(id).orElse(null);
+        Tier tier = tierRepository.findById(id).orElse(null);
 
-        if (existingTier != null) {
-            existingTier.setName(tierData.getName());
-            existingTier.setCapacity(tierData.getCapacity());
-            existingTier.setPrice(tierData.getPrice());
+        if (tier == null) return;
+        if (tier.getTickets().size() > tierData.getCapacity()) return;
 
-            // TODO: Validate that the capacity is no lower than the number of tickets sold
-            tierRepository.save(existingTier);
-        }
+        tier.setName(tierData.getName());
+        tier.setCapacity(tierData.getCapacity());
+        tier.setPrice(tierData.getPrice());
+
+        tierRepository.save(tier);
     }
 
     @Override
