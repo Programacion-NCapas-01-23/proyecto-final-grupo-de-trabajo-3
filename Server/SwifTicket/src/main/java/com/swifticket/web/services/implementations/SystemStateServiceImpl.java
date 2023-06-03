@@ -18,17 +18,17 @@ public class SystemStateServiceImpl implements SystemStateService {
     @Override
     public void toggleStatus() throws Exception {
         SystemState systemState = repository.findById(1).orElse(null);
-        if (systemState != null) {
-            int status = systemState.getState();
-            // Change Status
-            systemState.setState((status == 0) ? 1 : 0);
-            repository.save(systemState);
-        }
+        if (systemState == null) return;
+
+        int status = systemState.getState();
+        // Change Status
+        systemState.setState((status == 0) ? 1 : 0);
+        repository.save(systemState);
     }
 
     @Override
     public int getStatus() {
         SystemState systemState = repository.findById(1).orElse(null);
-        return (systemState != null) ? systemState.getState() : 0;
+        return (systemState != null) ? systemState.getState() : -1;
     }
 }

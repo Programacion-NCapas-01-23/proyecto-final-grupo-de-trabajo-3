@@ -17,7 +17,8 @@ import com.swifticket.web.services.SystemStateService;
 @RequestMapping("/system")
 @CrossOrigin("*")
 public class SystemController {
-	
+
+	private final int UNSET = -1;
 	private final SystemStateService systemService;
 	@Autowired
 	public SystemController(SystemStateService systemService) {
@@ -26,6 +27,12 @@ public class SystemController {
 
 	@PostMapping("/suspend-service")
 	public ResponseEntity<?> suspendService() {
+		int state = systemService.getStatus();
+		if (state == UNSET)
+			return new ResponseEntity<>(
+					new MessageDTO("system state is not defined"),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+
 		try {
 			systemService.toggleStatus();
 			return new ResponseEntity<>(
@@ -39,6 +46,11 @@ public class SystemController {
 	@GetMapping("/system-state")
 	public ResponseEntity<?> getSystemState() {
 		int state = systemService.getStatus();
+		if (state == UNSET)
+			return new ResponseEntity<>(
+					new MessageDTO("system state is not defined"),
+					HttpStatus.INTERNAL_SERVER_ERROR);
+
 		return new ResponseEntity<>(new StateDTO(state), HttpStatus.OK);
 	}
 
