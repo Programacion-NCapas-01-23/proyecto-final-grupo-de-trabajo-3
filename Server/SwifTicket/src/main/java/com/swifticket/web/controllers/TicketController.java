@@ -67,6 +67,10 @@ public class TicketController {
 		if (user == null)
 			return new ResponseEntity<>(new MessageDTO("user not found"), HttpStatus.NOT_FOUND);
 
+		// Validate capacity availability
+		if (tier.getTickets().size() >= tier.getCapacity())
+			return new ResponseEntity<>(new MessageDTO("event tier is sold out"), HttpStatus.CONFLICT);
+
 		try {
 			ticketServices.create(user, tier);
 			return new ResponseEntity<>(new MessageDTO("ticket created"), HttpStatus.CREATED);

@@ -36,7 +36,6 @@ public class TicketServicesImpl implements TicketServices {
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void create(User user, Tier tier) throws Exception {
-        // TODO: validate availability
         Ticket ticket = new Ticket(user, tier);
         ticketRepository.save(ticket);
     }

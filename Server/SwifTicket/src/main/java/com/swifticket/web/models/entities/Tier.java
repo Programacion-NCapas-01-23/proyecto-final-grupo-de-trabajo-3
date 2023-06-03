@@ -1,7 +1,9 @@
 package com.swifticket.web.models.entities;
 
+import java.util.List;
 import java.util.UUID;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -29,6 +31,10 @@ public class Tier {
 
     @Column(name = "price", nullable = false)
     private int price;
+
+    @OneToMany(mappedBy = "tier", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Ticket> tickets;
 
 	public Tier(Event event, String name, int capacity, int price) {
 		super();
