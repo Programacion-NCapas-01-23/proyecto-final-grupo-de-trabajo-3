@@ -1,9 +1,13 @@
 package com.swifticket.web.controllers;
 
+import com.swifticket.web.models.dtos.response.CodeDTO;
 import com.swifticket.web.models.dtos.response.MessageDTO;
 import com.swifticket.web.models.dtos.ticket.CreateTicketDTO;
+import com.swifticket.web.models.dtos.ticket.GenerateTicketCodeDTO;
+import com.swifticket.web.models.dtos.ticket.ValidateTicketDTO;
 import com.swifticket.web.models.entities.Ticket;
 import com.swifticket.web.models.entities.Tier;
+import com.swifticket.web.models.entities.Token;
 import com.swifticket.web.models.entities.User;
 import com.swifticket.web.services.TicketServices;
 import com.swifticket.web.services.TierServices;
@@ -16,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -80,13 +85,69 @@ public class TicketController {
 	}
 	
 	@PostMapping("/generate-code")
-	public ResponseEntity<?> generateValidateTicketCode() {
-		return new ResponseEntity<>(HttpStatus.OK);
+	public ResponseEntity<?> generateValidateTicketCode(
+			@ModelAttribute @Valid GenerateTicketCodeDTO data, BindingResult validations) {
+		if (validations.hasErrors()) {
+			return new ResponseEntity<>(
+					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
+		}
+
+		Ticket ticket = ticketServices.findOneById(data.getTicketId());
+		if (ticket == null)
+			return new ResponseEntity<>(new MessageDTO("ticket not found"), HttpStatus.NOT_FOUND);
+
+		try {
+			String code = ticketServices.generateUseTicketCode(ticket);
+			if (code.isEmpty())
+				return new ResponseEntity<>(new MessageDTO("ticket already used"), HttpStatus.CONFLICT);
+
+			return new ResponseEntity<>(new CodeDTO(code), HttpStatus.CREATED);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 	
 	@PatchMapping("/validate-ticket")
-	public ResponseEntity<?> validateTicket() {
-		return new ResponseEntity<>(HttpStatus.OK);
+	public ResponseEntity<?> validateTicket(
+			@ModelAttribute @Valid ValidateTicketDTO data, BindingResult validations) {
+		if (validations.hasErrors()) {
+			return new ResponseEntity<>(
+					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
+		}
+
+		Token token = ticketServices.findTokenByUseTicketCode(data.getVerificationToken());
+		if (token == null)
+			return new ResponseEntity<>(new MessageDTO("invalid verification code"), HttpStatus.NOT_FOUND);
+
+		if (token.getVerifiedAt() != null)
+			return new ResponseEntity<>(new MessageDTO("ticket has already been validated"), HttpStatus.CONFLICT);
+
+		Date currentDate = new Date();
+		// Validate if token is not expired
+		if (token.getExpiresAt().compareTo(currentDate) < 0)
+			return new ResponseEntity<>(new MessageDTO("verification code is expired"), HttpStatus.CONFLICT);
+
+		// Validate if ticket was not used before
+		Ticket ticket = token.getTicket();
+		List<Token> tokens = ticket.getTokens();
+		final Boolean[] wasUsed = {false};
+		tokens.forEach(t -> {
+			if (t.getVerifiedAt() != null)
+				wasUsed[0] = true;
+		});
+
+		if (wasUsed[0])
+			return new ResponseEntity<>(new MessageDTO("ticket has already been validated"), HttpStatus.CONFLICT);
+
+		try {
+			Boolean success = ticketServices.validateUseTicketCode(token);
+			if (!success)
+				return new ResponseEntity<>(new MessageDTO("invalid verification code"), HttpStatus.CONFLICT);
+
+			return new ResponseEntity<>(new MessageDTO("token used"), HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 	
 	@PostMapping("/transfer")

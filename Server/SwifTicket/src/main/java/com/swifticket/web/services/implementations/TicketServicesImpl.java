@@ -56,6 +56,17 @@ public class TicketServicesImpl implements TicketServices {
         // Expiration date is set to 10 minutes
         Date expirationDate = new Date(today.getTime() + (1000 * 60 * 10));
 
+        // Validate if ticket was not used before
+        List<Token> tokens = ticket.getTokens();
+        final Boolean[] wasUsed = {false};
+        tokens.forEach(t -> {
+            if (t.getVerifiedAt() != null)
+                wasUsed[0] = true;
+        });
+
+        if (wasUsed[0]) return "";
+
+        // Create verification code
         Token newToken = new Token(ticket, expirationDate);
         Token token = tokenRepository.save(newToken);
 
@@ -94,6 +105,7 @@ public class TicketServicesImpl implements TicketServices {
 
         if (wasUsed[0]) return false;
 
+        // Update verification code
         token.setVerifiedAt(currentDate);
         tokenRepository.save(token);
         return true;
