@@ -7,6 +7,7 @@ import java.util.Date;
 import java.util.UUID;
 
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
 @Data
@@ -15,7 +16,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Table(name = "tickets")
 public class Ticket {
     @Id
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
     @ManyToOne
@@ -26,6 +27,12 @@ public class Ticket {
     @JoinColumn(name = "tier_id", referencedColumnName = "id", nullable = false)
     private Tier tier;
 
-    @Column(name = "created_at", nullable = false)
+    @Column(name = "created_at")
+    @CreationTimestamp
     private Date createdAt;
+
+    public Ticket(User user, Tier tier) {
+        this.user = user;
+        this.tier = tier;
+    }
 }

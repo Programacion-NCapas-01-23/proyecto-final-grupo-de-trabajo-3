@@ -3,16 +3,18 @@ package com.swifticket.web.services;
 import java.util.List;
 
 import com.swifticket.web.models.entities.Ticket;
+import com.swifticket.web.models.entities.Tier;
+import com.swifticket.web.models.entities.User;
 
 public interface TicketServices {
 	Ticket findOneById(String ticketId);
-	List<Ticket> findAllByUser(String userId);
-	void create(String userId, String tierId);
+	List<Ticket> findAllByUser(User user);
+	void create(User user, Tier tier) throws Exception;
 	
-	String generateCode(String ticketId);
+	String generateCode(Ticket ticket);
 	Boolean validateTicket(String verificationToken);
 	
-	String startTransferTicket(String receiver);
-	void acceptTransferTicket(String transferId, String sender, String ticketId);
-	void validateTransfer(String code);
+	String startTransferTicket(User receiver) throws Exception;
+	void acceptTransferTicket(String transferId, User sender, Ticket ticket) throws Exception;
+	void validateTransfer(String code) throws Exception;
 }

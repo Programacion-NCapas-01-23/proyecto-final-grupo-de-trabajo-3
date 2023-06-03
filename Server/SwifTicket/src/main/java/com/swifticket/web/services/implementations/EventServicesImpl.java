@@ -153,24 +153,17 @@ public class EventServicesImpl implements EventServices {
         }
     }
 
-    // TODO - CHECK: I think that the event need the information of the tiers and not the tier the information of the event.
-    // DONE - CHECK: Like this?
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void createTier(String eventId, SaveTierDTO tierData) throws Exception {
         UUID id = UUID.fromString(eventId);
         Event event = eventRepository.findById(id).orElse(null);
 
-        if (event != null) {
-            Tier newTier = new Tier(event, tierData.getName(), tierData.getCapacity(), tierData.getPrice());
-            List<Tier> currentTiers = event.getTiers();
-            currentTiers.add(newTier);
+        if (event == null) return;
 
-            event.setTiers(currentTiers);
-            eventRepository.save(event);
-        }
+        Tier newTier = new Tier(event, tierData.getName(), tierData.getCapacity(), tierData.getPrice());
+        tierRepository.save(newTier);
     }
-
 
     @Override
     @Transactional(rollbackOn = Exception.class)

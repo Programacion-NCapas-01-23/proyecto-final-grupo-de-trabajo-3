@@ -14,7 +14,7 @@ import lombok.Data;
 @Table(name = "tiers")
 public class Tier {
     @Id
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
     @ManyToOne

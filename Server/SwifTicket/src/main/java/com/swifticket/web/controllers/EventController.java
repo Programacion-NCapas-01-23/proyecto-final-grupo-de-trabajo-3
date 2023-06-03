@@ -214,6 +214,9 @@ public class EventController {
 	@GetMapping("/{id}/tiers")
 	public ResponseEntity<?> getEventTiers(@PathVariable String id) {
 		Event event = eventServices.findById(id);
+		if (event == null)
+			return new ResponseEntity<>(new MessageDTO("event not found"), HttpStatus.NOT_FOUND);
+
 		List<Tier> tiers = event.getTiers();
 		return new ResponseEntity<>(tiers, HttpStatus.OK);
 	}
@@ -228,7 +231,7 @@ public class EventController {
 			eventServices.createTier(data.getEventId(), data);
 			return new ResponseEntity<>(new MessageDTO("Tier has been added"), HttpStatus.CREATED);
 		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
