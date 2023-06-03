@@ -127,6 +127,7 @@ public class TicketController {
 		if (token.getExpiresAt().compareTo(currentDate) < 0)
 			return new ResponseEntity<>(new MessageDTO("verification code is expired"), HttpStatus.CONFLICT);
 
+		// TODO: this might be a util...
 		// Validate if ticket was not used before
 		Ticket ticket = token.getTicket();
 		List<Token> tokens = ticket.getTokens();

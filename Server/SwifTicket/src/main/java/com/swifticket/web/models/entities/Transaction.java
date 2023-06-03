@@ -9,6 +9,7 @@ import java.util.UUID;
 
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 
 @Data
@@ -17,7 +18,7 @@ import org.hibernate.annotations.GenericGenerator;
 @Table(name = "transactions")
 public class Transaction {
     @Id
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id")
     private UUID id;
 
@@ -33,18 +34,24 @@ public class Transaction {
     @JoinColumn(name = "ticket_id", referencedColumnName = "id", nullable = false)
     private Ticket ticket;
 
-    @Column(name = "req_at", nullable = false)
+    @Column(name = "req_at")
+    @CreationTimestamp
     private Date reqAt;
 
     @Column(name = "req_expires_at", nullable = false)
     private Date reqExpiresAt;
 
-    @Column(name = "accept_at", nullable = false)
+    @Column(name = "accept_at")
     private Date acceptAt;
 
-    @Column(name = "accept_expires_at", nullable = false)
+    @Column(name = "accept_expires_at")
     private Date acceptExpiresAt;
 
-    @Column(name = "finished_at", nullable = false)
+    @Column(name = "finished_at")
     private Date finishedAt;
+
+    public Transaction(User toUser, Date reqExpiresAt) {
+        this.toUser = toUser;
+        this.reqExpiresAt = reqExpiresAt;
+    }
 }
