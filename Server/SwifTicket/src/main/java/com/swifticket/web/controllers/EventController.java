@@ -143,8 +143,7 @@ public class EventController {
 		if (organizer == null) {
 			return new ResponseEntity<>(new MessageDTO("Organizer not found"), HttpStatus.NOT_FOUND);
 		}
-
-
+		
 		try {
 			eventServices.update(id, data, category, organizer, place);
 			return new ResponseEntity<>(HttpStatus.CREATED);

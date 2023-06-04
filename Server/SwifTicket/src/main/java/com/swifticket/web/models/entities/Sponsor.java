@@ -1,14 +1,20 @@
 package com.swifticket.web.models.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @Entity
 @Table(name = "sponsors")
+@ToString(exclude = {"eventxSponsors"})
 public class Sponsor {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
@@ -19,9 +25,13 @@ public class Sponsor {
     @Column(name = "image", length = 100, nullable = false)
     private String image;
 
-    /*
-    @ManyToOne
-    @JoinColumn(name = "event_id", referencedColumnName = "id")
-    private Event event;
-    */
+    @OneToMany(mappedBy = "sponsor", fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<EventxSponsor> eventxSponsors;
+
+    public Sponsor(String name, String image) {
+        this.name = name;
+        this.image = image;
+    }
 }
+

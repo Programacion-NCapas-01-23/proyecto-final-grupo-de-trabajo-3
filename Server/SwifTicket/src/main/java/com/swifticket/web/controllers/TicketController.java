@@ -23,14 +23,17 @@ import java.util.List;
 @CrossOrigin("*")
 public class TicketController {
 
+	private final TicketServices ticketServices;
+	private final TierServices tierServices;
+	private final UserServices userServices;
+	private final ErrorHandler errorHandler;
 	@Autowired
-	private TicketServices ticketServices;
-	@Autowired
-	private TierServices tierServices;
-	@Autowired
-	private UserServices userServices;
-	@Autowired
-	private ErrorHandler errorHandler;
+	public TicketController(TicketServices ticketServices, TierServices tierServices, UserServices userServices, ErrorHandler errorHandler) {
+		this.ticketServices = ticketServices;
+		this.tierServices = tierServices;
+		this.userServices = userServices;
+		this.errorHandler = errorHandler;
+	}
 
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getTicket(@PathVariable String id) {
@@ -183,7 +186,7 @@ public class TicketController {
 		if (ticketServices.isTicketUsed(ticket))
 			return new ResponseEntity<>(new MessageDTO("ticket has already been used"), HttpStatus.CONFLICT);
 
-		// TODO: validate ownership with auth token
+		// TODO : validate ownership with auth token
 		User userFrom = ticket.getUser();
 		if (userFrom == null)
 			return new ResponseEntity<>(new MessageDTO("user not found"), HttpStatus.NOT_FOUND);

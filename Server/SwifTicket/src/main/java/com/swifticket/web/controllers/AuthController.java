@@ -111,7 +111,7 @@ private final AuthServices authServices;
 
 		try {
 			String code = authServices.generateVerifyAccountToken(data.getEmail());
-			// TODO: send code to user via email
+			// TODO : send code to user via email
 
 			return new ResponseEntity<>(new MessageDTO("validation code sent to email"), HttpStatus.OK);
 		} catch (Exception e) {

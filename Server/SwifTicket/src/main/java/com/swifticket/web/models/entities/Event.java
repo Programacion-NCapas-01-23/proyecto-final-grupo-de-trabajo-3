@@ -2,25 +2,23 @@ package com.swifticket.web.models.entities;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-
-import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.hibernate.annotations.GenericGenerator;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Data
 @NoArgsConstructor
 @Entity
-@ToString(exclude={"tiers"})
+@ToString(exclude={"tiers", "eventSponsors"})
 @Table(name = "events")
 public class Event {
     @Id
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
     @ManyToOne
@@ -50,20 +48,23 @@ public class Event {
     @ManyToOne
     @JoinColumn(name = "place_id", nullable = false)
     private Place place;
-    
-    @OneToMany(mappedBy = "event", fetch = FetchType.LAZY)
-	@JsonIgnore
-	private List<Tier> tiers;
 
-	public Event(Category category, Organizer organizer, String title, double duration, Date dateTime, String image,
-			Place place) {
-		super();
-		this.category = category;
-		this.organizer = organizer;
-		this.title = title;
-		this.duration = duration;
-		this.dateTime = dateTime;
-		this.image = image;
-		this.place = place;
-	}
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<Tier> tiers;
+
+    @OneToMany(mappedBy = "event", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<EventxSponsor> eventSponsors;
+
+    public Event(Category category, Organizer organizer, String title, double duration, Date dateTime, String image,
+                 Place place) {
+        this.category = category;
+        this.organizer = organizer;
+        this.title = title;
+        this.duration = duration;
+        this.dateTime = dateTime;
+        this.image = image;
+        this.place = place;
+    }
 }

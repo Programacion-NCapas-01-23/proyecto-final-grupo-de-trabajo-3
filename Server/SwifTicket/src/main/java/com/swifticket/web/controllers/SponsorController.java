@@ -2,7 +2,6 @@ package com.swifticket.web.controllers;
 
 import com.swifticket.web.models.dtos.response.MessageDTO;
 import com.swifticket.web.models.dtos.sponsor.SaveSponsorDTO;
-import com.swifticket.web.models.entities.Organizer;
 import com.swifticket.web.models.entities.Sponsor;
 import com.swifticket.web.services.SponsorServices;
 import com.swifticket.web.utils.ErrorHandler;
@@ -31,6 +30,14 @@ public class SponsorController {
 	public ResponseEntity<?> getSponsors() {
 		List<Sponsor> sponsors = sponsorServices.findAll();
 		return new ResponseEntity<>(sponsors, HttpStatus.OK);
+	}
+
+	@GetMapping("/{name}")
+	public ResponseEntity<?> getSponsorByName(@PathVariable String name) {
+		Sponsor sponsor = sponsorServices.findByName(name);
+		if (sponsor == null)
+			return new ResponseEntity<>(new MessageDTO("sponsor not found"), HttpStatus.NOT_FOUND);
+		return new ResponseEntity<>(sponsor, HttpStatus.OK);
 	}
 	
 	@PostMapping("")
