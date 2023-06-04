@@ -144,7 +144,7 @@ public class UserController {
 
 		try {
 			userService.assignRole(user, role);
-			return new ResponseEntity<>(new MessageDTO("role successfully assigned"), HttpStatus.OK);
+			return new ResponseEntity<>(new MessageDTO("role assigned successfully"), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -172,7 +172,7 @@ public class UserController {
 
 		try {
 			userService.removeRole(user, role);
-			return new ResponseEntity<>(new MessageDTO("role successfully removed"), HttpStatus.OK);
+			return new ResponseEntity<>(new MessageDTO("role removed successfully"), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}

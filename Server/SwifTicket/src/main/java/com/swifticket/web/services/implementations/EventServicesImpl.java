@@ -4,17 +4,8 @@ import com.swifticket.web.models.dtos.event.SaveEventDTO;
 import com.swifticket.web.models.dtos.sponsor.SaveSponsorDTO;
 import com.swifticket.web.models.dtos.tier.SaveTierDTO;
 import com.swifticket.web.models.dtos.tier.UpdateTierDTO;
-import com.swifticket.web.models.entities.Category;
-import com.swifticket.web.models.entities.Event;
-import com.swifticket.web.models.entities.EventState;
-import com.swifticket.web.models.entities.Organizer;
-import com.swifticket.web.models.entities.Place;
-import com.swifticket.web.models.entities.Sponsor;
-import com.swifticket.web.models.entities.Tier;
-import com.swifticket.web.repositories.EventRepository;
-import com.swifticket.web.repositories.EventStateRepository;
-import com.swifticket.web.repositories.SponsorRepository;
-import com.swifticket.web.repositories.TierRepository;
+import com.swifticket.web.models.entities.*;
+import com.swifticket.web.repositories.*;
 import com.swifticket.web.services.EventServices;
 
 import jakarta.transaction.Transactional;
@@ -32,15 +23,17 @@ public class EventServicesImpl implements EventServices {
     private final EventStateRepository eventStateRepository;
     private final TierRepository tierRepository;
     private final SponsorRepository sponsorRepository;
+    private final EventxSponsorRepository eventxSponsorRepository;
 
 
 
     @Autowired
-    public EventServicesImpl(EventRepository eventRepository, EventStateRepository eventStateRepository, TierRepository tierRepository, SponsorRepository sponsorRepository) {
+    public EventServicesImpl(EventRepository eventRepository, EventStateRepository eventStateRepository, TierRepository tierRepository, SponsorRepository sponsorRepository, EventxSponsorRepository eventxSponsorRepository) {
         this.eventRepository = eventRepository;
         this.eventStateRepository = eventStateRepository;
         this.tierRepository = tierRepository;
         this.sponsorRepository = sponsorRepository;
+        this.eventxSponsorRepository = eventxSponsorRepository;
     }
 
     @Override
@@ -70,8 +63,6 @@ public class EventServicesImpl implements EventServices {
                 eventInfo.getImage(),
                 place
         );
-
-
         eventRepository.save(event);
     }
 
@@ -111,34 +102,26 @@ public class EventServicesImpl implements EventServices {
     }
 
     @Override
-    @Transactional(rollbackOn = Exception.class)
-    public void assignSponsor(String eventId, SaveSponsorDTO sponsorData) throws Exception {
-        UUID id = UUID.fromString(eventId);
-        Event event = eventRepository.findById(id).orElse(null);
-        //event.getSponsors().add(new Sponsor(event, sponsorData.getName(), sponsorData.getImage());
-        eventRepository.save(event);
+    public EventxSponsor findByEventAndSponsor(Event event, Sponsor sponsor) {
+        return eventxSponsorRepository.findOneByEventAndSponsor(event, sponsor);
     }
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public void removeSponsor(String id, int sponsor) throws Exception {
-        // TODO: fix this...
-    	/*
-        Event event = eventRepository.findById(id).orElse(null);
-        if (event != null) {
-            // Get the sponsor from the event and remove it
-            Optional<Sponsor> sponsorToRemove = sponsorRepository.findByIdAndEvent(sponsor, event);
-            if (sponsorToRemove.isPresent()) {
-                // TODO - CHECK: I think that the event need the information of the sponsors and not the sponsor the information of the event.
-                //event.getSponsors().remove(sponsorToRemove.get());
-                sponsorRepository.delete(sponsorToRemove.get());
-            }
-            eventRepository.save(event);
-        }
-        */
+    public void assignSponsor(Event event, Sponsor sponsor) throws Exception {
+        EventxSponsor relation = new EventxSponsor(event, sponsor);
+        eventxSponsorRepository.save(relation);
     }
 
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public void removeSponsor(Event event, Sponsor sponsor) throws Exception {
+        EventxSponsor relation = eventxSponsorRepository.findOneByEventAndSponsor(event, sponsor);
+        if (relation == null)
+            throw new Exception("Relation not found");
 
+        eventxSponsorRepository.deleteById(relation.getId());
+    }
 
     @Override
     public List<Tier> findEventTiers(String eventId)  {
@@ -155,8 +138,8 @@ public class EventServicesImpl implements EventServices {
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public void createTier(String eventId, SaveTierDTO tierData) throws Exception {
-        UUID id = UUID.fromString(eventId);
+    public void createTier(SaveTierDTO tierData) throws Exception {
+        UUID id = UUID.fromString(tierData.getEventId());
         Event event = eventRepository.findById(id).orElse(null);
 
         if (event == null) return;

@@ -6,11 +6,7 @@ import com.swifticket.web.models.dtos.event.UpdateEventTierDTO;
 import com.swifticket.web.models.dtos.sponsor.SaveSponsorDTO;
 import com.swifticket.web.models.dtos.tier.SaveTierDTO;
 import com.swifticket.web.models.dtos.tier.UpdateTierDTO;
-import com.swifticket.web.models.entities.Category;
-import com.swifticket.web.models.entities.Event;
-import com.swifticket.web.models.entities.Organizer;
-import com.swifticket.web.models.entities.Place;
-import com.swifticket.web.models.entities.Tier;
+import com.swifticket.web.models.entities.*;
 
 public interface EventServices {
 	List<Event> findAll();
@@ -18,12 +14,12 @@ public interface EventServices {
 	void save(SaveEventDTO eventInfo, Category category, Organizer organizer, Place place) throws Exception;
 	void update(String id, SaveEventDTO eventInfo, Category category, Organizer organizer, Place place) throws Exception;
 	void changeStatus(String id, String status) throws Exception;
-
-	void assignSponsor(String eventId, SaveSponsorDTO sponsorData) throws Exception;
-	void removeSponsor(String eventId, int sponsor) throws Exception;
+	EventxSponsor findByEventAndSponsor(Event event, Sponsor sponsor);
+	void assignSponsor(Event event, Sponsor sponsor) throws Exception;
+	void removeSponsor(Event event, Sponsor sponsor) throws Exception;
 
 	List<Tier> findEventTiers(String eventId);
-	void createTier(String eventId, SaveTierDTO tierData) throws Exception;
+	void createTier(SaveTierDTO tierData) throws Exception;
 	void updateTier(String tierId, UpdateTierDTO tierData) throws Exception;
 	void deleteTier(String tierId) throws Exception;
 }

@@ -7,6 +7,7 @@ import com.swifticket.web.models.dtos.response.MessageDTO;
 import com.swifticket.web.models.dtos.sponsor.SaveSponsorDTO;
 import com.swifticket.web.models.dtos.tier.SaveTierDTO;
 import com.swifticket.web.models.dtos.tier.UpdateTierDTO;
+import com.swifticket.web.models.entities.*;
 import com.swifticket.web.services.*;
 import com.swifticket.web.utils.ErrorHandler;
 import jakarta.validation.Valid;
@@ -27,12 +28,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.swifticket.web.models.dtos.event.ChangeEventStatusDTO;
 import com.swifticket.web.models.dtos.event.SaveEventDTO;
-import com.swifticket.web.models.entities.Category;
-import com.swifticket.web.models.entities.Event;
-import com.swifticket.web.models.entities.EventState;
-import com.swifticket.web.models.entities.Organizer;
-import com.swifticket.web.models.entities.Place;
-import com.swifticket.web.models.entities.Tier;
 
 
 @RestController
@@ -172,21 +167,32 @@ public class EventController {
 		}
 	}
 
-
 	@PostMapping("/sponsors")
 	public ResponseEntity<?> assignSponsor(@ModelAttribute @Valid SaveSponsorDTO data, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
+
+		Event event = eventServices.findById(data.getEventId());
+		if (event == null)
+			return new ResponseEntity<>(new MessageDTO("Event not found"), HttpStatus.NOT_FOUND);
+
+		Sponsor sponsor = sponsorServices.findByName(data.getName());
+		if (sponsor == null)
+			return new ResponseEntity<>(new MessageDTO("Sponsor not found"), HttpStatus.NOT_FOUND);
+
+		EventxSponsor relation = eventServices.findByEventAndSponsor(event, sponsor);
+		if (relation != null)
+			return new ResponseEntity<>(new MessageDTO("Sponsor is already assigned to event"), HttpStatus.OK);
+
 		try {
-			eventServices.assignSponsor(data.getEventId(), data);
-			return new ResponseEntity<>(new MessageDTO("Sponsor assigned"), HttpStatus.OK);
+			eventServices.assignSponsor(event, sponsor);
+			return new ResponseEntity<>(new MessageDTO("Sponsor assigned successfully"), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-
 
 	@DeleteMapping("/sponsors")
 	public ResponseEntity<?> removeSponsor(@ModelAttribute @Valid RemoveSponsorFromEventDTO data, BindingResult bindingResult) {
@@ -195,17 +201,21 @@ public class EventController {
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
 
-		if (eventServices.findById(data.getEventId()) == null) {
+		Event event = eventServices.findById(data.getEventId());
+		if (event == null)
 			return new ResponseEntity<>(new MessageDTO("Event not found"), HttpStatus.NOT_FOUND);
-		}
 
-		if (sponsorServices.findById(data.getSponsorId()) == null) {
+		Sponsor sponsor = sponsorServices.findById(data.getSponsorId());
+		if (sponsor == null)
 			return new ResponseEntity<>(new MessageDTO("Sponsor not found"), HttpStatus.NOT_FOUND);
-		}
+
+		EventxSponsor relation = eventServices.findByEventAndSponsor(event, sponsor);
+		if (relation != null)
+			return new ResponseEntity<>(new MessageDTO("Sponsor is already assigned to event"), HttpStatus.OK);
 
 		try {
-			eventServices.removeSponsor(data.getEventId(), data.getSponsorId());
-			return new ResponseEntity<>(new MessageDTO("Sponsor removed"), HttpStatus.OK);
+			eventServices.removeSponsor(event, sponsor);
+			return new ResponseEntity<>(new MessageDTO("Sponsor removed successfully"), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -228,7 +238,7 @@ public class EventController {
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
 		try {
-			eventServices.createTier(data.getEventId(), data);
+			eventServices.createTier(data);
 			return new ResponseEntity<>(new MessageDTO("Tier has been added"), HttpStatus.CREATED);
 		} catch (Exception e) {
 			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
