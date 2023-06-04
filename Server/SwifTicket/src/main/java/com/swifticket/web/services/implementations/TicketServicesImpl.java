@@ -1,11 +1,9 @@
 package com.swifticket.web.services.implementations;
 
-import com.swifticket.web.models.entities.Ticket;
-import com.swifticket.web.models.entities.Tier;
-import com.swifticket.web.models.entities.Token;
-import com.swifticket.web.models.entities.User;
+import com.swifticket.web.models.entities.*;
 import com.swifticket.web.repositories.TicketRepository;
 import com.swifticket.web.repositories.TokenRepository;
+import com.swifticket.web.repositories.TransactionRepository;
 import com.swifticket.web.services.TicketServices;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +18,13 @@ public class TicketServicesImpl implements TicketServices {
 
     private final TicketRepository ticketRepository;
     private final TokenRepository tokenRepository;
+    private final TransactionRepository transactionRepository;
 
     @Autowired
-    public TicketServicesImpl(TicketRepository ticketRepository, TokenRepository tokenRepository) {
+    public TicketServicesImpl(TicketRepository ticketRepository, TokenRepository tokenRepository, TransactionRepository transactionRepository) {
         this.ticketRepository = ticketRepository;
         this.tokenRepository = tokenRepository;
+        this.transactionRepository = transactionRepository;
     }
 
     @Override
@@ -114,18 +114,65 @@ public class TicketServicesImpl implements TicketServices {
     @Override
     @Transactional(rollbackOn = Exception.class)
     public String startTransferTicket(User receiver) throws Exception {
-        return null;
+        Date today = new Date();
+        // Expiration date is set to 10 minutes
+        Date reqExpiresAt = new Date(today.getTime() + (1000 * 60 * 10));
+
+        Transaction newTransaction = new Transaction(receiver, reqExpiresAt);
+        Transaction transaction = transactionRepository.save(newTransaction);
+
+        return transaction.getId().toString();
+    }
+
+    @Override
+    public Transaction findTransactionById(String transactionId) {
+        try {
+            UUID id = UUID.fromString(transactionId);
+            return transactionRepository.findById(id).orElse(null);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public void acceptTransferTicket(String transferId, User sender, Ticket ticket) throws Exception {
+    public void acceptTransferTicket(Transaction transaction, User sender, Ticket ticket) throws Exception {
+        // TODO: validate that reqExpiresAt hasn't happened
+        Date acceptAt = new Date();
+        // Expiration date is set to 10 minutes
+        Date acceptExpiresAt = new Date(acceptAt.getTime() + (1000 * 60 * 10));
 
+        // Update accepted date and this step expiration date
+        transaction.setAcceptAt(acceptAt);
+        transaction.setAcceptExpiresAt(acceptExpiresAt);
+
+        // Update sender
+        transaction.setFromUser(sender);
+        // Update ticket that will be sent
+        transaction.setTicket(ticket);
+
+        transactionRepository.save(transaction);
     }
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public void validateTransfer(String code) throws Exception {
+    public void validateTransfer(Transaction transaction) throws Exception {
+        // TODO: validate that acceptExpiresAt hasn't happened
+        if (transaction == null) return;
+        if (transaction.getFinishedAt() != null) return;
 
+        Date today = new Date();
+
+        // If ticket is not assigned to transaction is cause this operation is not valid
+        Ticket ticket = transaction.getTicket();
+        if (ticket == null) return;
+
+        // Update transaction finished date
+        transaction.setFinishedAt(today);
+        transactionRepository.save(transaction);
+
+        // Update ticket owner
+        ticket.setUser(transaction.getToUser());
+        ticketRepository.save(ticket);
     }
 }

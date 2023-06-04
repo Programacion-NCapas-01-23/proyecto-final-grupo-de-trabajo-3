@@ -2,10 +2,7 @@ package com.swifticket.web.services;
 
 import java.util.List;
 
-import com.swifticket.web.models.entities.Ticket;
-import com.swifticket.web.models.entities.Tier;
-import com.swifticket.web.models.entities.Token;
-import com.swifticket.web.models.entities.User;
+import com.swifticket.web.models.entities.*;
 
 public interface TicketServices {
 	Ticket findOneById(String ticketId);
@@ -17,6 +14,7 @@ public interface TicketServices {
 	Boolean validateUseTicketCode(Token token) throws  Exception;
 	
 	String startTransferTicket(User receiver) throws Exception;
-	void acceptTransferTicket(String transferId, User sender, Ticket ticket) throws Exception;
-	void validateTransfer(String code) throws Exception;
+	Transaction findTransactionById(String transactionId);
+	void acceptTransferTicket(Transaction transaction, User sender, Ticket ticket) throws Exception;
+	void validateTransfer(Transaction transaction) throws Exception;
 }
