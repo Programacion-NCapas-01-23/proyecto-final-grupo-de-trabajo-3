@@ -132,7 +132,7 @@ public class TicketController {
 			if (!success)
 				return new ResponseEntity<>(new MessageDTO("invalid verification code"), HttpStatus.CONFLICT);
 
-			return new ResponseEntity<>(new MessageDTO("token used"), HttpStatus.OK);
+			return new ResponseEntity<>(new MessageDTO("Ticket successfully validated"), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -190,7 +190,7 @@ public class TicketController {
 
 		try {
 			ticketServices.acceptTransferTicket(transaction, userFrom, ticket);
-			return new ResponseEntity<>(new MessageDTO("confirm transaction..."), HttpStatus.OK);
+			return new ResponseEntity<>(new MessageDTO("confirm ticket transaction by email"), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
