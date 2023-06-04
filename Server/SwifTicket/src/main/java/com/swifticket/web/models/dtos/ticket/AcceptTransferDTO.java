@@ -10,9 +10,6 @@ public class AcceptTransferDTO {
 	@NotBlank(message = "transfer id is required")
 	private String transferId;
 	
-	@NotBlank(message = "sender id is required")
-	private String fromId;
-	
 	@NotBlank(message = "ticket id is required")
 	private String ticketId;
 }

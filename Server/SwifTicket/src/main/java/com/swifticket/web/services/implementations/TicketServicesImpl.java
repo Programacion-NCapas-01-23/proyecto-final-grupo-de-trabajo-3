@@ -142,7 +142,6 @@ public class TicketServicesImpl implements TicketServices {
 
         // Validate that reqExpiresAt hasn't happened
         if (transaction.getReqExpiresAt().compareTo(currentDate) < 0) return;
-
         // Validate if ticket was not used before
         if (isTicketUsed(ticket)) return;
 
@@ -171,6 +170,8 @@ public class TicketServicesImpl implements TicketServices {
 
         // Validate that acceptExpiresAt hasn't happened
         if (transaction.getAcceptExpiresAt().compareTo(currentDate) < 0) return;
+        // Validate if ticket was not used before
+        if (isTicketUsed(ticket)) return;
 
         // Update transaction finished date
         transaction.setFinishedAt(currentDate);

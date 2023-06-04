@@ -2,13 +2,8 @@ package com.swifticket.web.controllers;
 
 import com.swifticket.web.models.dtos.response.CodeDTO;
 import com.swifticket.web.models.dtos.response.MessageDTO;
-import com.swifticket.web.models.dtos.ticket.CreateTicketDTO;
-import com.swifticket.web.models.dtos.ticket.GenerateTicketCodeDTO;
-import com.swifticket.web.models.dtos.ticket.ValidateTicketDTO;
-import com.swifticket.web.models.entities.Ticket;
-import com.swifticket.web.models.entities.Tier;
-import com.swifticket.web.models.entities.Token;
-import com.swifticket.web.models.entities.User;
+import com.swifticket.web.models.dtos.ticket.*;
+import com.swifticket.web.models.entities.*;
 import com.swifticket.web.services.TicketServices;
 import com.swifticket.web.services.TierServices;
 import com.swifticket.web.services.UserServices;
@@ -127,17 +122,9 @@ public class TicketController {
 		if (token.getExpiresAt().compareTo(currentDate) < 0)
 			return new ResponseEntity<>(new MessageDTO("verification code is expired"), HttpStatus.CONFLICT);
 
-		// TODO: this might be a util...
 		// Validate if ticket was not used before
 		Ticket ticket = token.getTicket();
-		List<Token> tokens = ticket.getTokens();
-		final Boolean[] wasUsed = {false};
-		tokens.forEach(t -> {
-			if (t.getVerifiedAt() != null)
-				wasUsed[0] = true;
-		});
-
-		if (wasUsed[0])
+		if (ticketServices.isTicketUsed(ticket))
 			return new ResponseEntity<>(new MessageDTO("ticket has already been validated"), HttpStatus.CONFLICT);
 
 		try {
@@ -152,17 +139,87 @@ public class TicketController {
 	}
 	
 	@PostMapping("/transfer")
-	public ResponseEntity<?> startTransferTicket() {
-		return new ResponseEntity<>(HttpStatus.OK);
+	public ResponseEntity<?> startTransferTicket(
+			@ModelAttribute @Valid StartTransferTicketDTO data, BindingResult validations) {
+		if (validations.hasErrors()) {
+			return new ResponseEntity<>(
+					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
+		}
+
+		User user = userServices.findOneByEmail(data.getToId());
+		if (user == null)
+			return new ResponseEntity<>(new MessageDTO("user not found"), HttpStatus.NOT_FOUND);
+
+		try {
+			String code = ticketServices.startTransferTicket(user);
+			return new ResponseEntity<>(new CodeDTO(code), HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 	
-	@PutMapping("/transfer/{id}")
-	public ResponseEntity<?> acceptTransferTicket(@PathVariable String id) {
-		return new ResponseEntity<>(HttpStatus.OK);
+	@PutMapping("/transfer")
+	public ResponseEntity<?> acceptTransferTicket(
+			@ModelAttribute @Valid AcceptTransferDTO data, BindingResult validations) {
+		if (validations.hasErrors()) {
+			return new ResponseEntity<>(
+					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
+		}
+
+		Transaction transaction = ticketServices.findTransactionById(data.getTransferId());
+		if (transaction == null)
+			return new ResponseEntity<>(new MessageDTO("transaction not found"), HttpStatus.NOT_FOUND);
+		if (transaction.getAcceptAt() != null)
+			return new ResponseEntity<>(new MessageDTO("transaction already accepted"), HttpStatus.OK);
+
+		// Validate that reqExpiresAt hasn't happened
+		Date currentDate = new Date();
+		if (transaction.getReqExpiresAt().compareTo(currentDate) < 0)
+			return new ResponseEntity<>(new MessageDTO("transaction code is expired"), HttpStatus.CONFLICT);
+
+		Ticket ticket = ticketServices.findOneById(data.getTicketId());
+		if (ticket == null)
+			return new ResponseEntity<>(new MessageDTO("ticket not found"), HttpStatus.NOT_FOUND);
+		if (ticketServices.isTicketUsed(ticket))
+			return new ResponseEntity<>(new MessageDTO("ticket has already been used"), HttpStatus.CONFLICT);
+
+		// TODO: validate ownership with auth token
+		User userFrom = ticket.getUser();
+		if (userFrom == null)
+			return new ResponseEntity<>(new MessageDTO("user not found"), HttpStatus.NOT_FOUND);
+
+		try {
+			ticketServices.acceptTransferTicket(transaction, userFrom, ticket);
+			return new ResponseEntity<>(new MessageDTO("confirm transaction..."), HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 	
 	@GetMapping("/transfer/validate-transfer/{code}")
 	public ResponseEntity<?> finishTransferTicket(@PathVariable String code) {
-		return new ResponseEntity<>(HttpStatus.OK);
+		Transaction transaction = ticketServices.findTransactionById(code);
+		if (transaction == null)
+			return new ResponseEntity<>(new MessageDTO("transaction not found"), HttpStatus.NOT_FOUND);
+		if (transaction.getFinishedAt() != null)
+			return new ResponseEntity<>(new MessageDTO("transaction already confirmed"), HttpStatus.OK);
+
+		Ticket ticket = transaction.getTicket();
+		if (ticket == null)
+			return new ResponseEntity<>(new MessageDTO("this transaction has not been accepted"), HttpStatus.NOT_FOUND);
+		if (ticketServices.isTicketUsed(transaction.getTicket()))
+			return new ResponseEntity<>(new MessageDTO("ticket has already been used"), HttpStatus.CONFLICT);
+
+		// Validate that acceptExpiresAt hasn't happened
+		Date currentDate = new Date();
+		if (transaction.getAcceptExpiresAt().compareTo(currentDate) < 0)
+			return new ResponseEntity<>(new MessageDTO("transaction code is expired"), HttpStatus.CONFLICT);
+
+		try {
+			ticketServices.validateTransfer(transaction);
+			return new ResponseEntity<>(new MessageDTO("transaction confirmed"), HttpStatus.OK);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 }
