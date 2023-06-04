@@ -8,7 +8,8 @@ public interface TicketServices {
 	Ticket findOneById(String ticketId);
 	List<Ticket> findAllByUser(User user);
 	void create(User user, Tier tier) throws Exception;
-	
+
+	Boolean isTicketUsed(Ticket ticket);
 	String generateUseTicketCode(Ticket ticket) throws Exception;
 	Token findTokenByUseTicketCode(String verificationToken);
 	Boolean validateUseTicketCode(Token token) throws  Exception;

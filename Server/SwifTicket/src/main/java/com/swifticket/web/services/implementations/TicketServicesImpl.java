@@ -50,12 +50,7 @@ public class TicketServicesImpl implements TicketServices {
     }
 
     @Override
-    @Transactional(rollbackOn = Exception.class)
-    public String generateUseTicketCode(Ticket ticket) throws Exception {
-        Date today = new Date();
-        // Expiration date is set to 10 minutes
-        Date expirationDate = new Date(today.getTime() + (1000 * 60 * 10));
-
+    public Boolean isTicketUsed(Ticket ticket) {
         // Validate if ticket was not used before
         List<Token> tokens = ticket.getTokens();
         final Boolean[] wasUsed = {false};
@@ -64,7 +59,18 @@ public class TicketServicesImpl implements TicketServices {
                 wasUsed[0] = true;
         });
 
-        if (wasUsed[0]) return "";
+        return wasUsed[0];
+    }
+
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public String generateUseTicketCode(Ticket ticket) throws Exception {
+        Date today = new Date();
+        // Expiration date is set to 10 minutes
+        Date expirationDate = new Date(today.getTime() + (1000 * 60 * 10));
+
+        // Validate if ticket was not used before
+        if (isTicketUsed(ticket)) return "";
 
         // Create verification code
         Token newToken = new Token(ticket, expirationDate);
@@ -96,14 +102,7 @@ public class TicketServicesImpl implements TicketServices {
 
         // Validate if ticket was not used before
         Ticket ticket = token.getTicket();
-        List<Token> tokens = ticket.getTokens();
-        final Boolean[] wasUsed = {false};
-        tokens.forEach(t -> {
-            if (t.getVerifiedAt() != null)
-                wasUsed[0] = true;
-        });
-
-        if (wasUsed[0]) return false;
+        if (isTicketUsed(ticket)) return false;
 
         // Update verification code
         token.setVerifiedAt(currentDate);
@@ -137,13 +136,18 @@ public class TicketServicesImpl implements TicketServices {
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void acceptTransferTicket(Transaction transaction, User sender, Ticket ticket) throws Exception {
-        // TODO: validate that reqExpiresAt hasn't happened
-        Date acceptAt = new Date();
+        Date currentDate = new Date();
         // Expiration date is set to 10 minutes
-        Date acceptExpiresAt = new Date(acceptAt.getTime() + (1000 * 60 * 10));
+        Date acceptExpiresAt = new Date(currentDate.getTime() + (1000 * 60 * 10));
+
+        // Validate that reqExpiresAt hasn't happened
+        if (transaction.getReqExpiresAt().compareTo(currentDate) < 0) return;
+
+        // Validate if ticket was not used before
+        if (isTicketUsed(ticket)) return;
 
         // Update accepted date and this step expiration date
-        transaction.setAcceptAt(acceptAt);
+        transaction.setAcceptAt(currentDate);
         transaction.setAcceptExpiresAt(acceptExpiresAt);
 
         // Update sender
@@ -157,18 +161,19 @@ public class TicketServicesImpl implements TicketServices {
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void validateTransfer(Transaction transaction) throws Exception {
-        // TODO: validate that acceptExpiresAt hasn't happened
         if (transaction == null) return;
         if (transaction.getFinishedAt() != null) return;
 
-        Date today = new Date();
-
+        Date currentDate = new Date();
         // If ticket is not assigned to transaction is cause this operation is not valid
         Ticket ticket = transaction.getTicket();
         if (ticket == null) return;
 
+        // Validate that acceptExpiresAt hasn't happened
+        if (transaction.getAcceptExpiresAt().compareTo(currentDate) < 0) return;
+
         // Update transaction finished date
-        transaction.setFinishedAt(today);
+        transaction.setFinishedAt(currentDate);
         transactionRepository.save(transaction);
 
         // Update ticket owner
