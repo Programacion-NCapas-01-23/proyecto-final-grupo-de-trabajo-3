@@ -9,6 +9,7 @@ public class GeneralStatsDTO {
     private int users;
     private int events;
     private int ticketsSold;
+    private int attendants;
     private double attendanceSingle;
     private double attendanceGroup;
 }

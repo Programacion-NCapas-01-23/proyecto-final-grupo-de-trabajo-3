@@ -8,9 +8,7 @@ import com.swifticket.web.services.TicketServices;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class TicketServicesImpl implements TicketServices {
@@ -217,7 +215,6 @@ public class TicketServicesImpl implements TicketServices {
         tiers.forEach(t -> {
             tickets.addAll(t.getTickets());
         });
-
         // Filter tickets to work only with used tickets
         List<Ticket> usedTickets = tickets.stream().filter(this::isTicketUsed).toList();
 
@@ -243,5 +240,45 @@ public class TicketServicesImpl implements TicketServices {
     @Override
     public int getTicketsSold() {
         return ticketRepository.findAll().size();
+    }
+
+    @Override
+    public int getTicketsUsed() {
+        // Get all the sold tickets
+        List<Ticket> tickets = ticketRepository.findAll();
+        // Filter tickets to work only with used tickets
+        List<Ticket> usedTickets = tickets.stream().filter(this::isTicketUsed).toList();
+
+        return usedTickets.size();
+    }
+
+    @Override
+    public double getAttendanceSingle() {
+        int singleAttendance = 0;
+        Map<String, Integer> users = new HashMap<>();
+
+        // Get all the sold tickets
+        List<Ticket> tickets = ticketRepository.findAll();
+        // Filter tickets to work only with used tickets
+        List<Ticket> usedTickets = tickets.stream().filter(this::isTicketUsed).toList();
+
+        // Build a map with the user's id and the number of tickets
+        // that were bought using a user's id + event's id key
+        usedTickets.forEach(ticket -> {
+            String key = ticket.getUser().getId().toString()
+                    + ticket.getTier().getEvent().getId().toString();
+            if (users.containsKey(key))
+                users.put(key, users.get(key) + 1);
+            else
+                users.put(key, 1);
+        });
+
+        // From user map get users that buy only one ticket for this event
+        for (Map.Entry<String, Integer> entry : users.entrySet()) {
+            Integer value = entry.getValue();
+            if (value == 1) singleAttendance++;
+        }
+
+        return singleAttendance;
     }
 }
