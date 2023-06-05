@@ -18,4 +18,7 @@ public interface TicketServices {
 	Transaction findTransactionById(String transactionId);
 	void acceptTransferTicket(Transaction transaction, User sender, Ticket ticket) throws Exception;
 	void validateTransfer(Transaction transaction) throws Exception;
+
+	int getEventCapacity(List<Tier> tiers);
+	int getTicketsSold(List<Tier> tiers);
 }

@@ -181,4 +181,14 @@ public class TicketServicesImpl implements TicketServices {
         ticket.setUser(transaction.getToUser());
         ticketRepository.save(ticket);
     }
+
+    @Override
+    public int getEventCapacity(List<Tier> tiers) {
+        return tiers.stream().mapToInt(Tier::getCapacity).sum();
+    }
+
+    @Override
+    public int getTicketsSold(List<Tier> tiers) {
+        return tiers.stream().mapToInt(tier -> tier.getTickets().size()).sum();
+    }
 }
