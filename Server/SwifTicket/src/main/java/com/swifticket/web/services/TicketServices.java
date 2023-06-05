@@ -22,5 +22,6 @@ public interface TicketServices {
 	int getEventCapacity(List<Tier> tiers);
 	int getEventTicketsSold(List<Tier> tiers);
 	int getEventTicketsUsed(List<Tier> tiers);
+	double getEventAttendanceSingle(List<Tier> tiers);
 	int getTicketsSold();
 }

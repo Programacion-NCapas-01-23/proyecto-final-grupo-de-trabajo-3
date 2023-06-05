@@ -8,10 +8,9 @@ import com.swifticket.web.services.TicketServices;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class TicketServicesImpl implements TicketServices {
@@ -206,6 +205,39 @@ public class TicketServicesImpl implements TicketServices {
         });
 
         return ticketsUsed[0];
+    }
+
+    @Override
+    public double getEventAttendanceSingle(List<Tier> tiers) {
+        int singleAttendance = 0;
+        Map<UUID, Integer> users = new HashMap<>();
+
+        // Get all the sold tickets for this event
+        List<Ticket> tickets = new ArrayList<>();
+        tiers.forEach(t -> {
+            tickets.addAll(t.getTickets());
+        });
+
+        // Filter tickets to work only with used tickets
+        List<Ticket> usedTickets = tickets.stream().filter(this::isTicketUsed).toList();
+
+        // Build a map with the user's id and the number of tickets
+        // that were bought for this event
+        usedTickets.forEach(ticket -> {
+            UUID userId = ticket.getUser().getId();
+            if (users.containsKey(userId))
+                users.put(userId, users.get(userId) + 1);
+            else
+                users.put(userId, 1);
+        });
+
+        // From user map get users that buy only one ticket for this event
+        for (Map.Entry<UUID, Integer> entry : users.entrySet()) {
+            Integer value = entry.getValue();
+            if (value == 1) singleAttendance++;
+        }
+
+        return singleAttendance;
     }
 
     @Override

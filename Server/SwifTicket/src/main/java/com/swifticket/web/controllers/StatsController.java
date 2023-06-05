@@ -24,7 +24,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/stats")
 @CrossOrigin("*")
-// TODO: implement this controller
 public class StatsController {
 	private final TicketServices ticketServices;
 	private final UserServices userServices;
@@ -69,9 +68,9 @@ public class StatsController {
 		// Get tickets that have been validated
 		int attendants = ticketServices.getEventTicketsUsed(tiers);
 		double attendantsVsTicketsSold = (double) attendants / tickets * 100;
-		// TODO: complete these stats
-		int attendanceSingle = 0;
-		int attendanceGroup = 0;
+		// Get percentage of users that attended single vs in group
+		double attendanceSingle = ticketServices.getEventAttendanceSingle(tiers) / attendants * 100;
+		double attendanceGroup = 100 - attendanceSingle;
 
 		EventStatsDTO response = new EventStatsDTO(
 			capacity, tickets, ratio, attendants, attendantsVsTicketsSold, attendanceSingle, attendanceGroup
