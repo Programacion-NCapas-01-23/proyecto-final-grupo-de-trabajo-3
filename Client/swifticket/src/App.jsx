@@ -13,8 +13,7 @@ import { NavBar } from './components/NavBar';
 import Home from './pages/home';
 import Footer from './components/Footer';
 import OneUser from './pages/user/id/oneUser';
-import { Colors } from './pages/colors';
-import Cards from './pages/Cards';
+import Charts from './pages/admin/Charts';
 import OneEvent from './pages/OneEvent/OneEvent';
 import Checkout from './pages/Checkout/Checkout';
 import Landing from './Landing';
@@ -31,7 +30,7 @@ function App() {
         </Route>
         <Route path="user" element={<User />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/development" element={<OneEvent />} />
+        <Route path="/development" element={<Charts />} />
         <Route path="/error" element={<Landing />} />
       </>
     )
