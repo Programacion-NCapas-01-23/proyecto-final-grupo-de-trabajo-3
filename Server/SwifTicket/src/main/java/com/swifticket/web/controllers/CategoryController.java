@@ -47,7 +47,12 @@ public class CategoryController {
 	public ResponseEntity<?> createCategory(
 			@ModelAttribute @Valid SaveCategoryDTO data,
 			BindingResult validations) {
-		
+
+		// check if category already exists
+		Category category = categoryService.findByName(data.getName());
+		if (category != null)
+			return new ResponseEntity<>(new MessageDTO("Category already exists"), HttpStatus.CONFLICT);
+
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
@@ -71,10 +76,13 @@ public class CategoryController {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
-		
-		Category category = categoryService.findById(id);
-		if (category == null)
+		;
+		if (categoryService.findById(id) == null)
 			return new ResponseEntity<>(new MessageDTO("Category not found"), HttpStatus.NOT_FOUND);
+
+		// check if category already exists;
+		if (categoryService.findByName(data.getName()) != null)
+			return new ResponseEntity<>(new MessageDTO("Category already exists"), HttpStatus.CONFLICT);
 
 		try {
 			categoryService.update(id, data.getName());

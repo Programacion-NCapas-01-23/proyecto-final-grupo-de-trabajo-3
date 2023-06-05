@@ -32,6 +32,16 @@ public class PlaceServiceImpl implements PlaceServices {
 	}
 
 	@Override
+	public Place findOneByName(String name) {
+		return repository.findOneByName(name);
+	}
+
+	@Override
+	public Place findOneByAddress(String address) {
+		return repository.findOneByAddress(address);
+	}
+
+	@Override
 	@Transactional(rollbackOn = Exception.class)
 	public void save(SavePlaceDTO data) throws Exception {
 		Place place = new Place(data.getName(), data.getAddress());

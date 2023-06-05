@@ -7,7 +7,10 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class SaveSponsorDTO {
+public class AssignSponsorDTO {
+	@NotBlank(message = "event id is required")
+	private String eventId;
+
 	@NotBlank(message = "sponsor name is required")
 	@Size(max = 25, message = "The sponsor name must be less than 25 characters")
 	private String name;

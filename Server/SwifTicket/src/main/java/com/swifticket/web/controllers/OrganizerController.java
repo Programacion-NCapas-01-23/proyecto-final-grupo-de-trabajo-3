@@ -51,7 +51,10 @@ public class OrganizerController {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
-		
+
+		if(organizerServices.findOneByName(data.getName()) != null)
+			return new ResponseEntity<>(new MessageDTO("organizer already exists"), HttpStatus.CONFLICT);
+
 		try {
 			organizerServices.save(data.getName());
 			return new ResponseEntity<>(new MessageDTO("organizer created"), HttpStatus.CREATED);
@@ -71,8 +74,7 @@ public class OrganizerController {
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
 
-		Organizer organizer = organizerServices.findById(id);
-		if (organizer == null)
+		if (organizerServices.findById(id) == null)
 			return new ResponseEntity<>(new MessageDTO("organizer not found"), HttpStatus.NOT_FOUND);
 
 		try {
@@ -85,8 +87,7 @@ public class OrganizerController {
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteOrganizer(@PathVariable int id) {
-		Organizer organizer = organizerServices.findById(id);
-		if (organizer == null)
+		if (organizerServices.findById(id) == null)
 			return new ResponseEntity<>(new MessageDTO("organizer not found"), HttpStatus.NOT_FOUND);
 
 		try {

@@ -9,6 +9,7 @@ public interface SponsorServices {
 	List<Sponsor> findAll();
 	Sponsor findById(int id);
 	Sponsor findByName(String name);
+	Sponsor findOneByNameAndImage(String name, String image);
 	void save(String name, String image) throws Exception;
 	void update(int id, String name, String image) throws Exception;
 	void delete(int id) throws Exception;

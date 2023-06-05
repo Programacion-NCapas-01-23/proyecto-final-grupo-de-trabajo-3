@@ -30,6 +30,11 @@ public class OrganizerServicesImpl implements OrganizerServices {
 	}
 
     @Override
+    public Organizer findOneByName(String name) {
+        return repository.findOneByName(name);
+    }
+
+    @Override
     @Transactional(rollbackOn = Exception.class)
     public void save(String name) throws Exception {
         Organizer organizer = new Organizer();

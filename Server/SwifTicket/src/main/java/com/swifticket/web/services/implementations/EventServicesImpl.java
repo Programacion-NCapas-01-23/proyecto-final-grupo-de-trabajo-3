@@ -1,7 +1,6 @@
 package com.swifticket.web.services.implementations;
 
 import com.swifticket.web.models.dtos.event.SaveEventDTO;
-import com.swifticket.web.models.dtos.sponsor.SaveSponsorDTO;
 import com.swifticket.web.models.dtos.tier.SaveTierDTO;
 import com.swifticket.web.models.dtos.tier.UpdateTierDTO;
 import com.swifticket.web.models.entities.*;

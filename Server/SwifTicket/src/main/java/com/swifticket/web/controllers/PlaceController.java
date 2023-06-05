@@ -60,6 +60,11 @@ public class PlaceController {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
+
+		// Verify if place already exists
+		Place place = placeServices.findOneByAddress(data.getAddress());
+		if (place != null)
+			return new ResponseEntity<>(new MessageDTO("place with that exactly address already exists"), HttpStatus.CONFLICT);
 		
 		try {
 			placeServices.save(data);

@@ -34,6 +34,11 @@ public class SponsorServicesImpl implements SponsorServices {
     }
 
     @Override
+    public Sponsor findOneByNameAndImage(String name, String image) {
+        return repository.findOneByNameAndImage(name, image);
+    }
+
+    @Override
     @Transactional(rollbackOn = Exception.class)
     public void save(String name, String image) throws Exception{
         Sponsor sponsor = new Sponsor();

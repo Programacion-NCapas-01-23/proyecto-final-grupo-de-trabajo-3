@@ -27,9 +27,16 @@ public class SponsorController {
 	}
 
 	@GetMapping("")
-	public ResponseEntity<?> getSponsors() {
+	public ResponseEntity<?> getSponsors(@RequestParam(required = false) Integer id) {
+		if (id != null) {
+			Sponsor sponsor = sponsorServices.findById(id);
+			if (sponsor == null)
+				return new ResponseEntity<>(new MessageDTO("sponsor not found"), HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(sponsor, HttpStatus.OK);
+		}
 		List<Sponsor> sponsors = sponsorServices.findAll();
 		return new ResponseEntity<>(sponsors, HttpStatus.OK);
+
 	}
 
 	@GetMapping("/{name}")
@@ -47,6 +54,10 @@ public class SponsorController {
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
 
+		// check if sponsor already exists
+		if (sponsorServices.findByName(data.getName()) != null)
+			return new ResponseEntity<>(new MessageDTO("sponsor already exists"), HttpStatus.CONFLICT);
+
 		try {
 			sponsorServices.save(data.getName(), data.getImage());
 			return new ResponseEntity<>(new MessageDTO("sponsor created"), HttpStatus.CREATED);
@@ -61,9 +72,12 @@ public class SponsorController {
 			return new ResponseEntity<>(errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
 
-		Sponsor sponsor = sponsorServices.findById(id);
-		if (sponsor == null)
+		if (sponsorServices.findById(id) == null)
 			return new ResponseEntity<>(new MessageDTO("sponsor not found"), HttpStatus.NOT_FOUND);
+
+		// check if sponsor already exists
+		if (sponsorServices.findByName(data.getName()) != null && sponsorServices.findOneByNameAndImage(data.getName(), data.getImage()) != null)
+			return new ResponseEntity<>(new MessageDTO("sponsor already exists"), HttpStatus.CONFLICT);
 
 		try {
 			sponsorServices.update(id, data.getName(), data.getImage());

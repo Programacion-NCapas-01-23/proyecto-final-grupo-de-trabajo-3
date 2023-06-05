@@ -30,6 +30,11 @@ public class CategoryServiceImpl implements CategoryServices {
 	}
 
 	@Override
+	public Category findByName(String name) {
+		return repository.findOneByName(name);
+	}
+
+	@Override
 	@Transactional(rollbackOn = Exception.class)
 	public void save(String name) throws Exception{
 		Category category = new Category();

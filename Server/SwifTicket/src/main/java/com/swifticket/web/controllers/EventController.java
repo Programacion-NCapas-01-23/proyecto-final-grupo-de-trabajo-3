@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.swifticket.web.models.dtos.event.RemoveSponsorFromEventDTO;
 import com.swifticket.web.models.dtos.response.MessageDTO;
-import com.swifticket.web.models.dtos.sponsor.SaveSponsorDTO;
+import com.swifticket.web.models.dtos.sponsor.AssignSponsorDTO;
 import com.swifticket.web.models.dtos.tier.SaveTierDTO;
 import com.swifticket.web.models.dtos.tier.UpdateTierDTO;
 import com.swifticket.web.models.entities.*;
@@ -143,7 +143,7 @@ public class EventController {
 		if (organizer == null) {
 			return new ResponseEntity<>(new MessageDTO("Organizer not found"), HttpStatus.NOT_FOUND);
 		}
-		
+
 		try {
 			eventServices.update(id, data, category, organizer, place);
 			return new ResponseEntity<>(HttpStatus.CREATED);
@@ -167,7 +167,7 @@ public class EventController {
 	}
 
 	@PostMapping("/sponsors")
-	public ResponseEntity<?> assignSponsor(@ModelAttribute @Valid SaveSponsorDTO data, BindingResult bindingResult) {
+	public ResponseEntity<?> assignSponsor(@ModelAttribute @Valid AssignSponsorDTO data, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
