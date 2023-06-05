@@ -31,20 +31,21 @@ public class AuthServicesImpl implements AuthServices {
     private final TokenRepository tokenRepository;
     private final VerifyAccountTokenRepository accountTokenRepository;
     private final RandomCode randomCode;
-    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-    
+    public final PasswordEncoder passwordEncoder;
+
     private final String ACTIVE = "Activo";
     private final String BLOCKED = "Bloqueado";
     private final String UNVERIFIED = "No-verificado";
     
     @Autowired
-    public AuthServicesImpl(UserRepository userRepository, EmailServices emailService, UserStateServices userStateServices, TokenRepository tokenRepository, VerifyAccountTokenRepository accountTokenRepository, RandomCode randomCode) {
+    public AuthServicesImpl(UserRepository userRepository, EmailServices emailService, UserStateServices userStateServices, TokenRepository tokenRepository, VerifyAccountTokenRepository accountTokenRepository, RandomCode randomCode, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.emailService = emailService;
         this.userStateServices = userStateServices;
         this.tokenRepository = tokenRepository;
 		this.accountTokenRepository = accountTokenRepository;
         this.randomCode = randomCode;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -64,7 +65,7 @@ public class AuthServicesImpl implements AuthServices {
 		} catch (Exception e) {
 			return false;
 		}
-         */
+        */
         return true;
     }
 
@@ -112,8 +113,8 @@ public class AuthServicesImpl implements AuthServices {
     @Override
     public User signIn(String email, String password) {
         User user = userRepository.findOneByEmail(email);
-        
-        if (user != null 
+
+        if (user != null
         		&& passwordEncoder.matches(password, user.getPassword()) 
         		&& user.getState().getName().equals(ACTIVE)) {
             return user;
