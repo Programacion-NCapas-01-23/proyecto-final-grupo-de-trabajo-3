@@ -8,7 +8,7 @@ import com.swifticket.web.services.TicketServices;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -188,7 +188,28 @@ public class TicketServicesImpl implements TicketServices {
     }
 
     @Override
-    public int getTicketsSold(List<Tier> tiers) {
+    public int getEventTicketsSold(List<Tier> tiers) {
         return tiers.stream().mapToInt(tier -> tier.getTickets().size()).sum();
+    }
+
+    @Override
+    public int getEventTicketsUsed(List<Tier> tiers) {
+        List<Ticket> tickets = new ArrayList<>();
+        tiers.forEach(t -> {
+            tickets.addAll(t.getTickets());
+        });
+
+        final int[] ticketsUsed = {0};
+        tickets.forEach(ticket -> {
+            if (isTicketUsed(ticket))
+                ticketsUsed[0] += 1;
+        });
+
+        return ticketsUsed[0];
+    }
+
+    @Override
+    public int getTicketsSold() {
+        return ticketRepository.findAll().size();
     }
 }

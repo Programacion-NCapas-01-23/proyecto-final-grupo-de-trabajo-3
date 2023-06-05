@@ -2,9 +2,11 @@ package com.swifticket.web.controllers;
 
 import com.swifticket.web.models.dtos.response.MessageDTO;
 import com.swifticket.web.models.dtos.stats.EventAttendanceStatsDTO;
+import com.swifticket.web.models.dtos.stats.EventStatsDTO;
+import com.swifticket.web.models.dtos.stats.GeneralStatsDTO;
 import com.swifticket.web.models.entities.Event;
-import com.swifticket.web.models.entities.Ticket;
 import com.swifticket.web.models.entities.Tier;
+import com.swifticket.web.models.entities.User;
 import com.swifticket.web.services.EventServices;
 import com.swifticket.web.services.TicketServices;
 import com.swifticket.web.services.UserServices;
@@ -17,10 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/stats")
@@ -40,13 +39,44 @@ public class StatsController {
 
 	@GetMapping("/general")
 	public ResponseEntity<?> getGeneralStats() {
+		List<User> users = userServices.findAll();
+		List<Event> events = eventServices.findAll();
 
-		return new ResponseEntity<>(HttpStatus.OK);
+		int ticketsSold = ticketServices.getTicketsSold();
+		// TODO: complete these stats
+		int attendanceSingle = 0;
+		int attendanceGroup = 0;
+
+		GeneralStatsDTO response = new GeneralStatsDTO(
+				users.size(), events.size(), ticketsSold, attendanceSingle, attendanceGroup
+		);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
 	@GetMapping("/event/{id}")
 	public ResponseEntity<?> getEventStats(@PathVariable String id) {
-		return new ResponseEntity<>(HttpStatus.OK);
+		Event event = eventServices.findById(id);
+		if (event == null)
+			return new ResponseEntity<>(new MessageDTO("event not found"), HttpStatus.NOT_FOUND);
+
+		List<Tier> tiers = event.getTiers();
+		// Get event total capacity
+		int capacity = ticketServices.getEventCapacity(tiers);
+		// Get tickets sold by event
+		int tickets = ticketServices.getEventTicketsSold(tiers);
+		// Ratio of sold tickets
+		double ratio = (double) tickets / capacity * 100;
+		// Get tickets that have been validated
+		int attendants = ticketServices.getEventTicketsUsed(tiers);
+		double attendantsVsTicketsSold = (double) attendants / tickets * 100;
+		// TODO: complete these stats
+		int attendanceSingle = 0;
+		int attendanceGroup = 0;
+
+		EventStatsDTO response = new EventStatsDTO(
+			capacity, tickets, ratio, attendants, attendantsVsTicketsSold, attendanceSingle, attendanceGroup
+		);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
 	@GetMapping("/event/{id}/attendance")
@@ -58,14 +88,17 @@ public class StatsController {
 		List<Tier> tiers = event.getTiers();
 		// Get event total capacity
 		int capacity = ticketServices.getEventCapacity(tiers);
-
 		// Get tickets sold by event
-		int tickets = ticketServices.getTicketsSold(tiers);
-
+		int tickets = ticketServices.getEventTicketsSold(tiers);
 		// Ratio of sold tickets
 		double ratio = (double) tickets / capacity * 100;
+		// Get tickets that have been validated
+		int attendants = ticketServices.getEventTicketsUsed(tiers);
+		double attendantsVsTicketsSold = (double) attendants / tickets * 100;
 
-		EventAttendanceStatsDTO response = new EventAttendanceStatsDTO(capacity, tickets, ratio);
+		EventAttendanceStatsDTO response = new EventAttendanceStatsDTO(
+				capacity, tickets, ratio,attendants, attendantsVsTicketsSold
+		);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	

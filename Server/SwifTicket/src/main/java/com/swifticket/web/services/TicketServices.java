@@ -20,5 +20,7 @@ public interface TicketServices {
 	void validateTransfer(Transaction transaction) throws Exception;
 
 	int getEventCapacity(List<Tier> tiers);
-	int getTicketsSold(List<Tier> tiers);
+	int getEventTicketsSold(List<Tier> tiers);
+	int getEventTicketsUsed(List<Tier> tiers);
+	int getTicketsSold();
 }
