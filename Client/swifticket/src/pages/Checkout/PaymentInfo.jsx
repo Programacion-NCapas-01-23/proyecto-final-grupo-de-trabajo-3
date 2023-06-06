@@ -48,7 +48,7 @@ export default function PaymentInfo() {
   }
 
   return (
-    <div className='h-screen w-full flex flex-col items-center justify-center'>
+    <div className='h-[calc(100vh-7.25rem)] w-full flex flex-col items-center justify-center'>
       <div className='w-min'>
 
 
