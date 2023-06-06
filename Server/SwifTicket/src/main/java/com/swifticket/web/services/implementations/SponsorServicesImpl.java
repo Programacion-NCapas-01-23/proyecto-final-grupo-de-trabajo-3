@@ -54,6 +54,9 @@ public class SponsorServicesImpl implements SponsorServices {
         Sponsor sponsor = repository.findById(id).orElse(null);
         assert sponsor != null;
 
+        sponsor.setName(name);
+        sponsor.setImage(image);
+
         repository.save(sponsor);
     }
 
