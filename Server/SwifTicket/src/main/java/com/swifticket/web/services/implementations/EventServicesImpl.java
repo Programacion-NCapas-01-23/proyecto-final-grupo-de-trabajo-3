@@ -87,18 +87,12 @@ public class EventServicesImpl implements EventServices {
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public void changeStatus(String id, String status) throws Exception {
-        UUID eventId = UUID.fromString(id);
-        Event event = eventRepository.findById(eventId).orElse(null);
+    public void changeStatus(Event event, EventState state) throws Exception {
+        if (event == null) return;
+        if (state == null) return;
 
-        if (event != null) {
-            EventState eventState = eventStateRepository.findByState(status);
-            // Set the new status to the event
-            if (eventState != null) {
-                event.setState(eventState);
-                eventRepository.save(event);
-            }
-        }
+        event.setState(state);
+        eventRepository.save(event);
     }
 
     @Override

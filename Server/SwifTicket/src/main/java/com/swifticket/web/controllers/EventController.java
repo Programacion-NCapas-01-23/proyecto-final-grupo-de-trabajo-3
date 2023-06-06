@@ -158,14 +158,18 @@ public class EventController {
 	}
 
 	@PatchMapping("/change-status")
-	public ResponseEntity<?> patchEvent(@ModelAttribute ChangeEventStatusDTO data) {
-		Event event = eventServices.findById(data.getId());
+	public ResponseEntity<?> changeEventStatus(@ModelAttribute ChangeEventStatusDTO data) {
+		Event event = eventServices.findById(data.getEventId());
 		if (event == null)
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(new MessageDTO("event not found"), HttpStatus.NOT_FOUND);
+
+		EventState state = eventStateService.findById(data.getStatusId());
+		if (state == null)
+			return new ResponseEntity<>(new MessageDTO("event state not found"), HttpStatus.NOT_FOUND);
 
 		try {
-			eventServices.changeStatus(data.getId(), data.getStatus());
-			return new ResponseEntity<>(new MessageDTO("Status changed"), HttpStatus.OK);
+			eventServices.changeStatus(event, state);
+			return new ResponseEntity<>(new MessageDTO("status changed"), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
