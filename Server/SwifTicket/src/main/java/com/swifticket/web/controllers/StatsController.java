@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -73,9 +74,25 @@ public class StatsController {
 		// Get percentage of users that attended single vs in group
 		double attendanceSingle = ticketServices.getEventAttendanceSingle(tiers) / attendants * 100;
 		double attendanceGroup = 100 - attendanceSingle;
+		List<Double> attendance = new ArrayList<>();
+		attendance.add(attendanceSingle);
+		attendance.add(attendanceGroup);
+
+		// Get array of tickets sold by tier
+		List<String> tiersNames = tiers.stream().map(Tier::getName).toList();
+		List<Integer> ticketsSoldByTier = tiers.stream().map(t -> {
+			return t.getTickets().size();
+		}).toList();
 
 		EventStatsDTO response = new EventStatsDTO(
-			capacity, tickets, ratio, attendants, attendantsVsTicketsSold, attendanceSingle, attendanceGroup
+				capacity,
+				tickets,
+				ratio,
+				attendants,
+				attendantsVsTicketsSold,
+				attendance,
+				tiersNames,
+				ticketsSoldByTier
 		);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
