@@ -273,7 +273,7 @@ public class EventController {
 		int ticketsSold = tier.getTickets().size();
 		if (ticketsSold > data.getCapacity())
 			return new ResponseEntity<>(
-					new MessageDTO("more tickets have been sold than the new capacity, tickets sold: " + ticketsSold),
+					new MessageDTO("more tickets have been sold than the new capacity, sold tickets: " + ticketsSold),
 					HttpStatus.CONFLICT);
 
 		try {
@@ -291,9 +291,16 @@ public class EventController {
 			return new ResponseEntity<>(new MessageDTO("Tier not found"), HttpStatus.NOT_FOUND);
 		}
 
+		// Validate if tier can be deleted
+		int ticketsSold = tier.getTickets().size();
+		if (ticketsSold > 0)
+			return new ResponseEntity<>(
+					new MessageDTO("can't delete a tier with sold tickets, sold tickets: " + ticketsSold),
+					HttpStatus.CONFLICT);
+
 		try {
 			eventServices.deleteTier(tierId);
-			return new ResponseEntity<>(HttpStatus.OK);
+			return new ResponseEntity<>(new MessageDTO("Tier deleted"), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
