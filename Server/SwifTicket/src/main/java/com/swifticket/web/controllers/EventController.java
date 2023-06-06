@@ -245,11 +245,16 @@ public class EventController {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
+
+		Event event = eventServices.findById(data.getEventId());
+		if (event == null)
+			return new ResponseEntity<>(new MessageDTO("event not found"), HttpStatus.NOT_FOUND);
+
 		try {
 			eventServices.createTier(data);
 			return new ResponseEntity<>(new MessageDTO("Tier has been added"), HttpStatus.CREATED);
 		} catch (Exception e) {
-			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -264,10 +269,12 @@ public class EventController {
 		if (tier == null)
 			return new ResponseEntity<>(new MessageDTO("Tier not found"), HttpStatus.NOT_FOUND);
 
-		// TODO: Tell how many tickets have been sold?
 		// Validate capacity availability
-		if (tier.getTickets().size() > data.getCapacity())
-			return new ResponseEntity<>(new MessageDTO("more tickets have been sold than the new capacity"), HttpStatus.CONFLICT);
+		int ticketsSold = tier.getTickets().size();
+		if (ticketsSold > data.getCapacity())
+			return new ResponseEntity<>(
+					new MessageDTO("more tickets have been sold than the new capacity, tickets sold: " + ticketsSold),
+					HttpStatus.CONFLICT);
 
 		try {
 			eventServices.updateTier(tierId, data);

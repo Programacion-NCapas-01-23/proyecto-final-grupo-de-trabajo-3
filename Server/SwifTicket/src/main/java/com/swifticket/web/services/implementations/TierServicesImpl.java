@@ -19,8 +19,12 @@ public class TierServicesImpl implements TierServices {
 
     @Override
     public Tier findById(String id) {
-        UUID tierId = UUID.fromString(id);
-        return tierRepository.findById(tierId).orElse(null);
+        try {
+            UUID tierId = UUID.fromString(id);
+            return tierRepository.findById(tierId).orElse(null);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
