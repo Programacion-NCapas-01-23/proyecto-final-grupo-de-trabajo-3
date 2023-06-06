@@ -59,7 +59,7 @@ private final AuthServices authServices;
 
 		User userByEmail = userServices.findOneByEmail(userData.getEmail());
 		if (userByEmail != null)
-			return new ResponseEntity<>(new MessageDTO("email is already taken"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(new MessageDTO("email is already taken"), HttpStatus.CONFLICT);
 
 		try {
 			userServices.register(userData.getName(), userData.getEmail(), userData.getPassword(), avatar, state);
@@ -89,7 +89,7 @@ private final AuthServices authServices;
 			UserState state = userStateServices.findById(1);
 			userServices.toggleStatus(user, state);
 
-			return new ResponseEntity<>(new MessageDTO("account validated"), HttpStatus.OK);
+				return new ResponseEntity<>(new MessageDTO("account validated"), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -128,7 +128,7 @@ private final AuthServices authServices;
 		
 		User user = authServices.signIn(data.getEmail(), data.getPassword());
 		if (user == null)
-			return new ResponseEntity<>(new MessageDTO("invalid credentials"), HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(new MessageDTO("invalid credentials"), HttpStatus.UNAUTHORIZED);
 
 		List<RolexUser> rolesRelations = user.getRolexUsers();
 		List<Role> roles = rolesRelations.stream().map(RolexUser::getRole).toList();

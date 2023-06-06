@@ -57,7 +57,6 @@ public class UserServicesImpl implements UserServices {
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void update(User user, UpdateUserDTO data, Avatar avatar) throws Exception {
-        user.setEmail(data.getEmail());
         user.setName(data.getName());
         user.setAvatar(avatar);
 

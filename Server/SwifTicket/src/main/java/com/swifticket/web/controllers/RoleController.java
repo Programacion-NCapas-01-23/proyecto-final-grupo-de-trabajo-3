@@ -28,5 +28,4 @@ public class RoleController {
 		List<Role> roles = roleServices.findAll();
 		return new ResponseEntity<>(roles, HttpStatus.OK);
 	}
-	
 }

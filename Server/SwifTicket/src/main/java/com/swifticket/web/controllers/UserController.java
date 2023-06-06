@@ -45,6 +45,8 @@ public class UserController {
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getUser(@PathVariable String id) {
 		User user = userService.findOneByEmail(id);
+		if (user == null)
+			return new ResponseEntity<>(new MessageDTO("user not found"), HttpStatus.NOT_FOUND);
 		return new ResponseEntity<>(user, HttpStatus.OK);
 	}
 
@@ -55,17 +57,21 @@ public class UserController {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
+
 		User user = userService.findOneByEmail(id);
 		if (user == null)
 			return new ResponseEntity<>(new MessageDTO("user not found"), HttpStatus.NOT_FOUND);
 
-		Avatar avatar = avatarServices.findById(data.getAvatar());
+		// Cast to int to avoid null pointer exception
+		Avatar avatar;
+		if (data.getAvatar() < 1) {
+			avatar = avatarServices.findById(1);
+		} else {
+			avatar = avatarServices.findById(data.getAvatar());
+		}
+
 		if (avatar == null)
 			return new ResponseEntity<>(new MessageDTO("avatar not found"), HttpStatus.NOT_FOUND);
-
-		User userByNewEmail = userService.findOneByEmail(data.getEmail());
-		if (userByNewEmail != null)
-			return new ResponseEntity<>(new MessageDTO("email is already taken"), HttpStatus.BAD_REQUEST);
 
 		try {
 			userService.update(user, data, avatar);

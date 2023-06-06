@@ -1,9 +1,6 @@
 package com.swifticket.web.models.dtos.user;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -11,6 +8,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class CreateUserDTO {
 	@NotBlank(message = "name is required")
+	@Size(min = 3,max = 25 ,message = "name must be at least 3 characters long")
 	private String name;
 	
 	@NotBlank(message = "email is required")
@@ -18,7 +16,9 @@ public class CreateUserDTO {
 	private String email;
 	
 	@NotBlank(message = "password is required")
-	@Size(min = 5, message = "password must be at least 5 characters long")
+	@Size(min = 8, message = "password size is 8 characters min")
+	@Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*()_\\-+=<>?])[A-Za-z\\d!@#$%^&*()_\\-+=<>?]+$",
+			message = "Password must contain 1 upper case, 1 lower case, 1 number, 1 special character")
 	private String password;
 
 	@Min(value = 1, message = "Invalid avatar key")
