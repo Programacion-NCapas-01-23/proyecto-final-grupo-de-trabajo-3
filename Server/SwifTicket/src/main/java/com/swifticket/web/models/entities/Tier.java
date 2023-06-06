@@ -21,6 +21,7 @@ public class Tier {
 
     @ManyToOne
     @JoinColumn(name = "event_id", referencedColumnName = "id", nullable = false)
+    @JsonIgnore
     private Event event;
 
     @Column(name = "name", length = 50, nullable = false)

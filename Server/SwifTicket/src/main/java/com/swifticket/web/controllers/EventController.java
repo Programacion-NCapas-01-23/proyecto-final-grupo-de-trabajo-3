@@ -2,8 +2,7 @@ package com.swifticket.web.controllers;
 
 import java.util.List;
 
-import com.swifticket.web.models.dtos.event.AssignSponsorToEventDTO;
-import com.swifticket.web.models.dtos.event.RemoveSponsorFromEventDTO;
+import com.swifticket.web.models.dtos.event.*;
 import com.swifticket.web.models.dtos.response.MessageDTO;
 import com.swifticket.web.models.dtos.tier.SaveTierDTO;
 import com.swifticket.web.models.dtos.tier.UpdateTierDTO;
@@ -25,9 +24,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import com.swifticket.web.models.dtos.event.ChangeEventStatusDTO;
-import com.swifticket.web.models.dtos.event.SaveEventDTO;
 
 
 @RestController
@@ -66,7 +62,11 @@ public class EventController {
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getEvent(@PathVariable String id) {
 		Event event = eventServices.findById(id);
-		return new ResponseEntity<>(event, HttpStatus.OK);
+		List<EventxSponsor> relations = event.getEventSponsors();
+		List<Sponsor> sponsors = relations.stream().map(EventxSponsor::getSponsor).toList();
+
+		EventWithSponsorsDTO _event = new EventWithSponsorsDTO(event, sponsors);
+		return new ResponseEntity<>(_event, HttpStatus.OK);
 	}
 
 	@GetMapping("/category/{categoryId}")
