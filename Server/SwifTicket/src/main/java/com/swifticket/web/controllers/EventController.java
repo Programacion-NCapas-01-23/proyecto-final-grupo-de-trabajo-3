@@ -151,7 +151,7 @@ public class EventController {
 
 		try {
 			eventServices.update(id, data, category, organizer, place);
-			return new ResponseEntity<>(HttpStatus.CREATED);
+			return new ResponseEntity<>(new MessageDTO("event updated"), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
