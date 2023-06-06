@@ -3,7 +3,7 @@ import EventCardCh from "../components/EventCards/Checkout/EventCardCh";
 import EventCardMi from "../components/EventCards/Minimized/EventCardMi";
 import EventCardSh from "../components/EventCards/Shoping/EventCardSh";
 
-const devEvents = [
+export const devEvents = [
   {
     img: "https://i.imgur.com/CqnHHbp.png",
     title: "Mando Cosplays",
