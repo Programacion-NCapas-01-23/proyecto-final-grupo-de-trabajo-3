@@ -58,7 +58,7 @@ public class Event {
     private List<EventxSponsor> eventSponsors;
 
     public Event(Category category, Organizer organizer, String title, double duration, Date dateTime, String image,
-                 Place place) {
+                 Place place, EventState state) {
         this.category = category;
         this.organizer = organizer;
         this.title = title;
@@ -66,5 +66,6 @@ public class Event {
         this.dateTime = dateTime;
         this.image = image;
         this.place = place;
+        this.state = state;
     }
 }

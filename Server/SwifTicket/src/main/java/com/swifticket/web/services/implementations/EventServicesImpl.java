@@ -51,7 +51,7 @@ public class EventServicesImpl implements EventServices {
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public void save(SaveEventDTO eventInfo, Category category, Organizer organizer, Place place) throws Exception {
+    public void save(SaveEventDTO eventInfo, Category category, Organizer organizer, Place place, EventState state) throws Exception {
         Event event = new Event(
                 category,
                 organizer,
@@ -60,7 +60,8 @@ public class EventServicesImpl implements EventServices {
                 // TODO: must define a date format for the app
                 new SimpleDateFormat("dd/MM/yyyy").parse(eventInfo.getDateTime()),
                 eventInfo.getImage(),
-                place
+                place,
+                state
         );
         eventRepository.save(event);
     }

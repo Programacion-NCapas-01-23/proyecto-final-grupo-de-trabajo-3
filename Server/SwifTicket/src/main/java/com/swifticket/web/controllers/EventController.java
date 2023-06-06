@@ -43,6 +43,7 @@ public class EventController {
 	private final ErrorHandler errorHandler;
 	private final SponsorServices sponsorServices;
 	private final TierServices tierServices;
+	private final int PROGRAMMED = 1;
 
 	@Autowired
 	public EventController(EventServices eventServices, CategoryServices categoryServices, PlaceServices placeService, OrganizerServices organizerService, EventStateServices eventStateService, ErrorHandler errorHandler, SponsorServices sponsorServices, TierServices tierServices) {
@@ -98,19 +99,23 @@ public class EventController {
 		}
 		Category category = categoryServices.findById(data.getCategoryId());
 		if (category == null)
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(new MessageDTO("category not found"), HttpStatus.NOT_FOUND);
 
 		Place place = placeService.findById(data.getPlaceId());
 		if (place == null)
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(new MessageDTO("place not found"), HttpStatus.NOT_FOUND);
 
 		Organizer organizer = organizerService.findById(data.getOrganizerId());
 		if (organizer == null)
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(new MessageDTO("organizer not found"), HttpStatus.NOT_FOUND);
+
+		EventState state = eventStateService.findById(PROGRAMMED);
+		if (state == null)
+			return new ResponseEntity<>(new MessageDTO("event state not found"), HttpStatus.NOT_FOUND);
 
 		try {
-			eventServices.save(data, category, organizer, place);
-			return new ResponseEntity<>(HttpStatus.CREATED);
+			eventServices.save(data, category, organizer, place, state);
+			return new ResponseEntity<>(new MessageDTO("event created"), HttpStatus.CREATED);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}

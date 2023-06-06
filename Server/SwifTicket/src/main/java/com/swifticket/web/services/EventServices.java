@@ -9,7 +9,7 @@ import com.swifticket.web.models.entities.*;
 public interface EventServices {
 	List<Event> findAll();
 	Event findById(String id);
-	void save(SaveEventDTO eventInfo, Category category, Organizer organizer, Place place) throws Exception;
+	void save(SaveEventDTO eventInfo, Category category, Organizer organizer, Place place, EventState state) throws Exception;
 	void update(String id, SaveEventDTO eventInfo, Category category, Organizer organizer, Place place) throws Exception;
 	void changeStatus(String id, String status) throws Exception;
 	EventxSponsor findByEventAndSponsor(Event event, Sponsor sponsor);

@@ -21,12 +21,12 @@ public class SaveEventDTO {
 	@NotBlank(message = "image is required")
 	private String image;
 	
-	@NotBlank(message = "place id is required")
+	@Positive(message = "place id is required")
 	private int placeId;
 	
-	@NotBlank(message = "category id is required")
+	@Positive(message = "category id is required")
 	private int categoryId;
 	
-	@NotBlank(message = "organizer id is required")
+	@Positive(message = "organizer id is required")
 	private int organizerId;
 }
