@@ -3,6 +3,8 @@ package com.swifticket.web.models.dtos.stats;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 public class GeneralStatsDTO {
@@ -10,6 +12,5 @@ public class GeneralStatsDTO {
     private int events;
     private int ticketsSold;
     private int attendants;
-    private double attendanceSingle;
-    private double attendanceGroup;
+    private List<Double> attendanceSingleVsGroup;
 }

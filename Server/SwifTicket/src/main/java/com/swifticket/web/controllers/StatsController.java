@@ -48,13 +48,16 @@ public class StatsController {
 		List<Event> events = eventServices.findAll();
 
 		int ticketsSold = ticketServices.getTicketsSold();
-		int attendance = ticketServices.getTicketsUsed();
+		int attendants = ticketServices.getTicketsUsed();
 		// Get percentage of users that attended single vs in group
-		double attendanceSingle = ticketServices.getAttendanceSingle() / attendance * 100;
+		double attendanceSingle = ticketServices.getAttendanceSingle() / attendants * 100;
 		double attendanceGroup = 100 - attendanceSingle;
+		List<Double> attendance = new ArrayList<>();
+		attendance.add(attendanceSingle);
+		attendance.add(attendanceGroup);
 
 		GeneralStatsDTO response = new GeneralStatsDTO(
-				users.size(), events.size(), ticketsSold, attendance, attendanceSingle, attendanceGroup
+				users.size(), events.size(), ticketsSold, attendants, attendance
 		);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
