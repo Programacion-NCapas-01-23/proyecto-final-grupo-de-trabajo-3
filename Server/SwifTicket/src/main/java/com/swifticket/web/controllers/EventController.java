@@ -2,9 +2,9 @@ package com.swifticket.web.controllers;
 
 import java.util.List;
 
+import com.swifticket.web.models.dtos.event.AssignSponsorToEventDTO;
 import com.swifticket.web.models.dtos.event.RemoveSponsorFromEventDTO;
 import com.swifticket.web.models.dtos.response.MessageDTO;
-import com.swifticket.web.models.dtos.sponsor.AssignSponsorDTO;
 import com.swifticket.web.models.dtos.tier.SaveTierDTO;
 import com.swifticket.web.models.dtos.tier.UpdateTierDTO;
 import com.swifticket.web.models.entities.*;
@@ -167,7 +167,7 @@ public class EventController {
 	}
 
 	@PostMapping("/sponsors")
-	public ResponseEntity<?> assignSponsor(@ModelAttribute @Valid AssignSponsorDTO data, BindingResult bindingResult) {
+	public ResponseEntity<?> assignSponsor(@ModelAttribute @Valid AssignSponsorToEventDTO data, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
@@ -177,7 +177,7 @@ public class EventController {
 		if (event == null)
 			return new ResponseEntity<>(new MessageDTO("Event not found"), HttpStatus.NOT_FOUND);
 
-		Sponsor sponsor = sponsorServices.findByName(data.getName());
+		Sponsor sponsor = sponsorServices.findByName(data.getSponsorName());
 		if (sponsor == null)
 			return new ResponseEntity<>(new MessageDTO("Sponsor not found"), HttpStatus.NOT_FOUND);
 

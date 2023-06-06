@@ -11,5 +11,5 @@ public class AssignSponsorToEventDTO {
 	private String eventId;
 	
 	@NotBlank(message = "sponsor id is required")
-	private String sponsorId;
+	private String sponsorName;
 }
