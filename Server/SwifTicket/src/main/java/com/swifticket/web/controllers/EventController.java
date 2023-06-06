@@ -218,8 +218,8 @@ public class EventController {
 			return new ResponseEntity<>(new MessageDTO("Sponsor not found"), HttpStatus.NOT_FOUND);
 
 		EventxSponsor relation = eventServices.findByEventAndSponsor(event, sponsor);
-		if (relation != null)
-			return new ResponseEntity<>(new MessageDTO("Sponsor is already assigned to event"), HttpStatus.OK);
+		if (relation == null)
+			return new ResponseEntity<>(new MessageDTO("Sponsor was not assigned to event"), HttpStatus.OK);
 
 		try {
 			eventServices.removeSponsor(event, sponsor);
