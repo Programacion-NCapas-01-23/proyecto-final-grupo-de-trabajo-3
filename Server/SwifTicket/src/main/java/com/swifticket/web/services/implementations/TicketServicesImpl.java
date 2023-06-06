@@ -60,6 +60,19 @@ public class TicketServicesImpl implements TicketServices {
     }
 
     @Override
+    public Date getTicketValidationDate(Ticket ticket) {
+        // Find when the ticket was used
+        List<Token> tokens = ticket.getTokens();
+        final Date[] usedIn = new Date[1];
+        tokens.forEach(t -> {
+            if (t.getVerifiedAt() != null)
+                usedIn[0] = t.getVerifiedAt();
+        });
+
+        return usedIn[0];
+    }
+
+    @Override
     @Transactional(rollbackOn = Exception.class)
     public String generateUseTicketCode(Ticket ticket) throws Exception {
         Date today = new Date();
@@ -190,19 +203,14 @@ public class TicketServicesImpl implements TicketServices {
     }
 
     @Override
-    public int getEventTicketsUsed(List<Tier> tiers) {
+    public List<Ticket> getEventTicketsUsed(List<Tier> tiers) {
         List<Ticket> tickets = new ArrayList<>();
         tiers.forEach(t -> {
             tickets.addAll(t.getTickets());
         });
 
-        final int[] ticketsUsed = {0};
-        tickets.forEach(ticket -> {
-            if (isTicketUsed(ticket))
-                ticketsUsed[0] += 1;
-        });
-
-        return ticketsUsed[0];
+        // Filter tickets to work only with used tickets
+        return tickets.stream().filter(this::isTicketUsed).toList();
     }
 
     @Override

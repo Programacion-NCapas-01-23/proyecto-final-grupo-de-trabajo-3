@@ -14,6 +14,10 @@ public class EventStatsDTO {
     private int attendants;
     private double attendantsVsTicketsSold;
     private List<Double> attendanceSingleVsGroup;
+
     private List<String> tiers;
     private List<Integer> ticketsSoldByTier;
+
+    private List<String> attendanceHours;
+    private List<Integer> attendanceValues;
 }

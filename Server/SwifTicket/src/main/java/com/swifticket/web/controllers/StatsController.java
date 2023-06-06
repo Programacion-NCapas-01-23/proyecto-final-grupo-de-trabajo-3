@@ -4,12 +4,15 @@ import com.swifticket.web.models.dtos.response.MessageDTO;
 import com.swifticket.web.models.dtos.stats.EventAttendanceStatsDTO;
 import com.swifticket.web.models.dtos.stats.EventStatsDTO;
 import com.swifticket.web.models.dtos.stats.GeneralStatsDTO;
+import com.swifticket.web.models.dtos.stats.TicketWithValidationDate;
 import com.swifticket.web.models.entities.Event;
+import com.swifticket.web.models.entities.Ticket;
 import com.swifticket.web.models.entities.Tier;
 import com.swifticket.web.models.entities.User;
 import com.swifticket.web.services.EventServices;
 import com.swifticket.web.services.TicketServices;
 import com.swifticket.web.services.UserServices;
+import com.swifticket.web.utils.DateFormatter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +22,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/stats")
@@ -30,12 +32,14 @@ public class StatsController {
 	private final TicketServices ticketServices;
 	private final UserServices userServices;
 	private final EventServices eventServices;
+	private final DateFormatter dateFormatter;
 
 	@Autowired
-	public StatsController(TicketServices ticketServices, UserServices userServices, EventServices eventServices) {
+	public StatsController(TicketServices ticketServices, UserServices userServices, EventServices eventServices, DateFormatter dateFormatter) {
 		this.ticketServices = ticketServices;
 		this.userServices = userServices;
 		this.eventServices = eventServices;
+		this.dateFormatter = dateFormatter;
 	}
 
 	@GetMapping("/general")
@@ -69,7 +73,9 @@ public class StatsController {
 		// Ratio of sold tickets
 		double ratio = (double) tickets / capacity * 100;
 		// Get tickets that have been validated
-		int attendants = ticketServices.getEventTicketsUsed(tiers);
+		List<Ticket> usedTickets = ticketServices.getEventTicketsUsed(tiers);
+		int attendants = usedTickets.size();
+		// Get ratio od attendants vs number of tickets sold
 		double attendantsVsTicketsSold = (double) attendants / tickets * 100;
 		// Get percentage of users that attended single vs in group
 		double attendanceSingle = ticketServices.getEventAttendanceSingle(tiers) / attendants * 100;
@@ -80,9 +86,25 @@ public class StatsController {
 
 		// Get array of tickets sold by tier
 		List<String> tiersNames = tiers.stream().map(Tier::getName).toList();
-		List<Integer> ticketsSoldByTier = tiers.stream().map(t -> {
-			return t.getTickets().size();
+		List<Integer> ticketsSoldByTier = tiers.stream().map(t -> t.getTickets().size()).toList();
+
+		// Get collection of tickets with their validation date
+		List<TicketWithValidationDate> ticketsWithDate;
+		ticketsWithDate = usedTickets.stream().map(ticket -> {
+			Date validationDate = ticketServices.getTicketValidationDate(ticket);
+			return new TicketWithValidationDate(ticket.getId(), validationDate);
 		}).toList();
+
+		// Get attendance hours and values
+		Map<String, Integer> attendanceMap = new HashMap<>();
+		ticketsWithDate.forEach(ticket -> {
+			String hour = dateFormatter.hourFormatter(ticket.getValidatedAt());
+			String key = dateFormatter.getHoursKey(hour);
+			if (attendanceMap.containsKey(key))
+				attendanceMap.put(key, attendanceMap.get(key) + 1);
+			else
+				attendanceMap.put(key, 1);
+		});
 
 		EventStatsDTO response = new EventStatsDTO(
 				capacity,
@@ -92,7 +114,9 @@ public class StatsController {
 				attendantsVsTicketsSold,
 				attendance,
 				tiersNames,
-				ticketsSoldByTier
+				ticketsSoldByTier,
+				attendanceMap.keySet().stream().toList(),
+				attendanceMap.values().stream().toList()
 		);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
@@ -111,7 +135,9 @@ public class StatsController {
 		// Ratio of sold tickets
 		double ratio = (double) tickets / capacity * 100;
 		// Get tickets that have been validated
-		int attendants = ticketServices.getEventTicketsUsed(tiers);
+		List<Ticket> usedTickets = ticketServices.getEventTicketsUsed(tiers);
+		int attendants = usedTickets.size();
+		// Get ratio od attendants vs number of tickets sold
 		double attendantsVsTicketsSold = (double) attendants / tickets * 100;
 
 		EventAttendanceStatsDTO response = new EventAttendanceStatsDTO(

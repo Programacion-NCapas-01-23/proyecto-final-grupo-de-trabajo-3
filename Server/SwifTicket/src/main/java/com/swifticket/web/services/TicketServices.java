@@ -1,5 +1,6 @@
 package com.swifticket.web.services;
 
+import java.util.Date;
 import java.util.List;
 
 import com.swifticket.web.models.entities.*;
@@ -10,6 +11,7 @@ public interface TicketServices {
 	void create(User user, Tier tier) throws Exception;
 
 	Boolean isTicketUsed(Ticket ticket);
+	Date getTicketValidationDate(Ticket ticket);
 	String generateUseTicketCode(Ticket ticket) throws Exception;
 	Token findTokenByUseTicketCode(String verificationToken);
 	Boolean validateUseTicketCode(Token token) throws  Exception;
@@ -21,7 +23,7 @@ public interface TicketServices {
 
 	int getEventCapacity(List<Tier> tiers);
 	int getEventTicketsSold(List<Tier> tiers);
-	int getEventTicketsUsed(List<Tier> tiers);
+	List<Ticket> getEventTicketsUsed(List<Tier> tiers);
 	double getEventAttendanceSingle(List<Tier> tiers);
 	int getTicketsSold();
 	int getTicketsUsed();
