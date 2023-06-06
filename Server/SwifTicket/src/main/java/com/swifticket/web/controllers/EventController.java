@@ -74,7 +74,7 @@ public class EventController {
 		Category category = categoryServices.findById(categoryId);
 
 		if (category == null)
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(new MessageDTO("category not found"), HttpStatus.NOT_FOUND);
 
 		List<Event> events = category.getEvents();
 		return new ResponseEntity<>(events, HttpStatus.OK);
@@ -85,7 +85,7 @@ public class EventController {
 		EventState state = eventStateService.findById(stateId);
 
 		if (state == null)
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(new MessageDTO("event state not found"), HttpStatus.NOT_FOUND);
 
 		List<Event> events = state.getEvents();
 		return new ResponseEntity<>(events, HttpStatus.OK);
