@@ -19,7 +19,7 @@ const devEvents = [
 ];
 
 export default function ShoppingSideBar(props) {
-  
+
   return (
     <Transition.Root show={props.open} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={props.setOpen}>
@@ -52,9 +52,9 @@ export default function ShoppingSideBar(props) {
                     <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
                       <div className="flex subtitle items-start justify-between">
                         <Dialog.Title className="flex w-full justify-stretch items-center">
-                          <div className="mr-default-xs flex-1 border border-primary"/>
+                          <div className="mr-default-xs flex-1 border border-primary" />
                           <p className="">Shopping cart</p>
-                          <div className="ml-default-xs flex-1 border border-primary"/>
+                          <div className="ml-default-xs flex-1 border border-primary" />
                         </Dialog.Title>
                         <div className="ml-3 flex h-7 items-center">
                           <button
@@ -67,21 +67,19 @@ export default function ShoppingSideBar(props) {
                           </button>
                         </div>
                       </div>
-
+                      
                       <div className="mt-8">
                         <div className="flow-root">
-                          <ul
-                            role="list"
-                          >
-                            <li>
-                              <EventCardSh count={1} event={devEvents[0]} />
-                            </li>
-                            <li>
-                              <EventCardSh count={2} event={devEvents[1]} />
-                            </li>
+                          <ul role="list">
+                            {devEvents.map((event, index) => (
+                              <li key={index}>
+                                <EventCardSh count={index + 1} event={event} />
+                              </li>
+                            ))}
                           </ul>
                         </div>
                       </div>
+                      
                     </div>
 
                     <div className="px-4 py-6 sm:px-6">

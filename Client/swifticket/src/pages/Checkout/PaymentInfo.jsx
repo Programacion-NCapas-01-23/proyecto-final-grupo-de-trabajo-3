@@ -48,7 +48,7 @@ export default function PaymentInfo() {
   }
 
   return (
-    <div className='w-full flex flex-col items-center justify-center'>
+    <div className='w-full flex flex-col items-center justify-center md:pt-default-xl pt-default-2xl'>
       <div className='w-min'>
 
 
@@ -62,7 +62,7 @@ export default function PaymentInfo() {
         />
 
         {/* AQUI ESTAN LOS INPUTS*/}
-        <div className='py-default'>
+        <div className='py-default md:min-w-max'>
           {/* QUE TIENEN VALIDACIONES CHIDAS */}
           {/* <PaymentInputsWrapper className="w-full text-black mb-default-xs" {...wrapperProps}>
           <svg {...getCardImageProps({ images })} />

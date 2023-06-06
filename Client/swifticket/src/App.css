@@ -31,6 +31,21 @@
     font-family: 'Oswald', sans-serif;
   }
 
+  .action-button {
+    font-size: larger;
+    border: 1px solid #E6A410;
+    background-color: #E6A410;
+    padding: 0.6rem 2.1rem;
+    border-radius: 8px;
+  }
+  
+  .subaction-button {
+    font-size: larger;
+    border: 2px solid #144580;
+    padding: 0.6rem 2.1rem;
+    border-radius: 8px;
+  }
+
   .subtitle {
     font-size: 2rem;
     font-family: 'Oswald', sans-serif;
