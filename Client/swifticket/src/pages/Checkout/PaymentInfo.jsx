@@ -25,15 +25,23 @@ export default function PaymentInfo() {
   const handleInputChange = (evt) => {
     const { name, value } = evt.target;
     setState((prev) => ({ ...prev, [name]: value }));
-    console.log({name, value});
+    console.log({ name, value });
   }
 
+  const handleInputNumberChange = (evt) => {
+    const { name, value } = evt.target;
+    const truncatedValue = value.slice(0, 16);
+    setState((prev) => ({ ...prev, [name]: truncatedValue }));
+    console.log({ name, value: truncatedValue });
+  };
+
+
   const handleInputDateChange = (evt) => {
-    const {name, value} = evt.target;
-    
+    const { name, value } = evt.target;
+
     const formatedDate = convertDateFormat(value);
-    
-    setState((prev => ({...prev, [name]: formatedDate})));
+
+    setState((prev => ({ ...prev, [name]: formatedDate })));
 
   }
 
@@ -73,7 +81,7 @@ export default function PaymentInfo() {
 
 
           {/* QUE LE DAN ESTILO A LA TAARJETA */}
-          <input className="p-2 text-black w-full rounded-sm my-default-xs" name='number' type="number" onChange={handleInputChange} onFocus={handleInputFocus} placeholder='Card Number' />
+          <input className="p-2 text-black w-full rounded-sm my-default-xs" name='number' type="number" onChange={handleInputNumberChange} onFocus={handleInputFocus} placeholder='Card Number' />
           <input className="p-2 text-black w-full rounded-sm" name='name' type="text" onChange={handleInputChange} onFocus={handleInputFocus} placeholder='Card Holder' />
           <div className='grid grid-cols-2 my-default-xs gap-3'>
             <input className="p-2 text-black w-full rounded-sm" name='cvc' type="number" onChange={handleInputChange} onFocus={handleInputFocus} placeholder='CVC' />

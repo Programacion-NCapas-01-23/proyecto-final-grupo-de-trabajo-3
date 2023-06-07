@@ -9,6 +9,13 @@ import { MdAccountCircle, MdClose, MdLogout, MdPerson } from "react-icons/md";
 
 export default function SideBar(props) {
 
+  const isGuest = true
+  const isAdmin = false
+  const isMod = false
+  const isCollab = false
+  const isUser = false
+  const user_name = "Pedro Esnifapiedra"
+
 
   return (
     <Transition show={props.open} as={Fragment} >
@@ -53,7 +60,7 @@ export default function SideBar(props) {
 
                         <div className="flex flex-col items-center md:my-default-sm my-default-xs">
                           <MdAccountCircle size={"12rem"} />
-                          <p className="heading-lg"> User Name </p>
+                          <p className="heading-lg"> {isGuest ? "Guest" : user_name} </p>
                         </div>
                       </Dialog.Title>
                     </div>
@@ -63,27 +70,28 @@ export default function SideBar(props) {
                         <li className="py-default text-xl">
                           <a className="flex items-center" href="">
                             <span className="mr-default-xs"> <MdPerson size={"2rem"} /> </span>
-                            Log In OR My Profile
+                            {isGuest ? "Log In" : "My Profile"}
                           </a>
                         </li>
 
                         {/* HERE GOES MAPPING OF ROLE's ACTIONS */}
 
-                        <UserActions />
-                        <CollabActions />
-                        <AdminActions />
-                        <ModActions />
+                        {!isUser && (<UserActions />)}
+                        {isCollab && (<CollabActions />)}
+                        {isMod && (<ModActions />)}
+                        {isAdmin && (<AdminActions />)}
 
                       </ul>
                     </div>
 
-                      {/* THIS SHOULDN'T SHOW UP ON isGuest  */}
-                    <div className="m-auto px-4 py-6 sm:px-6">
-                      <button className="flex items-center">
-                        <span> <MdLogout size={"2rem"} /> </span>
-                        <p className="heading-sm px-default"> Log Out</p>
-                      </button>
-                    </div>
+                    {!isGuest && (
+                      <div className="m-auto px-4 py-6 sm:px-6">
+                        <button className="flex items-center">
+                          <span> <MdLogout size={"2rem"} /> </span>
+                          <p className="heading-sm px-default"> Log Out</p>
+                        </button>
+                      </div>
+                    )}
 
                   </div>
                 </Dialog.Panel>
