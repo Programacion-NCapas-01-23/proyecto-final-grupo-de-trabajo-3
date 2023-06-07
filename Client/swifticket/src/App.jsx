@@ -17,7 +17,7 @@ import Landing from './Landing';
 import OwnedTickets from './pages/OwnedTickets/OwnedTickets';
 import OneEvent from './pages/OneEvent/OneEvent';
 import ReceiveQR from './pages/ReceiveQR/ReceiveQR';
-import SendQR from './pages/SendQR/SendQR';
+import SendQR from './pages/OneEvent/SendQR/SendQR';
 
 function App() {
   const router = createBrowserRouter(
@@ -30,6 +30,8 @@ function App() {
         <Route path="checkout" element={<Checkout />} />
         
         <Route path="receive-qr" element={<ReceiveQR />} />
+        <Route path="scan-qr" element={<ReceiveQR />} />
+        
 
         <Route path="user">
           <Route index element={<User />} />
@@ -41,7 +43,7 @@ function App() {
           <Route path=":eventId">
             <Route index element={<OneEvent />} />
             <Route path='send-qr' element={<SendQR/> } />
-            <Route path='buy' element={  } /> {/* CREATE A BUYING VARIANT OF ONE ELEMENT */}
+            <Route path='buy' element={<Landing/> } /> {/* CREATE A BUYING VARIANT OF ONE ELEMENT */}
           </Route>
         </Route>
 
@@ -70,7 +72,7 @@ const Layout = () => {
   return (
     <>
       <NavBar />
-      <main className='pt-default-xl'>
+      <main className='pt-[3.5rem]'>
         <Outlet />
       </main>
       <Footer />
