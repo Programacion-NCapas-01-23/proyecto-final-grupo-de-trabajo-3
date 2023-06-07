@@ -9,6 +9,7 @@ import com.swifticket.web.models.dtos.tier.SaveTierDTO;
 import com.swifticket.web.models.dtos.tier.UpdateTierDTO;
 import com.swifticket.web.models.entities.*;
 import com.swifticket.web.services.*;
+import com.swifticket.web.utils.DateValidator;
 import com.swifticket.web.utils.ErrorHandler;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,10 +41,11 @@ public class EventController {
 	private final ErrorHandler errorHandler;
 	private final SponsorServices sponsorServices;
 	private final TierServices tierServices;
+	private final DateValidator dateValidator;
 	private final int PROGRAMMED = 1;
 
 	@Autowired
-	public EventController(EventServices eventServices, CategoryServices categoryServices, PlaceServices placeService, OrganizerServices organizerService, EventStateServices eventStateService, ErrorHandler errorHandler, SponsorServices sponsorServices, TierServices tierServices) {
+	public EventController(EventServices eventServices, CategoryServices categoryServices, PlaceServices placeService, OrganizerServices organizerService, EventStateServices eventStateService, ErrorHandler errorHandler, SponsorServices sponsorServices, TierServices tierServices, DateValidator dateValidator) {
 		this.eventServices = eventServices;
 		this.categoryServices = categoryServices;
 		this.placeService = placeService;
@@ -52,6 +54,7 @@ public class EventController {
 		this.errorHandler = errorHandler;
 		this.sponsorServices = sponsorServices;
 		this.tierServices = tierServices;
+		this.dateValidator = dateValidator;
 	}
 
 	@GetMapping("")
@@ -101,6 +104,7 @@ public class EventController {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
+
 		Category category = categoryServices.findById(data.getCategoryId());
 		if (category == null)
 			return new ResponseEntity<>(new MessageDTO("category not found"), HttpStatus.NOT_FOUND);
@@ -116,6 +120,10 @@ public class EventController {
 		EventState state = eventStateService.findById(PROGRAMMED);
 		if (state == null)
 			return new ResponseEntity<>(new MessageDTO("event state not found"), HttpStatus.NOT_FOUND);
+
+		// Validate event date
+		if (dateValidator.isValidEventDate(data.getDateTime()))
+			return new ResponseEntity<>(new MessageDTO("Cannot add events on past dates"), HttpStatus.CONFLICT);
 
 		try {
 			eventServices.save(data, category, organizer, place, state);
@@ -152,6 +160,10 @@ public class EventController {
 		if (organizer == null) {
 			return new ResponseEntity<>(new MessageDTO("Organizer not found"), HttpStatus.NOT_FOUND);
 		}
+
+		// Validate event date
+		if (dateValidator.isValidEventDate(data.getDateTime()))
+			return new ResponseEntity<>(new MessageDTO("Cannot add events on past dates"), HttpStatus.CONFLICT);
 
 		try {
 			eventServices.update(id, data, category, organizer, place);
