@@ -3,6 +3,7 @@ package com.swifticket.web.controllers;
 import java.util.List;
 
 import com.swifticket.web.models.dtos.event.*;
+import com.swifticket.web.models.dtos.response.MessageAndSoldTicketsDTO;
 import com.swifticket.web.models.dtos.response.MessageDTO;
 import com.swifticket.web.models.dtos.tier.SaveTierDTO;
 import com.swifticket.web.models.dtos.tier.UpdateTierDTO;
@@ -276,7 +277,7 @@ public class EventController {
 		int ticketsSold = tier.getTickets().size();
 		if (ticketsSold > data.getCapacity())
 			return new ResponseEntity<>(
-					new MessageDTO("more tickets have been sold than the new capacity, sold tickets: " + ticketsSold),
+					new MessageAndSoldTicketsDTO("more tickets have been sold than the new capacity", ticketsSold),
 					HttpStatus.CONFLICT);
 
 		try {
@@ -298,7 +299,7 @@ public class EventController {
 		int ticketsSold = tier.getTickets().size();
 		if (ticketsSold > 0)
 			return new ResponseEntity<>(
-					new MessageDTO("can't delete a tier with sold tickets, sold tickets: " + ticketsSold),
+					new MessageAndSoldTicketsDTO("can't delete a tier with sold tickets", ticketsSold),
 					HttpStatus.CONFLICT);
 
 		try {
