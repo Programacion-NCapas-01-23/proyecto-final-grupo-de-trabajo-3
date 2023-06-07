@@ -15,6 +15,7 @@ import Charts from './pages/admin/Charts';
 import Checkout from './pages/Checkout/Checkout';
 import Landing from './Landing';
 import OwnedTickets from './pages/OwnedTickets/OwnedTickets';
+import OneEvent from './pages/OneEvent/OneEvent';
 
 function App() {
   const router = createBrowserRouter(
@@ -29,8 +30,13 @@ function App() {
         <Route path="user">
           <Route index element={<User />} />
           <Route path="owned-tickets" element={<OwnedTickets />} />
-        
         </Route>
+
+        <Route path="event">
+          <Route index element={<Landing />} />
+          <Route path=":eventId" element={<OneEvent />} />
+        </Route>
+
       </Route>
       
       <Route path="admin" element={<Charts />} />
