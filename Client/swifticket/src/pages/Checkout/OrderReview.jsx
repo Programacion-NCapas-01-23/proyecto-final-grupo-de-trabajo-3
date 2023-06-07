@@ -57,26 +57,28 @@ export default function OrderReview() {
 
   const getTotalTiersBought = () => {
     let total = 0;
-  
+
     devEvents.forEach((event) => {
       event.tiers.forEach((tier) => {
         total += tier.price * tier.count
       });
     });
-  
+
     return total;
   };
 
   return (
-    <div className=''>
-      <ul role="list">
-        {devEvents.map((event, index) => (
-          <li key={index}>
-            <EventCardCh count={index + 1} event={event} />
-          </li>
-        ))}
-      </ul>
-      <p className="heading-xl pt-default text-right pr-default-lg"> Total to Pay: ${Math.round((getTotalTiersBought() + Number.EPSILON) * 100) / 100}</p>
+    <div className='flex justify-center'>
+      <div className='md:w-1/2'>
+        <ul role="list">
+          {devEvents.map((event, index) => (
+            <li key={index}>
+              <EventCardCh count={index + 1} event={event} />
+            </li>
+          ))}
+        </ul>
+        <p className="md:heading-xl heading-md py-default text-right pr-default-lg"> Total to Pay: ${Math.round((getTotalTiersBought() + Number.EPSILON) * 100) / 100}</p>
+      </div>
     </div>
   )
 }

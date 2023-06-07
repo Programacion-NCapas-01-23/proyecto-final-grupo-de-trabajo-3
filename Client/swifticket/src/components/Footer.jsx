@@ -5,7 +5,6 @@ export default function Footer() {
 
   useEffect(() => {
     const footerHeight = footerRef.current.getBoundingClientRect().height;
-    // Use the footerHeight value as needed
     console.log("Footer height:", footerHeight);
   }, []);
 

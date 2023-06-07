@@ -9,7 +9,7 @@ import { MdAccountCircle, MdClose, MdLogout, MdPerson } from "react-icons/md";
 
 export default function SideBar(props) {
 
-  const isGuest = true
+  const isGuest = false
   const isAdmin = false
   const isMod = false
   const isCollab = false
@@ -77,9 +77,9 @@ export default function SideBar(props) {
                         {/* HERE GOES MAPPING OF ROLE's ACTIONS */}
 
                         {!isUser && (<UserActions />)}
-                        {isCollab && (<CollabActions />)}
-                        {isMod && (<ModActions />)}
-                        {isAdmin && (<AdminActions />)}
+                        {!isCollab && (<CollabActions />)}
+                        {!isMod && (<ModActions />)}
+                        {!isAdmin && (<AdminActions />)}
 
                       </ul>
                     </div>
@@ -88,7 +88,7 @@ export default function SideBar(props) {
                       <div className="m-auto px-4 py-6 sm:px-6">
                         <button className="flex items-center">
                           <span> <MdLogout size={"2rem"} /> </span>
-                          <p className="heading-sm px-default"> Log Out</p>
+                          <a href="/login" className="heading-sm px-default"> Log Out</a>
                         </button>
                       </div>
                     )}

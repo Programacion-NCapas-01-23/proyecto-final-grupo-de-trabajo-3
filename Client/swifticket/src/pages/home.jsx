@@ -17,7 +17,7 @@ export default function Home() {
         </div>
       </section>
       <section className="">
-        <TitileWithLines title="Available now" />
+        <TitileWithLines title="Available now"/>
         <div className="">
           <EventList eventsPerPage={4} events={devEvents} />
         </div>

@@ -56,7 +56,7 @@ export default function PaymentInfo() {
   }
 
   return (
-    <div className='w-full flex flex-col items-center justify-center md:pt-default-xl pt-default-2xl'>
+    <div className='w-full flex flex-col items-center justify-center md:pt-default-xl'>
       <div className='w-min'>
 
 

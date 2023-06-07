@@ -9,7 +9,7 @@ export default function Checkout() {
     <div className='min-h-[calc(100vh-52px-4rem)]'>
       <TitileWithLines title={isPaying ? "Payment" : "Checkout"}/>
       {isPaying ? <PaymentInfo /> : <OrderReview/>}
-      <div className='flex w-full absolute bottom-12 items-center md:justify-center md:gap-28 justify-evenly'>
+      <div className='flex w-full items-center md:justify-center md:gap-28 justify-evenly'>
         <button className='subaction-button'> {isPaying ? "Cancel" : "Go Back"} </button>
         <button onClick={() => {setIsPaying(!isPaying)}} className='action-button'> {isPaying ? "Pay Now" : "Continue"} </button>
       </div>
