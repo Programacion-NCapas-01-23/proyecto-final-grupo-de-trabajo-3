@@ -162,7 +162,13 @@ public class EventController {
 	}
 
 	@PatchMapping("/change-status")
-	public ResponseEntity<?> changeEventStatus(@ModelAttribute ChangeEventStatusDTO data) {
+	public ResponseEntity<?> changeEventStatus(
+			@ModelAttribute @Valid ChangeEventStatusDTO data, BindingResult validations) {
+		if (validations.hasErrors()) {
+			return new ResponseEntity<>(
+					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
+		}
+
 		Event event = eventServices.findById(data.getEventId());
 		if (event == null)
 			return new ResponseEntity<>(new MessageDTO("event not found"), HttpStatus.NOT_FOUND);
