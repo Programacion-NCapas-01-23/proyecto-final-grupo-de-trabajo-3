@@ -9,6 +9,7 @@ import java.util.UUID;
 
 @Data
 @AllArgsConstructor
+// DTO just to get THE EVENT with SPONSORS data and not to set it
 public class EventWithSponsorsDTO {
     private UUID id;
     private Category category;

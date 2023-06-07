@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
+// DTO just to get THE RESPONSE MESSAGE data and not to set it
 public class MessageDTO {
 	private String message;
 }

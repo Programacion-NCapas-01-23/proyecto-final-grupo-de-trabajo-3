@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
+// DTO just to get Ticket data and not to set it
 public class TicketDTO {
 	private String id;
 	private String user;

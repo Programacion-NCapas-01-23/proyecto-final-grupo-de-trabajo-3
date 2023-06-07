@@ -9,6 +9,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
+// DTO just to get THE USER data and not to set it
 public class SignedInUserDTO {
 	private String id;
 	private String name;

@@ -7,6 +7,5 @@ import java.util.UUID;
 
 public interface UserRepository extends ListCrudRepository<User, UUID> {
     User findOneByEmail(String email);
-
-    //User findByConfirmationCode(String code);
+    User findByIdOrEmail(UUID id, String email);
 }

@@ -9,6 +9,6 @@ import lombok.Data;
 @AllArgsConstructor
 public class SaveCategoryDTO {
 	@NotBlank(message = "category name is required")
-	@Size(max = 25, message = "the category name must be less than 25 characters")
+	@Size(min = 3, max = 25, message = "Format error: the category name must be less than 25 characters and more than 3 characters")
 	private String name;
 }

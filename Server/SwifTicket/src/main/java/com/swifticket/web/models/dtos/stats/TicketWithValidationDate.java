@@ -8,6 +8,7 @@ import java.util.UUID;
 
 @Data
 @AllArgsConstructor
+// DTO just to get the validation date data and not to set it
 public class TicketWithValidationDate {
     private UUID id;
     private Date validatedAt;

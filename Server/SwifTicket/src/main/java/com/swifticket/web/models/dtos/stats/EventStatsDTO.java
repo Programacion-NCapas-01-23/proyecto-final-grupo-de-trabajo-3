@@ -7,6 +7,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
+// DTO just to get the Events Stats data and not to set it
 public class EventStatsDTO {
     private int capacity;
     private int ticketsSold;

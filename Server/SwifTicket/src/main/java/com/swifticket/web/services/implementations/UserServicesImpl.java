@@ -9,7 +9,6 @@ import com.swifticket.web.repositories.UserRepository;
 import com.swifticket.web.services.UserServices;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -22,13 +21,14 @@ public class UserServicesImpl implements UserServices {
     private final UserRepository userRepository;
     private final RolexUserRepository rolexUserRepository;
     private final EventxValidatorRepository eventxValidatorRepository;
-    private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServicesImpl(UserRepository userRepository, RolexUserRepository rolexUserRepository, EventxValidatorRepository eventxValidatorRepository) {
+    public UserServicesImpl(UserRepository userRepository, RolexUserRepository rolexUserRepository, EventxValidatorRepository eventxValidatorRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.rolexUserRepository = rolexUserRepository;
         this.eventxValidatorRepository = eventxValidatorRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -45,6 +45,11 @@ public class UserServicesImpl implements UserServices {
     @Override
     public User findOneByEmail(String email) {
         return userRepository.findOneByEmail(email);
+    }
+
+    @Override
+    public User findOneByIdOrEmail(UUID id, String email) {
+        return userRepository.findByIdOrEmail(id, email);
     }
 
     @Override

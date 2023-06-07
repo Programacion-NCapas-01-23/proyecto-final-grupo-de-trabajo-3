@@ -8,9 +8,9 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class AssignRoleDTO {
-	@NotBlank(message = "user id is required")
+	@NotBlank(message = "user identifier is required")
 	private String userId;
-	
-	@Min(value = 1, message = "role is required")
+
+	@Min(value = 1, message = "role is required, it can be 1 for admin,2 for user, 3 for moderator and 4 for collaborator")
 	private int role;
 }

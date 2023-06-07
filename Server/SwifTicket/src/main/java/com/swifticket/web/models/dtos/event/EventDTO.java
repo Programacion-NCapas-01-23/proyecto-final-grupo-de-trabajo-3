@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
+// DTO just to get THE EVENT data and not to set it
 public class EventDTO {
 	private String title;
 	private String duration;

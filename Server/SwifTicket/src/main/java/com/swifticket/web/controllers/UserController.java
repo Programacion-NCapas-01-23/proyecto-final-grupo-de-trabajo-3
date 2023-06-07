@@ -91,14 +91,13 @@ public class UserController {
 
 		User user = userService.findOneByEmail(data.getEmail());
 		if (user == null)
-			return new ResponseEntity<>(new MessageDTO("invalid credentials"), HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(new MessageDTO("invalid credentials! - email unregistered"), HttpStatus.UNAUTHORIZED);
 
 		try {
 			Boolean response = userService.changePassword(user, data);
 			if (!response)
-				return new ResponseEntity<>(new MessageDTO("invalid credentials!"), HttpStatus.NOT_FOUND);
-
-			return new ResponseEntity<>(new MessageDTO("password changed"), HttpStatus.OK);
+				return new ResponseEntity<>(new MessageDTO("invalid credentials! - password incorrect"), HttpStatus.UNAUTHORIZED);
+			return new ResponseEntity<>(new MessageDTO("password changed successfully"), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -145,8 +144,8 @@ public class UserController {
 			return new ResponseEntity<>(new MessageDTO("role not found"), HttpStatus.NOT_FOUND);
 
 		RolexUser relation = userService.findByRoleAndUser(user, role);
-		if (relation != null) // TODO: check this response status code
-			return new ResponseEntity<>(new MessageDTO("role is already assigned to user"), HttpStatus.OK);
+		if (relation != null)
+			return new ResponseEntity<>(new MessageDTO("role is already assigned to user"), HttpStatus.CONFLICT);
 
 		try {
 			userService.assignRole(user, role);
@@ -173,8 +172,8 @@ public class UserController {
 			return new ResponseEntity<>(new MessageDTO("role not found"), HttpStatus.NOT_FOUND);
 
 		RolexUser relation = userService.findByRoleAndUser(user, role);
-		if (relation == null) // TODO: check this response status code
-			return new ResponseEntity<>(new MessageDTO("role wasn't assigned to user"), HttpStatus.OK);
+		if (relation == null)
+			return new ResponseEntity<>(new MessageDTO("role wasn't assigned to user or it was already removed"), HttpStatus.NOT_FOUND);
 
 		try {
 			userService.removeRole(user, role);
@@ -196,17 +195,20 @@ public class UserController {
 		if (user == null)
 			return new ResponseEntity<>(new MessageDTO("user not found"), HttpStatus.NOT_FOUND);
 
+		if(user.getState().getId() != 1)
+			return new ResponseEntity<>(new MessageDTO("user is not active"), HttpStatus.BAD_REQUEST);
+
 		Event event = eventServices.findById(data.getEventId());
 		if (event == null)
 			return new ResponseEntity<>(new MessageDTO("event not found"), HttpStatus.NOT_FOUND);
 
 		EventxValidator relation = userService.findByEventAndUser(event, user);
-		if (relation != null) // TODO: check this response status code
-			return new ResponseEntity<>(new MessageDTO("user is already assigned to event"), HttpStatus.OK);
+		if (relation != null)
+			return new ResponseEntity<>(new MessageDTO("user is already assigned to event"), HttpStatus.CONFLICT);
 
 		try {
 			userService.assignToEvent(user, event);
-			return new ResponseEntity<>(new MessageDTO("user assigned to event"), HttpStatus.OK);
+			return new ResponseEntity<>(new MessageDTO("user assigned to event successfully"), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
@@ -229,12 +231,12 @@ public class UserController {
 			return new ResponseEntity<>(new MessageDTO("event not found"), HttpStatus.NOT_FOUND);
 
 		EventxValidator relation = userService.findByEventAndUser(event, user);
-		if (relation == null) // TODO: check this response status code
-			return new ResponseEntity<>(new MessageDTO("user wasn't assigned to event"), HttpStatus.OK);
+		if (relation == null)
+			return new ResponseEntity<>(new MessageDTO("user wasn't assigned to event"), HttpStatus.NOT_FOUND);
 
 		try {
 			userService.removeFromEvent(user, event);
-			return new ResponseEntity<>(new MessageDTO("user removed from event"), HttpStatus.OK);
+			return new ResponseEntity<>(new MessageDTO("user removed from event successfully"), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}

@@ -9,7 +9,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class SaveSponsorDTO {
 	@NotBlank(message = "sponsor name is required")
-	@Size(max = 25, message = "The sponsor name must be less than 25 characters")
+	@Size(max = 25, message = "Format error: The sponsor name must be less than 25 characters")
 	private String name;
 	
 	@NotBlank(message = "image is required")

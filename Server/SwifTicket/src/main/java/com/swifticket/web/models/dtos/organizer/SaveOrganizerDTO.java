@@ -9,6 +9,6 @@ import lombok.Data;
 @AllArgsConstructor
 public class SaveOrganizerDTO {
 	@NotBlank(message = "organizer name is required")
-	@Size(max = 25, message = "The organizer name must be less than 25 characters")
+	@Size(min = 3, max = 25, message = "Format error: The organizer name must be less than 25 characters and more than 3 characters")
 	private String name;
 }

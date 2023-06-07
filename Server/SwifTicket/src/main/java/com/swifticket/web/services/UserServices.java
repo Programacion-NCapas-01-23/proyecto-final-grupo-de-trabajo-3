@@ -11,6 +11,7 @@ public interface UserServices {
 	List<User> findAll();
 	User findOneById(String id);
 	User findOneByEmail(String email);
+	User findOneByIdOrEmail(UUID id, String email);
 	void register(String name, String email, String password, Avatar avatar, UserState state) throws Exception;
 	void update(User user, UpdateUserDTO data, Avatar avatar) throws Exception;
 	Boolean changePassword(User user, ChangePasswordDTO data) throws Exception;

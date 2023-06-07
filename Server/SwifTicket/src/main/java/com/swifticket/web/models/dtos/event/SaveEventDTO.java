@@ -12,7 +12,7 @@ public class SaveEventDTO {
 	private String title;
 	
 	@NotBlank(message = "duration is required")
-	@Positive(message = "duration must be a positive number")
+	@Positive(message = "Value error: duration must be a positive number")
 	private String duration;
 	
 	@NotBlank(message = "date and time is required")

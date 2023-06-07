@@ -7,7 +7,7 @@ import java.util.Random;
 public class RandomCode {
     public String generateConfirmationCode() {
         Random random = new Random();
-        int codeLength = 6;
+        int codeLength = 10;
         StringBuilder confirmationCode = new StringBuilder();
 
         for (int i = 0; i < codeLength; i++) {

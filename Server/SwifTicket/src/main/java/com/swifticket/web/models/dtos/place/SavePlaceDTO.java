@@ -9,10 +9,10 @@ import lombok.Data;
 @AllArgsConstructor
 public class SavePlaceDTO {
 	@NotBlank(message = "name is required")
-	@Size(max = 25, message = "The name of the place must be less than 25 characters")
+	@Size(min = 3, max = 25, message = "Format error: The name of the place must be less than 25 characters and more than 3 characters")
 	private String name;
 	
 	@NotBlank(message = "address is required")
-	@Size(min = 10, max = 100, message = "address must be between 10 and 100 characters")
+	@Size(min = 10, max = 100, message = "Format error: Address must be between 10 and 100 characters")
 	private String address;
 }

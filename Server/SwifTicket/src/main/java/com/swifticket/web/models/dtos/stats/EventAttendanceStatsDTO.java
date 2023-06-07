@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
+// DTO just to get the Event Attendance Stat data and not to set it
 public class EventAttendanceStatsDTO {
     private int capacity;
     private int ticketsSold;

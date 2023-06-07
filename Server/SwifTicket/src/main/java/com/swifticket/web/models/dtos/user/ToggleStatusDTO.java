@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ToggleStatusDTO {
-	@NotBlank(message = "user id is required")
+	@NotBlank(message = "user identifier is required")
 	private String userId;
 
 	/* TODO: check best approach

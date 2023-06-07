@@ -7,9 +7,9 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class RemoveUserFromEventDTO {
-	@NotBlank(message = "user id is required")
+	@NotBlank(message = "user identifier is required")
 	private String userId;
 	
-	@NotBlank(message = "event id is required")
+	@NotBlank(message = "event ID is required")
 	private String eventId;
 }
