@@ -2,6 +2,8 @@ import React from 'react'
 
 export default function SendQR() {
   return (
-    <div>SendQR</div>
+    <div className='min-h-[calc(100vh-52px-4rem)]'>
+      SendQR
+    </div>
   )
 }

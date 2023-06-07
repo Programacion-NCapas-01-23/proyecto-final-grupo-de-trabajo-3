@@ -2,6 +2,8 @@ import React from 'react'
 
 export default function ReceiveQR() {
   return (
-    <div>ReceiveQR</div>
+    <div className='min-h-[calc(100vh-52px-4rem)]'>
+      ReceiveQR
+    </div>
   )
 }

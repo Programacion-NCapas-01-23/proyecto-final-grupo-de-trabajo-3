@@ -16,6 +16,8 @@ import Checkout from './pages/Checkout/Checkout';
 import Landing from './Landing';
 import OwnedTickets from './pages/OwnedTickets/OwnedTickets';
 import OneEvent from './pages/OneEvent/OneEvent';
+import ReceiveQR from './pages/ReceiveQR/ReceiveQR';
+import SendQR from './pages/SendQR/SendQR';
 
 function App() {
   const router = createBrowserRouter(
@@ -27,6 +29,8 @@ function App() {
         
         <Route path="checkout" element={<Checkout />} />
         
+        <Route path="receive-qr" element={<ReceiveQR />} />
+
         <Route path="user">
           <Route index element={<User />} />
           <Route path="owned-tickets" element={<OwnedTickets />} />
@@ -34,7 +38,11 @@ function App() {
 
         <Route path="event">
           <Route index element={<Landing />} />
-          <Route path=":eventId" element={<OneEvent />} />
+          <Route path=":eventId">
+            <Route index element={<OneEvent />} />
+            <Route path='send-qr' element={<SendQR/> } />
+            <Route path='buy' element={  } /> {/* CREATE A BUYING VARIANT OF ONE ELEMENT */}
+          </Route>
         </Route>
 
       </Route>
