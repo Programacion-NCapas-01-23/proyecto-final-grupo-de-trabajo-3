@@ -76,7 +76,7 @@ public class CategoryController {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
-		;
+
 		if (categoryService.findById(id) == null)
 			return new ResponseEntity<>(new MessageDTO("Category not found"), HttpStatus.NOT_FOUND);
 
@@ -98,11 +98,16 @@ public class CategoryController {
 		if (category == null)
 			return new ResponseEntity<>(new MessageDTO("Category not found"), HttpStatus.NOT_FOUND);
 
+		// A category with events can't be deleted
+		if (category.getEvents().size() > 0)
+			return new ResponseEntity<>(
+					new MessageDTO("this category can´t be deleted since it has been assigned"), HttpStatus.CONFLICT);
+
 		try {
 			categoryService.delete(id);
 			return new ResponseEntity<>(new MessageDTO("Category deleted"), HttpStatus.OK);
 		} catch (Exception e) {
-			return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
