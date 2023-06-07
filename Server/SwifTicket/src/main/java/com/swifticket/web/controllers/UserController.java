@@ -44,6 +44,7 @@ public class UserController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getUser(@PathVariable String id) {
+		// Check if user exists
 		User user = userService.findOneByEmail(id);
 		if (user == null)
 			return new ResponseEntity<>(new MessageDTO("user not found"), HttpStatus.NOT_FOUND);
@@ -58,6 +59,7 @@ public class UserController {
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
 
+		// Check if user exists
 		User user = userService.findOneByEmail(id);
 		if (user == null)
 			return new ResponseEntity<>(new MessageDTO("user not found"), HttpStatus.NOT_FOUND);
@@ -70,6 +72,7 @@ public class UserController {
 			avatar = avatarServices.findById(data.getAvatar());
 		}
 
+		// Check if avatar exists
 		if (avatar == null)
 			return new ResponseEntity<>(new MessageDTO("avatar not found"), HttpStatus.NOT_FOUND);
 
@@ -89,11 +92,13 @@ public class UserController {
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
 
+		// Check if user exists
 		User user = userService.findOneByEmail(data.getEmail());
 		if (user == null)
 			return new ResponseEntity<>(new MessageDTO("invalid credentials! - email unregistered"), HttpStatus.UNAUTHORIZED);
 
 		try {
+			// Check if password is correct
 			Boolean response = userService.changePassword(user, data);
 			if (!response)
 				return new ResponseEntity<>(new MessageDTO("invalid credentials! - password incorrect"), HttpStatus.UNAUTHORIZED);
@@ -111,10 +116,12 @@ public class UserController {
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
 
+		// Check if user exists
 		User user = userService.findOneByEmail(data.getUserId());
 		if (user == null)
 			return new ResponseEntity<>(new MessageDTO("user not found"), HttpStatus.NOT_FOUND);
 
+		// Check if state exists
 		UserState state = userStateServices.findById(data.getState());
 		if (state == null)
 			return new ResponseEntity<>(new MessageDTO("user state not found"), HttpStatus.NOT_FOUND);
@@ -135,14 +142,17 @@ public class UserController {
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
 
+		// Check if user exists
 		User user = userService.findOneByEmail(data.getUserId());
 		if (user == null)
 			return new ResponseEntity<>(new MessageDTO("user not found"), HttpStatus.NOT_FOUND);
 
+		// Check if role exists
 		Role role = roleServices.findById(data.getRole());
 		if (role == null)
 			return new ResponseEntity<>(new MessageDTO("role not found"), HttpStatus.NOT_FOUND);
 
+		// Check if user already has the role
 		RolexUser relation = userService.findByRoleAndUser(user, role);
 		if (relation != null)
 			return new ResponseEntity<>(new MessageDTO("role is already assigned to user"), HttpStatus.CONFLICT);
@@ -163,14 +173,17 @@ public class UserController {
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
 
+		// Check if user exists
 		User user = userService.findOneByEmail(data.getUserId());
 		if (user == null)
 			return new ResponseEntity<>(new MessageDTO("user not found"), HttpStatus.NOT_FOUND);
 
+		// Check if role exists
 		Role role = roleServices.findById(data.getRole());
 		if (role == null)
 			return new ResponseEntity<>(new MessageDTO("role not found"), HttpStatus.NOT_FOUND);
 
+		// Check if relation exists between user and role
 		RolexUser relation = userService.findByRoleAndUser(user, role);
 		if (relation == null)
 			return new ResponseEntity<>(new MessageDTO("role wasn't assigned to user or it was already removed"), HttpStatus.NOT_FOUND);
@@ -191,17 +204,27 @@ public class UserController {
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
 
+		// Check if user exists
 		User user = userService.findOneByEmail(data.getUserId());
 		if (user == null)
 			return new ResponseEntity<>(new MessageDTO("user not found"), HttpStatus.NOT_FOUND);
 
+		// Check if user has the 'collaborator' role
+		List<RolexUser> roles = user.getRolexUsers();
+		boolean isCollaborator = roles.stream().anyMatch(role -> role.getRole().getId() == 4);
+		if(!isCollaborator)
+			return new ResponseEntity<>(new MessageDTO("user doesn't have the 'collaborator' role"), HttpStatus.BAD_REQUEST);
+
+		// Check if user is active
 		if(user.getState().getId() != 1)
 			return new ResponseEntity<>(new MessageDTO("user is not active"), HttpStatus.BAD_REQUEST);
 
+		// Check if event exists
 		Event event = eventServices.findById(data.getEventId());
 		if (event == null)
 			return new ResponseEntity<>(new MessageDTO("event not found"), HttpStatus.NOT_FOUND);
 
+		// Check if the user already has a relation with the event
 		EventxValidator relation = userService.findByEventAndUser(event, user);
 		if (relation != null)
 			return new ResponseEntity<>(new MessageDTO("user is already assigned to event"), HttpStatus.CONFLICT);
@@ -222,17 +245,20 @@ public class UserController {
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
 
+		// Check if user exists
 		User user = userService.findOneByEmail(data.getUserId());
 		if (user == null)
 			return new ResponseEntity<>(new MessageDTO("user not found"), HttpStatus.NOT_FOUND);
 
+		// Check if event exists
 		Event event = eventServices.findById(data.getEventId());
 		if (event == null)
 			return new ResponseEntity<>(new MessageDTO("event not found"), HttpStatus.NOT_FOUND);
 
+		// Check if the user has a relation with the event
 		EventxValidator relation = userService.findByEventAndUser(event, user);
 		if (relation == null)
-			return new ResponseEntity<>(new MessageDTO("user wasn't assigned to event"), HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(new MessageDTO("user wasn't assigned to event or it was already remove"), HttpStatus.NOT_FOUND);
 
 		try {
 			userService.removeFromEvent(user, event);
