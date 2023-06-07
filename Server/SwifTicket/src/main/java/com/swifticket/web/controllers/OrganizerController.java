@@ -87,8 +87,14 @@ public class OrganizerController {
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteOrganizer(@PathVariable int id) {
-		if (organizerServices.findById(id) == null)
+		Organizer organizer = organizerServices.findById(id);
+		if (organizer == null)
 			return new ResponseEntity<>(new MessageDTO("organizer not found"), HttpStatus.NOT_FOUND);
+
+		// An organizer that's assigned to one or more events can't be deleted
+		if (organizer.getEvents().size() > 0)
+			return new ResponseEntity<>(
+					new MessageDTO("this organizer can´t be deleted since it has been assigned"), HttpStatus.CONFLICT);
 
 		try {
 			organizerServices.delete(id);

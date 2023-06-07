@@ -93,6 +93,11 @@ public class SponsorController {
 		if (sponsor == null)
 			return new ResponseEntity<>(new MessageDTO("sponsor not found"), HttpStatus.NOT_FOUND);
 
+		// A sponsor that's assigned to one or more events can't be deleted
+		if (sponsor.getEventxSponsors().size() > 0)
+			return new ResponseEntity<>(
+					new MessageDTO("this sponsor can´t be deleted since it has been assigned"), HttpStatus.CONFLICT);
+
 		try {
 			sponsorServices.delete(id);
 			return new ResponseEntity<>(new MessageDTO("sponsor deleted"), HttpStatus.OK);
