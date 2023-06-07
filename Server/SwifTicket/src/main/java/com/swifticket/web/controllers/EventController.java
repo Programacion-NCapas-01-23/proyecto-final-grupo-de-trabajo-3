@@ -62,6 +62,9 @@ public class EventController {
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getEvent(@PathVariable String id) {
 		Event event = eventServices.findById(id);
+		if (event == null)
+			return new ResponseEntity<>(new MessageDTO("Event not found"), HttpStatus.NOT_FOUND);
+
 		List<EventxSponsor> relations = event.getEventSponsors();
 		List<Sponsor> sponsors = relations.stream().map(EventxSponsor::getSponsor).toList();
 
