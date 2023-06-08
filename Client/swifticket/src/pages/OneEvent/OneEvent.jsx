@@ -1,4 +1,3 @@
-import React from "react";
 import { devEvents } from "../Cards";
 import { useParams } from "react-router-dom";
 import Landing from "../../Landing";
@@ -22,8 +21,11 @@ const OneEvent = () => {
         <TitileWithLines title={currentEvent.title}></TitileWithLines>
         
         <div className="border border-red-500 min-h-[calc(50vh-52px-2rem)] md:px-default-2xl px-default-lg py-default-xl">
-          <div className="border border-sky-400 ">
-            Hoa
+          <div className="grid grid-cols-2"> 
+            <DateInfo event = {currentEvent}/>
+            <EventInfo event={currentEvent}/>
+          </div>
+          <div className="border border-lime-400 ">  
           </div>
         </div>
       </section>
@@ -38,6 +40,25 @@ function TitileWithLines({ title }) {
       <h1 className='md:title subtitle text-center md:col-span-2 col-span-5'>{title}</h1>
       <div className='border h-0 border-primary md:col-span-5 col-span-2'></div>
     </span>
+  )
+}
+
+function DateInfo ({ event }){
+  return(
+    <div className="text-center">
+      <div className="w-fit px-default-lg py-default bg-secondary bg-opacity-30">
+          <p className="text-6xl">{event.date_time.getDate()}</p>
+          <p className="uppercase -mt-2">{event.date_time.toLocaleString('en-US', { month: 'short' })}</p>
+      </div>
+    </div>
+  )
+}
+
+function EventInfo ({ event }){
+  return(
+    <div className="bg-red-500">
+        A
+    </div>
   )
 }
 

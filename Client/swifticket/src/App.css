@@ -31,6 +31,10 @@
     font-family: 'Oswald', sans-serif;
   }
 
+  .form-input {
+    
+  }
+
   .action-button {
     font-size: larger;
     border: 1px solid #E6A410;
