@@ -11,9 +11,12 @@ import Login from './pages/Login/login';
 import { NavBar } from './components/NavBar';
 import Home from './pages/home';
 import Footer from './components/Footer';
-import Admin from './pages/Admin/Admin';
+import Admin from './pages/admin/admin';
 import Checkout from './pages/Checkout/Checkout';
 import Landing from './Landing';
+import Charts from './pages/admin/Charts';
+import Catalogs from './pages/admin/Catalogs';
+import Tables from './pages/admin/Tables';
 import OwnedTickets from './pages/OwnedTickets/OwnedTickets';
 import OneEvent from './pages/OneEvent/OneEvent';
 import ReceiveQR from './pages/ReceiveQR/ReceiveQR';
@@ -47,7 +50,11 @@ function App() {
           </Route>
         </Route>
 
-        <Route path="admin" element={<Admin />} />
+        <Route path="admin" element={<Admin />} >
+          <Route index element={<Charts/>}/>
+          <Route path='catalogs' element={<Catalogs/> }/>
+          <Route path='tables' element={<Tables/> }/>
+        </Route>
 
         <Route path="login" element={<Login />} />
 

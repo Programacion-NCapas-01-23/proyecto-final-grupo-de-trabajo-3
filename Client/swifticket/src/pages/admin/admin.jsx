@@ -1,16 +1,13 @@
 import React from 'react';
 import SideBar from './components/SideBar';
-import Charts from './Charts';
-import Tables from './Tables';
-import Catalogs from './Catalogs';
+
+import { Outlet } from 'react-router-dom';
 
 const Admin = () => {
   return (
     <div className="flex h-screen w-screen">
       <SideBar />
-      {/* <Charts /> */}
-      {/* <Tables /> */}
-      <Catalogs />
+      <Outlet />
     </div>
   );
 };
