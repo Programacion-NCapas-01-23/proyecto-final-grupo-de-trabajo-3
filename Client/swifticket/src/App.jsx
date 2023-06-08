@@ -21,7 +21,7 @@ import OwnedTickets from './pages/OwnedTickets/OwnedTickets';
 import OneEvent from './pages/OneEvent/OneEvent';
 import ReceiveQR from './pages/ReceiveQR/ReceiveQR';
 import SendQR from './pages/OneEvent/SendQR/SendQR';
-import CreateEvent from './pages/admin/CreateEvent';
+import CreateEvent from './pages/admin/CreateEvent/CreateEvent';
 import AllEvents from './pages/admin/AllEvents';
 
 function App() {
