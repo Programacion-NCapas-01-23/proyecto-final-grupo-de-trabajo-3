@@ -6,26 +6,25 @@ const OneEvent = () => {
   const { eventId } = useParams();
   console.log(eventId);
   const currentEvent = devEvents[eventId];
-  currentEvent.img =
-    "https://www.bigbearmountainresort.com/-/media/big-bear-mountain-resort-media/hero-images-tinted/tinted-2018-08-16_ss_jm_durkinfamily_greentrail_-7.jpg?rev=5589d635c6e9416eb50cc4d887d01ffa?h=1350&w=2400&hash=85E56DECD3A25A02C888B7D00F49E1FA";
+
   if (currentEvent != undefined)
     return (
-      <section className={`min-h-[calc(100vh-52px-4rem)] max-h-[calc(100vh-52px-4rem)] overflow-scroll`}>
+      <section className={`min-h-[calc(100vh-52px-3.5rem)] max-h-[calc(100vh-52px-4rem)] overflow-x-hidden overflow-y-auto`}>
         
         <div className="">
-          <div className="min-h-[calc(40vh-52px-2rem)] relative bg-center" style={{backgroundImage: `url(${currentEvent.img})`}}>
+          <div className="min-h-[calc(40vh-52px-2rem)] relative bg-cover bg-top" style={{backgroundImage: `url(${currentEvent.img})`}}>
           <div className="min-h-[calc(40vh-52px-2rem)] w-full absolute bg-gradient-to-t from-default to-transparent"></div>
           </div>
         </div>
 
         <TitileWithLines title={currentEvent.title}></TitileWithLines>
         
-        <div className="border border-red-500 min-h-[calc(50vh-52px-2rem)] md:px-default-2xl px-default-lg py-default-xl">
-          <div className="grid grid-cols-2"> 
+        <div className="min-h-[calc(50vh-52px-2rem)] md:px-default-2xl px-default-lg py-default-xl">
+          <div className="flex flex-row justify-evenly items-center gap-12"> 
             <DateInfo event = {currentEvent}/>
             <EventInfo event={currentEvent}/>
           </div>
-          <div className="border border-lime-400 ">  
+          <div className="">  
           </div>
         </div>
       </section>
@@ -46,7 +45,7 @@ function TitileWithLines({ title }) {
 function DateInfo ({ event }){
   return(
     <div className="text-center">
-      <div className="w-fit px-default-lg py-default bg-secondary bg-opacity-30">
+      <div className="w-fit px-default py-default rounded-lg bg-secondary bg-opacity-30">
           <p className="text-6xl">{event.date_time.getDate()}</p>
           <p className="uppercase -mt-2">{event.date_time.toLocaleString('en-US', { month: 'short' })}</p>
       </div>
@@ -56,11 +55,27 @@ function DateInfo ({ event }){
 
 function EventInfo ({ event }){
   return(
-    <div className="bg-red-500">
-        A
+        <div>
+          <LinnedText text={event.place} />
+          <LinnedText text={event.date_time.toLocaleString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })} />
+        </div>
+  )
+}
+
+function LinnedText({ text }) {
+  return (
+    <div className="md:subtitle border-l-2 border-primary pl-default-sm my-default-xs">{text}</div>
+  )
+}
+
+function EventTiers({event}){
+  return(
+    <div>
+      
     </div>
   )
 }
+
 
 export default OneEvent;
 

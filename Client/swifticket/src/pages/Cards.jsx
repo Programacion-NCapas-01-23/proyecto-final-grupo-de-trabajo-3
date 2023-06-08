@@ -5,6 +5,7 @@ import EventCardSh from "../components/EventCards/Shoping/EventCardSh";
 
 export const devEvents = [
   {
+    id: 0,
     img: "https://i.imgur.com/CqnHHbp.png",
     title: "Mando Cosplays",
     place: "Richard Vermont Plaza",
@@ -29,6 +30,7 @@ export const devEvents = [
     ]
   },
   {
+    id: 1,
     img: "https://i.imgur.com/iqs36FG.png",
     title: "I am the DANGER",
     place: "Hell",
@@ -53,6 +55,7 @@ export const devEvents = [
     ]
   },
   {
+    id: 2,
     img: "https://i.imgur.com/NC4hnOQ.png",
     title: "PS5 Giveaway",
     place: "Hidden Leaf Village",
@@ -77,6 +80,7 @@ export const devEvents = [
     ]
   },
   {
+    id: 3,
     img: "https://i.imgur.com/XdB0Bdd.png",
     title: "Hot Labradoodle Eating Contest",
     place: "El Muelle",
@@ -101,6 +105,7 @@ export const devEvents = [
     ]
   },
   {
+    id: 4,
     img: "https://i.imgur.com/BT7VIvh.png",
     title: "Travesti Escote Concert",
     place: "Tilted Towers",
@@ -125,6 +130,7 @@ export const devEvents = [
     ]
   },
   {
+    id: 5,
     img: "https://i.imgur.com/piLVV02.png",
     title: "Cheesse and Wine",
     place: "MAGNA VII",
@@ -149,6 +155,7 @@ export const devEvents = [
     ]
   },
   {
+    id: 6,
     img: "https://i.imgur.com/aKDtkl0.png",
     title: "React Dev Convention",
     place: "UCA",
