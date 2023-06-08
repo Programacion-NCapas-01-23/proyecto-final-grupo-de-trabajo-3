@@ -1,6 +1,5 @@
 import React from 'react';
 import { MdSearch } from 'react-icons/md';
-import TableCell from './components/TableCell';
 
 const Tables = () => {
   const registers = [
@@ -13,7 +12,7 @@ const Tables = () => {
     { id: 7, name: 'Douglas Hernandez', email: 'email@uca.edu.sv' },
     { id: 8, name: 'Ernesto Canales', email: 'email@uca.edu.sv' },
     { id: 9, name: 'Maria Campos', email: 'email@uca.edu.sv' },
-    { id: 10, name: 'Elva Ginon', email: 'email@uca.edu.sv' },
+    { id: 10, name: 'Chris Lopez', email: 'email@uca.edu.sv' },
   ];
 
   const isFull = registers.length == 10;
@@ -50,7 +49,37 @@ const Tables = () => {
               {/* TODO component */}
               {registers.map((register) => {
                 const { id, name, email } = register;
-                return <TableCell key={id} id={id} name={name} email={email} />;
+
+                return (
+                  <tr className="border-b-2 border-primary h-[10%]">
+                    <td className="text-center">{id}</td>
+                    <td className="text-center">{name}</td>
+                    <td className="text-center">{email}</td>
+                    <td className="text-center">
+                      <input type="checkbox" name="banned" id="" />
+                    </td>
+                    <td className="text-center">
+                      <div className="flex justify-evenly">
+                        <div className="flex gap-1">
+                          <input type="checkbox" name="Admin" id="" />
+                          <p>Admin</p>
+                        </div>
+                        <div className="flex gap-1">
+                          <input type="checkbox" name="User" id="" />
+                          <p>User</p>
+                        </div>
+                        <div className="flex gap-1">
+                          <input type="checkbox" name="Collab" id="" />
+                          <p>Collab</p>
+                        </div>
+                        <div className="flex gap-1">
+                          <input type="checkbox" name="Mod" id="" />
+                          <p>Mod</p>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                );
               })}
               {isFull ? (
                 ''
