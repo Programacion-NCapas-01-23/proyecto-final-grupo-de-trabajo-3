@@ -12,7 +12,7 @@ export default function EventCardSt(props) {
 
   return (
     <a className="cursor-pointer" onClick={redirectUser}>
-      <div className="flex mx-default-xs max-w-[32rem] m-default-xs shadow-md shadow-black rounded-2xl transition-all hover:shadow-neutral-800 hover:scale-105">
+      <div className="flex mx-default-xs max-w-[32rem] min-w-[32rem] bg-secondary bg-opacity-30 m-default-xs shadow-md shadow-black rounded-2xl transition-all hover:shadow-neutral-800 hover:scale-105">
         <div className="relative md:w-[16rem] w-40">
           <img
             className="object-cover h-full w-full shadow-md rounded-l-2xl"

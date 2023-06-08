@@ -21,6 +21,8 @@ import OwnedTickets from './pages/OwnedTickets/OwnedTickets';
 import OneEvent from './pages/OneEvent/OneEvent';
 import ReceiveQR from './pages/ReceiveQR/ReceiveQR';
 import SendQR from './pages/OneEvent/SendQR/SendQR';
+import CreateEvent from './pages/admin/CreateEvent';
+import AllEvents from './pages/admin/AllEvents';
 
 function App() {
   const router = createBrowserRouter(
@@ -54,6 +56,8 @@ function App() {
           <Route index element={<Charts/>}/>
           <Route path='catalogs' element={<Catalogs/> }/>
           <Route path='tables' element={<Tables/> }/>
+          <Route path='create-event' element={<CreateEvent/> }/>
+          <Route path='all-events' element={<AllEvents/> }/>
         </Route>
 
         <Route path="login" element={<Login />} />

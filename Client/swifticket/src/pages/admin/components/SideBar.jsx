@@ -27,7 +27,7 @@ const SideBar = () => {
           <div className="flex w-full">
             <button
               onClick={() => redirectUser("admin")}
-              className={`flex items-center pl-16 gap-4 w-11/12 p-2 rounded-r-3xl ${isCurrentPath("admin") ? "bg-primary" : "bg-[#00052E]"
+              className={`flex items-center pl-16 gap-4 w-11/12 p-2 transition-all rounded-r-3xl ${isCurrentPath("admin") ? "bg-primary" : "bg-[#00052E]"
                 }`}
             >
               <MdComputer size={25} />
@@ -41,8 +41,9 @@ const SideBar = () => {
           <p className="heading-lg">STATS</p>
           <div className="flex w-full">
             <button
-              className={`flex items-center pl-16 gap-4 w-11/12 p-2 rounded-r-3xl ${isCurrentPath("") ? "bg-primary" : "bg-[#00052E]"
-                }`}
+              onClick={() => redirectUser("admin/create-event")}
+              className={`flex items-center pl-16 gap-4 w-11/12 p-2 transition-all rounded-r-3xl ${isCurrentPath("admin/create-event") ? "bg-primary" : "bg-[#00052E]"
+            }`}
             >
               <MdTableRows size={25} />
               Create event
@@ -50,7 +51,8 @@ const SideBar = () => {
           </div>
           <div className="flex w-full">
             <button
-              className={`flex items-center pl-16 gap-4 w-11/12 p-2 rounded-r-3xl ${isCurrentPath("") ? "bg-primary" : "bg-[#00052E]"
+              onClick={() => redirectUser("admin/all-events")}
+              className={`flex items-center pl-16 gap-4 w-11/12 p-2 transition-all rounded-r-3xl ${isCurrentPath("admin/all-events") ? "bg-primary" : "bg-[#00052E]"
                 }`}
             >
               <MdTableRows size={25} />
@@ -63,7 +65,7 @@ const SideBar = () => {
           <div className="flex w-full">
             <button
               onClick={() => redirectUser("admin/tables")}
-              className={`flex items-center pl-16 gap-4 w-11/12 p-2 rounded-r-3xl ${isCurrentPath("admin/tables") ? "bg-primary" : "bg-[#00052E]"
+              className={`flex items-center pl-16 gap-4 w-11/12 p-2 transition-all rounded-r-3xl ${isCurrentPath("admin/tables") ? "bg-primary" : "bg-[#00052E]"
                 }`}
             >
               <MdTableRows size={25} />
@@ -73,7 +75,7 @@ const SideBar = () => {
           <div className="flex w-full">
             <button
               onClick={() => redirectUser("admin/catalogs")}
-              className={`flex items-center pl-16 gap-4 w-11/12 p-2 rounded-r-3xl ${isCurrentPath("admin/catalogs") ? "bg-primary" : "bg-[#00052E]"
+              className={`flex items-center pl-16 gap-4 w-11/12 p-2 transition-all rounded-r-3xl ${isCurrentPath("admin/catalogs") ? "bg-primary" : "bg-[#00052E]"
                 }`}
             >
               <MdTableRows size={25} />
