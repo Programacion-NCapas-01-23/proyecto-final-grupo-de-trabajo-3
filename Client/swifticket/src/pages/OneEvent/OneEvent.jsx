@@ -20,20 +20,23 @@ const OneEvent = () => {
         </div>
 
         <TitileWithLines title={currentEvent.title}></TitileWithLines>
+        
+        
+          <div className="flex md:flex-row flex-col items-center justify-evenly min-h-[calc(30vh-52px-2rem)] md:px-default-2xl px-default-lg pt-default">
+            <div className="flex flex-row justify-evenly items-center gap-12">
+              <DateInfo event={currentEvent} />
+              <EventInfo event={currentEvent} />
+            </div>
 
-        <div className="min-h-[calc(50vh-52px-2rem)] md:px-default-2xl px-default-lg pt-default-xl">
-          <div className="flex flex-row justify-evenly items-center gap-12">
-            <DateInfo event={currentEvent} />
-            <EventInfo event={currentEvent} />
-          </div>
-          <div className="flex justify-center">
-            <div className="md:w-fit mt-default-sm flex justify-center bg-secondary bg-opacity-30 p-default-sm rounded-lg">
-              <EventTiers event={currentEvent} />
+            <div className="flex justify-center h-fit">
+              <div className="md:w-fit mt-default-sm flex justify-center bg-secondary bg-opacity-30 p-default-sm rounded-lg">
+                <EventTiers event={currentEvent} />
+              </div>
             </div>
           </div>
-        </div>
+        
 
-        <div className='flex w-full items-center md:justify-center md:gap-28 justify-evenly'>
+        <div className='flex w-full items-center md:justify-center md:gap-28 justify-evenly mt-default'>
           <button className='subaction-button'> Cancel </button>
           <button className='action-button'> Add To Cart </button>
         </div>
@@ -45,7 +48,7 @@ const OneEvent = () => {
 
 function TitileWithLines({ title }) {
   return (
-    <span className="w-full grid grid-cols-8 px-default-lg pt-default-lg items-center">
+    <span className="w-full grid grid-cols-8 px-default-lg pt-default items-center">
       <div className='border h-0 border-primary'></div>
       <h1 className='md:title subtitle text-center md:col-span-2 col-span-5'>{title}</h1>
       <div className='border h-0 border-primary md:col-span-5 col-span-2'></div>
@@ -68,7 +71,7 @@ function EventInfo({ event }) {
   return (
     <div>
       <LinnedText text={event.place} />
-      <LinnedText text={event.date_time.toLocaleString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })} />
+      <LinnedText text={`${event.date_time.toLocaleString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })} - 9:00 PM`} />
     </div>
   )
 }
