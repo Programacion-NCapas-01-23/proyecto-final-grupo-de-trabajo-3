@@ -47,6 +47,21 @@
     border: 1px solid #C48A0E;
     background-color: #C48A0E;
   }
+
+  .action-button-outlined {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+    font-size: larger;
+    border: 1px solid #E6A410;
+    padding: 0.6rem 2.1rem;
+    border-radius: 8px;
+  }
+
+  .action-button-outlined:hover {
+    transform: scale(1.05);
+    border: 1px solid #C48A0E;
+  }
   
   .subaction-button {
     transition-property: all;
