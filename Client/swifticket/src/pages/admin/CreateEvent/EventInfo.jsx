@@ -1,6 +1,6 @@
 import { MdCameraAlt } from "react-icons/md"
-import TitileWithLines from "./components/TitleWithLines";
-import FormInput from "./components/FormInput";
+import TitileWithLines from "../components/TitleWithLines";
+import FormInput from "../components/FormInput";
 
 export default function EventInfo() {
 

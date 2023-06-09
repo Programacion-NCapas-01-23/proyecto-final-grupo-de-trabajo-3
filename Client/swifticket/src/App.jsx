@@ -23,6 +23,7 @@ import ReceiveQR from './pages/ReceiveQR/ReceiveQR';
 import SendQR from './pages/OneEvent/SendQR/SendQR';
 import CreateEvent from './pages/admin/CreateEvent/CreateEvent';
 import AllEvents from './pages/admin/AllEvents';
+import ModifyCatalogs from './pages/admin/ModifyCatalogs/ModifyCatalogs';
 
 function App() {
   const router = createBrowserRouter(
@@ -55,6 +56,7 @@ function App() {
         <Route path="admin" element={<Admin />} >
           <Route index element={<Charts/>}/>
           <Route path='catalogs' element={<Catalogs/> }/>
+          <Route path='modify-catalogs' element={ <ModifyCatalogs /> }/>
           <Route path='tables' element={<Tables/> }/>
           <Route path='create-event' element={<CreateEvent/> }/>
           <Route path='all-events' element={<AllEvents/> }/>

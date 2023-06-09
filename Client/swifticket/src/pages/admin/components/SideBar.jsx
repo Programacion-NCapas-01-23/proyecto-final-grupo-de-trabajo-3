@@ -82,6 +82,16 @@ const SideBar = () => {
               Catalogs
             </button>
           </div>
+          <div className="flex w-full">
+            <button
+              onClick={() => redirectUser("admin/modify-catalogs")}
+              className={`flex items-center pl-16 gap-4 w-11/12 p-2 transition-all rounded-r-3xl ${isCurrentPath("admin/modify-catalogs") ? "bg-primary" : "bg-[#00052E]"
+                }`}
+            >
+              <MdTableRows size={25} />
+              Modify Catalogs
+            </button>
+          </div>
         </div>
         <div className="flex flex-col justify-evenly items-center h-1/3 w-full">
           <p className="heading-lg">ACTIONS</p>

@@ -33,7 +33,7 @@ const Catalogs = () => {
       <div className="flex flex-col sm:flex-row h-[30vh] sm:h-[20vh] w-full justify-between items-start sm:items-end pl-4 sm:pl-8">
         <div className="flex gap-2 justify-center items-center">
           <span className="w-1 h-16 bg-primary" />
-          <p className="title">Users information</p>
+          <p className="title">Catalogs Information</p>
         </div>
       </div>
       <div className="flex h-[65vh] w-full">

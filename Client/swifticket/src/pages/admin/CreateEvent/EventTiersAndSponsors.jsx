@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import TitileWithLines from './components/TitleWithLines'
-import FormInput from './components/FormInput'
+import TitileWithLines from '../components/TitleWithLines'
+import FormInput from '../components/FormInput'
 import { MdAddBox, MdDelete, MdDeleteSweep } from 'react-icons/md';
 
 export default function EventTiersAndSponsors() {
