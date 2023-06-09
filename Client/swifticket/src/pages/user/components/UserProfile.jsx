@@ -16,6 +16,10 @@ const UserProfile = () => {
         Password
         <MdArrowForwardIos />
       </button>
+      <button className="flex justify-between items-center heading-xl w-full">
+        My Tickets
+        <MdArrowForwardIos />
+      </button>
     </div>
   );
 };

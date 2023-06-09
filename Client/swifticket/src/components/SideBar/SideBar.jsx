@@ -1,5 +1,6 @@
 import { Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
+import { useNavigate } from "react-router-dom"
 import AdminActions from "./components/AdminActions";
 import UserActions from "./components/UserActions";
 import ModActions from "./components/ModActions"
@@ -15,6 +16,14 @@ export default function SideBar(props) {
   const isCollab = false
   const isUser = false
   const user_name = "Pedro Esnifapiedra"
+  const navigate = useNavigate();
+
+  const redirectUser = () => {
+    if (!isGuest)
+      navigate("/user")
+    else
+      navigate("/login")
+  }
 
 
   return (
@@ -68,7 +77,7 @@ export default function SideBar(props) {
                     <div className="px-default-lg flex-1 overflow-y-auto">
                       <ul className="divide-y-2 divide-gray-200">
                         <li className="py-default text-xl">
-                          <a className="flex items-center" href="">
+                          <a className="flex items-center cursor-pointer" onClick={redirectUser} >
                             <span className="mr-default-xs"> <MdPerson size={"2rem"} /> </span>
                             {isGuest ? "Log In" : "My Profile"}
                           </a>

@@ -24,6 +24,7 @@ import SendQR from './pages/OneEvent/SendQR/SendQR';
 import CreateEvent from './pages/admin/CreateEvent/CreateEvent';
 import AllEvents from './pages/admin/AllEvents';
 import ModifyCatalogs from './pages/admin/ModifyCatalogs/ModifyCatalogs';
+import ScanQr from './pages/ScanQr/ScanQr';
 
 function App() {
   const router = createBrowserRouter(
@@ -35,7 +36,7 @@ function App() {
           <Route path="checkout" element={<Checkout />} />
 
           <Route path="receive-qr" element={<ReceiveQR />} />
-          <Route path="scan-qr" element={<ReceiveQR />} />
+          <Route path="scan-qr" element={<ScanQr />} />
 
           <Route path="user">
             <Route index element={<User />} />

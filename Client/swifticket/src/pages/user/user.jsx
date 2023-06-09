@@ -11,7 +11,7 @@ const User = () => {
         <div className="flex flex-col justify-evenly items-center h-full sm:h-3/4 w-11/12 md:w-2/5 bg-transparent sm:bg-secondary sm:bg-opacity-50 rounded-[2rem]">
           <div className="flex flex-col justify-center items-center h-2/6 sm:h-[45%]">
             <img src={userPlaceholder} alt="User" style={{ height: '20vh' }} />
-            <p className="subtitle">Chori Zon</p>
+            <p className="subtitle">Pedro Esnifapiedra</p>
           </div>
           {/* <ChangePass /> */}
           <UserProfile />
