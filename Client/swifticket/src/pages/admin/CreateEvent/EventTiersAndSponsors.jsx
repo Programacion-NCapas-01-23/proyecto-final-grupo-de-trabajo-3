@@ -84,7 +84,7 @@ function Sponsors({ sponsorsList }) {
     const handleAddSponsor = () => {
         if (selectedSponsor !== "" && !sponsors.includes(selectedSponsor)) {
             setSponsors([...sponsors, selectedSponsor]);
-            setSelectedSponsor("");
+            setSelectedSponsor(sponsorsList[0]);
         }
     };
 
