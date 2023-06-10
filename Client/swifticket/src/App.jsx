@@ -54,13 +54,13 @@ function App() {
           </Route>
         </Route>
 
-        <Route path="admin" element={<Admin />} >
-          <Route index element={<Charts/>}/>
-          <Route path='catalogs' element={<Catalogs/> }/>
-          <Route path='modify-catalogs' element={ <ModifyCatalogs /> }/>
-          <Route path='tables' element={<Tables/> }/>
-          <Route path='create-event' element={<CreateEvent/> }/>
-          <Route path='all-events' element={<AllEvents/> }/>
+        <Route path="admin" element={<Admin />}>
+          <Route index element={<Charts />} />
+          <Route path="catalogs" element={<Catalogs />} />
+          <Route path="modify-catalogs" element={<ModifyCatalogs />} />
+          <Route path="tables" element={<Tables />} />
+          <Route path="create-event" element={<CreateEvent />} />
+          <Route path="all-events" element={<AllEvents />} />
         </Route>
 
         <Route path="login" element={<Login />} />

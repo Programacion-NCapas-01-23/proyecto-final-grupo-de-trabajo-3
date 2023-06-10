@@ -4,6 +4,13 @@ import { MdCameraAlt } from 'react-icons/md';
 const ScanQr = () => {
   return (
     <div className="flex flex-col justify-center items-center gap-8 w-full min-h-[calc(100vh-52px-3.5rem)] px-8">
+      <span className="w-full grid grid-cols-10 px-default-lg pb-default-lg items-center">
+        <div className="border h-0 border-primary"></div>
+        <h1 className="md:title subtitle text-center md:col-span-3 col-span-7">
+          Send ticket
+        </h1>
+        <div className="border h-0 border-primary md:col-span-6 col-span-2"></div>
+      </span>
       <div className="flex justify-center items-center w-[40vh] h-[40vh] bg-[#424242] bg-opacity-50 rounded-3xl">
         <MdCameraAlt size={50} />
       </div>
