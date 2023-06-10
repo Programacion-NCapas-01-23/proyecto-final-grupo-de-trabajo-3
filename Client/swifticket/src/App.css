@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@200;300;400;500;600;700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto+Condensed:ital,wght@0,300;0,400;0,700;1,300;1,400;1,700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Chrome, Edge, and Safari Scroll Bar*/
+*::-webkit-scrollbar {
+  width: 0.25rem;
+}
+
+*::-webkit-scrollbar-track {
+  background: rgb(54, 54, 54);
+  border-radius: 1rem;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #835C09;
+  border-radius: 1rem;
+  border: 3px solid #835C09;
+}
+
+@layer components {
+  .title {
+    font-size: 4rem;
+    font-family: 'Oswald', sans-serif;
+  }
+
+  .action-button {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+    font-size: larger;
+    border: 1px solid #E6A410;
+    background-color: #E6A410;
+    padding: 0.6rem 2.1rem;
+    border-radius: 8px;
+  }
+
+  .action-button:hover {
+    transform: scale(1.05);
+    border: 1px solid #C48A0E;
+    background-color: #C48A0E;
+  }
+
+  .action-button-outlined {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+    font-size: larger;
+    border: 1px solid #E6A410;
+    padding: 0.6rem 2.1rem;
+    border-radius: 8px;
+  }
+
+  .action-button-outlined:hover {
+    transform: scale(1.05);
+    border: 1px solid #C48A0E;
+  }
+  
+  .subaction-button {
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+    font-size: larger;
+    border: 2px solid #144580;
+    padding: 0.6rem 2.1rem;
+    border-radius: 8px;
+  }
+
+  .subaction-button:hover {
+    transform: scale(1.05);
+  }
+
+  .subtitle {
+    font-size: 2rem;
+    font-family: 'Oswald', sans-serif;
+  }
+
+  .heading-sm {
+    font-size: 1.15rem;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .heading-md {
+    font-size: 1.35rem;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .heading-lg {
+    font-size: 1.6rem;
+    font-family: 'Poppins', sans-serif;
+  }
+
+  .heading-xl {
+    font-size: 2rem;
+    font-family: 'Poppins', sans-serif;
+  }
+}
