@@ -1,12 +1,10 @@
 package com.swifticket.web.repositories;
 
-import com.swifticket.web.models.entities.Event;
 import com.swifticket.web.models.entities.Sponsor;
-import org.springframework.data.repository.ListCrudRepository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.Optional;
 
-public interface SponsorRepository extends ListCrudRepository<Sponsor, Integer> {
+public interface SponsorRepository extends JpaRepository<Sponsor, Integer> {
     Sponsor findOneByName(String name);
     Sponsor findOneByNameAndImage(String name, String image);
 }
