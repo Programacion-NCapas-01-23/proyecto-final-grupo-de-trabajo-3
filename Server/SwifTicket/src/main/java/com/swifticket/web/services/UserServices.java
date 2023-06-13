@@ -24,4 +24,11 @@ public interface UserServices {
 	EventxValidator findByEventAndUser(Event event, User user);
 	void assignToEvent(User user, Event event) throws Exception;
 	void removeFromEvent(User user, Event event) throws Exception;
+
+	// Token management
+	AuthToken registerToken(User user) throws Exception;
+	Boolean isTokenValid(User user, String token);
+	void cleanTokens(User user) throws Exception;
+	// Find User authenticated
+	User findUserAuthenticated();
 }

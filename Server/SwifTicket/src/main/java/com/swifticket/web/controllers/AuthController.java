@@ -2,6 +2,7 @@ package com.swifticket.web.controllers;
 
 import java.util.List;
 
+import com.swifticket.web.models.dtos.auth.TokenDTO;
 import com.swifticket.web.models.dtos.user.CreateUserDTO;
 import com.swifticket.web.models.dtos.user.RequestValidationToken;
 import com.swifticket.web.models.dtos.user.UserDTO;
@@ -132,15 +133,22 @@ private final AuthServices authServices;
 
 		List<RolexUser> rolesRelations = user.getRolexUsers();
 		List<Role> roles = rolesRelations.stream().map(RolexUser::getRole).toList();
-		
-		SignedInUserDTO response = new SignedInUserDTO(
-				user.getId().toString(), 
-				user.getName(), 
-				user.getEmail(), 
-				user.getAvatar().getImage(),
-				roles);
-		
-		return new ResponseEntity<>(response, HttpStatus.OK);
+
+		try {
+			AuthToken authToken = userServices.registerToken(user);
+			SignedInUserDTO response = new SignedInUserDTO(
+					user.getId().toString(),
+					user.getName(),
+					user.getEmail(),
+					user.getAvatar().getImage(),
+					roles,
+					authToken);
+
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 	
 }
