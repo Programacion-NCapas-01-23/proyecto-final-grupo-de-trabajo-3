@@ -1,6 +1,7 @@
 package com.swifticket.web.services.implementations;
 
 import com.swifticket.web.models.entities.*;
+import com.swifticket.web.repositories.BillRepository;
 import com.swifticket.web.repositories.TicketRepository;
 import com.swifticket.web.repositories.TokenRepository;
 import com.swifticket.web.repositories.TransactionRepository;
@@ -16,12 +17,14 @@ public class TicketServicesImpl implements TicketServices {
     private final TicketRepository ticketRepository;
     private final TokenRepository tokenRepository;
     private final TransactionRepository transactionRepository;
+    private final BillRepository billRepository;
 
     @Autowired
-    public TicketServicesImpl(TicketRepository ticketRepository, TokenRepository tokenRepository, TransactionRepository transactionRepository) {
+    public TicketServicesImpl(TicketRepository ticketRepository, TokenRepository tokenRepository, TransactionRepository transactionRepository, BillRepository billRepository) {
         this.ticketRepository = ticketRepository;
         this.tokenRepository = tokenRepository;
         this.transactionRepository = transactionRepository;
+        this.billRepository = billRepository;
     }
 
     @Override
@@ -42,8 +45,12 @@ public class TicketServicesImpl implements TicketServices {
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void create(User user, Tier tier) throws Exception {
-        Ticket ticket = new Ticket(user, tier);
-        ticketRepository.save(ticket);
+        Ticket newTicket = new Ticket(user, tier);
+        Ticket ticket = ticketRepository.save(newTicket);
+
+        // Save ticket bill for audit
+        Bill bill = new Bill(ticket.getId(), user.getId(), tier.getPrice());
+        billRepository.save(bill);
     }
 
     @Override
