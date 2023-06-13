@@ -170,8 +170,8 @@ CREATE TABLE system_state (
 
 CREATE TABLE bill (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
-  ticket_id INT NOT NULL,
-  user_id INT NOT NULL,
+  ticket_id uuid NOT NULL,
+  user_id uuid NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  total INT NOT NULL
+  total DECIMAL(6,2) NOT NULL
 );
