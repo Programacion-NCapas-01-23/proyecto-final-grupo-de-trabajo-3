@@ -16,7 +16,6 @@ public class SaveTierDTO {
     @Size(min = 3, max = 25, message = "Format error: The name of the tier must be less than 25 characters and more than 3 characters")
     private String name;
 
-    @NotBlank(message = "capacity is required")
     @Positive(message = "Value error: capacity must be a positive number")
     private int capacity;
 

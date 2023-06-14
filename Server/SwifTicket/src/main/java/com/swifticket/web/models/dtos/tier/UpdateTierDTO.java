@@ -13,7 +13,6 @@ public class UpdateTierDTO {
     @Size(min = 3,max = 25 ,message = "Format error: name must be at least 3 characters long")
     private String name;
 
-    @NotBlank(message = "capacity is required")
     @Positive(message = "Value error: capacity must be a positive number")
     private int capacity;
 
