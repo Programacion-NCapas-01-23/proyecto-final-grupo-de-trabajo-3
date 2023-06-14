@@ -48,9 +48,9 @@ public class UserServicesImpl implements UserServices {
     }
 
     @Override
-    public Page<User> findAll(int page, int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt"));
-        return userRepository.findAll(pageable);
+    public Page<User> findAll(String name, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        return userRepository.findAll(name, pageable);
     }
 
     @Override

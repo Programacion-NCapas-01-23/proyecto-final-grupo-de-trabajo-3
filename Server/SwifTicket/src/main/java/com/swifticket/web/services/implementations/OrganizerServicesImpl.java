@@ -29,9 +29,9 @@ public class OrganizerServicesImpl implements OrganizerServices {
     public List<Organizer> findAll() {return repository.findAll();}
 
     @Override
-    public Page<Organizer> findAll(int page, int size) {
+    public Page<Organizer> findAll(String name, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("name"));
-        return repository.findAll(pageable);
+        return repository.findByNameContains(name, pageable);
     }
 
     @Override

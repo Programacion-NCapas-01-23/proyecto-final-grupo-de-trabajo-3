@@ -1,5 +1,6 @@
 package com.swifticket.web.controllers;
 
+import com.swifticket.web.models.dtos.page.PageDTO;
 import com.swifticket.web.models.dtos.response.MessageDTO;
 import com.swifticket.web.models.dtos.sponsor.SaveSponsorDTO;
 import com.swifticket.web.models.entities.Sponsor;
@@ -7,6 +8,7 @@ import com.swifticket.web.services.SponsorServices;
 import com.swifticket.web.utils.ErrorHandler;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -27,15 +29,21 @@ public class SponsorController {
 	}
 
 	@GetMapping("")
-	public ResponseEntity<?> getSponsors(@RequestParam(required = false) Integer id) {
-		if (id != null) {
-			Sponsor sponsor = sponsorServices.findById(id);
-			if (sponsor == null)
-				return new ResponseEntity<>(new MessageDTO("sponsor not found"), HttpStatus.NOT_FOUND);
-			return new ResponseEntity<>(sponsor, HttpStatus.OK);
-		}
-		List<Sponsor> sponsors = sponsorServices.findAll();
-		return new ResponseEntity<>(sponsors, HttpStatus.OK);
+	public ResponseEntity<?> getSponsors(@RequestParam(defaultValue = "") String name,
+										 @RequestParam(defaultValue = "0") int page,
+										 @RequestParam(defaultValue = "10") int size) {
+		//List<Sponsor> sponsors = sponsorServices.findAll();
+		Page<Sponsor> sponsors = sponsorServices.findAll(name, page, size);
+		PageDTO<Sponsor> response = new PageDTO<>(
+				sponsors.getContent(),
+				sponsors.getNumber(),
+				sponsors.getSize(),
+				sponsors.getTotalElements(),
+				sponsors.getTotalPages(),
+				sponsors.isEmpty()
+		);
+
+		return new ResponseEntity<>(response, HttpStatus.OK);
 
 	}
 

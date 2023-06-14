@@ -8,7 +8,7 @@ import org.springframework.data.domain.Page;
 
 public interface PlaceServices {
 	List<Place> findAll();
-	Page<Place> findAll(int page, int size);
+	Page<Place> findAll(String name, int page, int size);
 	Place findById(int id);
 	Place findOneByName(String name);
 	Place findOneByAddress(String address);

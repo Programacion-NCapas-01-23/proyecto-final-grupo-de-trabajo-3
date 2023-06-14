@@ -42,14 +42,9 @@ public class TicketServicesImpl implements TicketServices {
     }
 
     @Override
-    public Page<Ticket> findAll(int page, int size) {
+    public Page<Ticket> findAllByUser(User user, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-        return ticketRepository.findAll(pageable);
-    }
-
-    @Override
-    public List<Ticket> findAllByUser(User user) {
-        return ticketRepository.findByUser(user);
+        return ticketRepository.findByUser(user, pageable);
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.swifticket.web.controllers;
 
+import com.swifticket.web.models.dtos.page.PageDTO;
 import com.swifticket.web.models.dtos.response.CodeDTO;
 import com.swifticket.web.models.dtos.response.MessageDTO;
 import com.swifticket.web.models.dtos.ticket.*;
@@ -10,6 +11,7 @@ import com.swifticket.web.services.UserServices;
 import com.swifticket.web.utils.ErrorHandler;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -45,13 +47,24 @@ public class TicketController {
 	}
 	
 	@GetMapping("/user/{id}")
-	public ResponseEntity<?> getTicketsByUser(@PathVariable String id) {
+	public ResponseEntity<?> getTicketsByUser(@PathVariable String id,
+											  @RequestParam(defaultValue = "0") int page,
+											  @RequestParam(defaultValue = "10") int size) {
 		User user = userServices.findOneByEmail(id);
 		if (user == null)
 			return new ResponseEntity<>(new MessageDTO("user not found"), HttpStatus.NOT_FOUND);
 
-		List<Ticket> tickets = user.getTickets();
-		return new ResponseEntity<>(tickets, HttpStatus.OK);
+		Page<Ticket> tickets = ticketServices.findAllByUser(user, page, size);
+		//List<Ticket> tickets = user.getTickets();
+		PageDTO<Ticket> response = new PageDTO<>(
+				tickets.getContent(),
+				tickets.getNumber(),
+				tickets.getSize(),
+				tickets.getTotalElements(),
+				tickets.getTotalPages(),
+				tickets.isEmpty()
+		);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
 	@PostMapping("")

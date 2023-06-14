@@ -8,8 +8,7 @@ import org.springframework.data.domain.Page;
 
 public interface TicketServices {
 	Ticket findOneById(String ticketId);
-	Page<Ticket> findAll(int page, int size);
-	List<Ticket> findAllByUser(User user);
+	Page<Ticket> findAllByUser(User user, int page, int size);
 	void create(User user, Tier tier) throws Exception;
 
 	Boolean isTicketUsed(Ticket ticket);

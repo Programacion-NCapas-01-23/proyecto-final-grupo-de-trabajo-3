@@ -43,9 +43,9 @@ public class EventServicesImpl implements EventServices {
     public List<Event> findAll() { return eventRepository.findAll(); }
 
     @Override
-    public Page<Event> findAll(int page, int size) {
+    public Page<Event> findAll(String title, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("date"));
-        return eventRepository.findAll(pageable);
+        return eventRepository.findByTitleContains(title, pageable);
     }
 
     @Override

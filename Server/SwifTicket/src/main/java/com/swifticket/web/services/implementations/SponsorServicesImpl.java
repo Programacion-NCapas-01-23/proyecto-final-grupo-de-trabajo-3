@@ -28,9 +28,9 @@ public class SponsorServicesImpl implements SponsorServices {
     }
 
     @Override
-    public Page<Sponsor> findAll(int page, int size) {
+    public Page<Sponsor> findAll(String name, int page, int size) {
         Pageable pageable = PageRequest.of(page, size, Sort.by("name"));
-        return repository.findAll(pageable);
+        return repository.findByNameContains(name, pageable);
     }
 
     @Override

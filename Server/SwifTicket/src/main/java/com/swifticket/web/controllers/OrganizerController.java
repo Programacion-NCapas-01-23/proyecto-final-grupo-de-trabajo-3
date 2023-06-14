@@ -2,19 +2,13 @@ package com.swifticket.web.controllers;
 
 import java.util.List;
 
+import com.swifticket.web.models.dtos.page.PageDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.swifticket.web.models.dtos.organizer.SaveOrganizerDTO;
 import com.swifticket.web.models.dtos.response.MessageDTO;
@@ -37,9 +31,20 @@ public class OrganizerController {
 	}
 
 	@GetMapping("")
-	public ResponseEntity<?> getOrganizers() {
-		List<Organizer> organizers = organizerServices.findAll();
-		return new ResponseEntity<>(organizers, HttpStatus.OK);
+	public ResponseEntity<?> getOrganizers(@RequestParam(defaultValue = "") String name,
+										   @RequestParam(defaultValue = "0") int page,
+										   @RequestParam(defaultValue = "10") int size){
+		// List<Organizer> organizers = organizerServices.findAll();
+		Page<Organizer> organizers = organizerServices.findAll(name, page, size);
+		PageDTO<Organizer> response = new PageDTO<>(
+				organizers.getContent(),
+				organizers.getNumber(),
+				organizers.getSize(),
+				organizers.getTotalElements(),
+				organizers.getTotalPages(),
+				organizers.isEmpty()
+		);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
 	@PostMapping("")

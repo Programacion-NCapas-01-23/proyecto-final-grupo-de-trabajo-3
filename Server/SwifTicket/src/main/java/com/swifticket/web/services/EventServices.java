@@ -9,7 +9,7 @@ import org.springframework.data.domain.Page;
 
 public interface EventServices {
 	List<Event> findAll();
-	Page<Event> findAll(int page, int size);
+	Page<Event> findAll(String title, int page, int size);
 	Event findById(String id);
 	void save(SaveEventDTO eventInfo, Category category, Organizer organizer, Place place, EventState state) throws Exception;
 	void update(String id, SaveEventDTO eventInfo, Category category, Organizer organizer, Place place) throws Exception;

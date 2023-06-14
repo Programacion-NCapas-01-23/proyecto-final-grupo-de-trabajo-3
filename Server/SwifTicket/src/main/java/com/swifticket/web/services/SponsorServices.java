@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 
 public interface SponsorServices {
 	List<Sponsor> findAll();
-	Page<Sponsor> findAll(int page, int size);
+	Page<Sponsor> findAll(String name, int page, int size);
 	Sponsor findById(int id);
 	Sponsor findByName(String name);
 	Sponsor findOneByNameAndImage(String name, String image);

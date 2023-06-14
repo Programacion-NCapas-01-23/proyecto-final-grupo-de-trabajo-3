@@ -10,7 +10,7 @@ import org.springframework.data.domain.Page;
 
 public interface UserServices {
 	List<User> findAll();
-	Page<User> findAll(int page, int size);
+	Page<User> findAll(String name, int page, int size);
 	User findOneById(String id);
 	User findOneByEmail(String email);
 	User findOneByIdOrEmail(UUID id, String email);

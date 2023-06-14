@@ -1,5 +1,6 @@
 package com.swifticket.web.controllers;
 
+import com.swifticket.web.models.dtos.page.PageDTO;
 import com.swifticket.web.models.dtos.response.MessageDTO;
 import com.swifticket.web.models.dtos.user.*;
 import com.swifticket.web.models.entities.*;
@@ -7,6 +8,7 @@ import com.swifticket.web.services.*;
 import com.swifticket.web.utils.ErrorHandler;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -37,9 +39,21 @@ public class UserController {
 	}
 
 	@GetMapping("")
-	public ResponseEntity<?>getUsers() {
-		List<User> users = userService.findAll();
-		return new ResponseEntity<>(users, HttpStatus.OK);
+	public ResponseEntity<?>getUsers(@RequestParam(defaultValue = "") String name,
+									 @RequestParam(defaultValue = "0") int page,
+									 @RequestParam(defaultValue = "10") int size) {
+		//List<User> users = userService.findAll();
+		Page<User> users = userService.findAll(name, page, size);
+		PageDTO<User> response = new PageDTO<>(
+				users.getContent(),
+				users.getNumber(),
+				users.getSize(),
+				users.getTotalElements(),
+				users.getTotalPages(),
+				users.isEmpty()
+		);
+
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}")

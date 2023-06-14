@@ -31,9 +31,9 @@ public class PlaceServiceImpl implements PlaceServices {
 	}
 
 	@Override
-	public Page<Place> findAll(int page, int size) {
+	public Page<Place> findAll(String name, int page, int size) {
 		Pageable pageable = PageRequest.of(page, size, Sort.by("name"));
-		return repository.findAll(pageable);
+		return repository.findByNameContains(name, pageable);
 	}
 
 	@Override
