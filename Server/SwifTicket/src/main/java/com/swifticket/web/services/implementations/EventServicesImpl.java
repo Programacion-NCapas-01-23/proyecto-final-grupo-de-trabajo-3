@@ -10,6 +10,10 @@ import com.swifticket.web.services.EventServices;
 import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -37,6 +41,12 @@ public class EventServicesImpl implements EventServices {
 
     @Override
     public List<Event> findAll() { return eventRepository.findAll(); }
+
+    @Override
+    public Page<Event> findAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("date"));
+        return eventRepository.findAll(pageable);
+    }
 
     @Override
     public Event findById(String id) {

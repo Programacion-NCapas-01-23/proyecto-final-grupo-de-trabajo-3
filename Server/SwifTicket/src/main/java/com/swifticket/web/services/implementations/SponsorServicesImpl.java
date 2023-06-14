@@ -5,6 +5,10 @@ import com.swifticket.web.repositories.SponsorRepository;
 import com.swifticket.web.services.SponsorServices;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -21,6 +25,12 @@ public class SponsorServicesImpl implements SponsorServices {
     @Override
     public List<Sponsor> findAll() {
         return repository.findAll();
+    }
+
+    @Override
+    public Page<Sponsor> findAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("name"));
+        return repository.findAll(pageable);
     }
 
     @Override

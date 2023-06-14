@@ -4,9 +4,11 @@ import java.util.Date;
 import java.util.List;
 
 import com.swifticket.web.models.entities.*;
+import org.springframework.data.domain.Page;
 
 public interface TicketServices {
 	Ticket findOneById(String ticketId);
+	Page<Ticket> findAll(int page, int size);
 	List<Ticket> findAllByUser(User user);
 	void create(User user, Tier tier) throws Exception;
 

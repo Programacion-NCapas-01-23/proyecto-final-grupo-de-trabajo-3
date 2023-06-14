@@ -7,6 +7,10 @@ import com.swifticket.web.services.OrganizerServices;
 import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,8 +27,14 @@ public class OrganizerServicesImpl implements OrganizerServices {
 
     @Override
     public List<Organizer> findAll() {return repository.findAll();}
-    
-	@Override
+
+    @Override
+    public Page<Organizer> findAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("name"));
+        return repository.findAll(pageable);
+    }
+
+    @Override
 	public Organizer findById(int id) {
 		return repository.findById(id).orElse(null);
 	}

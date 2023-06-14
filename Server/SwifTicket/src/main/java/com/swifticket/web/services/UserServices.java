@@ -6,9 +6,11 @@ import java.util.UUID;
 import com.swifticket.web.models.dtos.user.ChangePasswordDTO;
 import com.swifticket.web.models.dtos.user.UpdateUserDTO;
 import com.swifticket.web.models.entities.*;
+import org.springframework.data.domain.Page;
 
 public interface UserServices {
 	List<User> findAll();
+	Page<User> findAll(int page, int size);
 	User findOneById(String id);
 	User findOneByEmail(String email);
 	User findOneByIdOrEmail(UUID id, String email);

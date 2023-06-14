@@ -8,6 +8,10 @@ import com.swifticket.web.repositories.TransactionRepository;
 import com.swifticket.web.services.TicketServices;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.util.*;
 
@@ -35,6 +39,12 @@ public class TicketServicesImpl implements TicketServices {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    @Override
+    public Page<Ticket> findAll(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        return ticketRepository.findAll(pageable);
     }
 
     @Override
