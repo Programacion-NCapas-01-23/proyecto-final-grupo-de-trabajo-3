@@ -39,10 +39,11 @@ public class UserController {
 	}
 
 	@GetMapping("")
-	public ResponseEntity<?>getUsers(@RequestParam(defaultValue = "") String name,
-									 @RequestParam(defaultValue = "0") int page,
-									 @RequestParam(defaultValue = "10") int size) {
-		//List<User> users = userService.findAll();
+	public ResponseEntity<?>getUsers(
+			@RequestParam(defaultValue = "") String name,
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size) {
+		// List<User> users = userService.findAll();
 		Page<User> users = userService.findAll(name, page, size);
 		PageDTO<User> response = new PageDTO<>(
 				users.getContent(),

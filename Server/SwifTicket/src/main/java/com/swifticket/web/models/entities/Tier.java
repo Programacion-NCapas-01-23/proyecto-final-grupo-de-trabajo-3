@@ -1,5 +1,6 @@
 package com.swifticket.web.models.entities;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,13 +32,13 @@ public class Tier {
     private int capacity;
 
     @Column(name = "price", nullable = false)
-    private int price;
+    private float price;
 
     @OneToMany(mappedBy = "tier", fetch = FetchType.LAZY)
     @JsonIgnore
     private List<Ticket> tickets;
 
-	public Tier(Event event, String name, int capacity, int price) {
+	public Tier(Event event, String name, int capacity, float price) {
 		super();
 		this.event = event;
 		this.name = name;

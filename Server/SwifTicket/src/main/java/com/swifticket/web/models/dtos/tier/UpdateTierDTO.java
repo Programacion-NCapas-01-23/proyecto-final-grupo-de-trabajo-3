@@ -1,11 +1,10 @@
 package com.swifticket.web.models.dtos.tier;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+
+import java.math.BigDecimal;
 
 @Data
 @AllArgsConstructor
@@ -18,7 +17,7 @@ public class UpdateTierDTO {
     @Positive(message = "Value error: capacity must be a positive number")
     private int capacity;
 
-    @NotBlank(message = "price is required")
-    @Positive(message = "Value error: price must be a positive number")
-    private int price;
+    @DecimalMin(value = "0.0", inclusive = false)
+    @Digits(integer = 3, fraction = 2)
+    private float price;
 }

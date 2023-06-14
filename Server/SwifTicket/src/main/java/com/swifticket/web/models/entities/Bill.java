@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.UUID;
 
@@ -27,9 +29,9 @@ public class Bill {
     private Date createdAt;
 
     @Column(name = "total")
-    private int total;
+    private float total;
 
-    public Bill(UUID ticketId, UUID userId, int total) {
+    public Bill(UUID ticketId, UUID userId, float total) {
         this.ticketId = ticketId;
         this.userId = userId;
         this.total = total;
