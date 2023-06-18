@@ -1,6 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { login } from '../../../services/User.Services';
 
 const MainLogin = () => {
+  const [userName, setUserName] = useState('');
+  const [pass, setPass] = useState('');
+
+  const loginHandler = async (userName, pass) => {
+    const response = await login(userName, pass);
+    console.log(response);
+  };
+
   return (
     <div className="container-login flex flex-col justify-between items-center w-full h-full">
       <div></div>
@@ -10,15 +19,26 @@ const MainLogin = () => {
             type="text"
             className="input-username h-10 px-4 flex justify-center items-center w-4/5"
             placeholder="Username"
+            value={userName}
+            onChange={(e) => {
+              setUserName(e.target.value);
+            }}
           />
           <input
             type="password"
             className="input-password h-10 px-4 flex justify-center items-center w-4/5"
             placeholder="Password"
+            value={pass}
+            onChange={(e) => {
+              setPass(e.target.value);
+            }}
           />
         </div>
 
-        <button className="btn-login h-10 px-4 flex justify-center items-center w-4/5">
+        <button
+          className="btn-login h-10 px-4 flex justify-center items-center w-4/5"
+          onClick={() => loginHandler(userName, pass)}
+        >
           Login
         </button>
       </div>
