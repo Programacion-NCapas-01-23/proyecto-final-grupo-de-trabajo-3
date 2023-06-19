@@ -3,8 +3,14 @@ import EventCardSt from '../components/EventCards/Standard/EventCardSt';
 import { MdArrowCircleLeft, MdArrowCircleRight } from 'react-icons/md';
 import { devEvents } from './Cards';
 import EventCardMi from '../components/EventCards/Minimized/EventCardMi';
+import { useRecoilState } from 'recoil';
+import { tokenState } from '../state/atoms/tokenState';
 
 export default function Home() {
+
+  const [token, setToken] = useRecoilState(tokenState);
+  console.log(token);
+
   return (
     <div className="min-h-[calc(100vh-52px-4rem)]">
       <section className="">

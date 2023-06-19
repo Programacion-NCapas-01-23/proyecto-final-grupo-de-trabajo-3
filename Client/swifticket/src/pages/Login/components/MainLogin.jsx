@@ -1,12 +1,19 @@
 import React, { useState } from 'react';
 import { login } from '../../../services/User.Services';
+import { useRecoilState } from 'recoil';
+import { tokenState } from '../../../state/atoms/tokenState';
 
 const MainLogin = () => {
   const [userName, setUserName] = useState('');
   const [pass, setPass] = useState('');
 
+  const [token, setToken] = useRecoilState(tokenState);
+
   const loginHandler = async (userName, pass) => {
     const response = await login(userName, pass);
+
+    localStorage.setItem('auth_token', JSON.stringify(response.data.token));
+    setToken(response.data.token);
     console.log(response);
   };
 
