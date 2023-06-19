@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { login } from '../../../services/User.Services';
-import { useRecoilState } from 'recoil';
+import { useSetRecoilState } from 'recoil';
 import { tokenState } from '../../../state/atoms/tokenState';
+import { useNavigate } from 'react-router-dom';
 
 const MainLogin = () => {
   const [userName, setUserName] = useState('');
   const [pass, setPass] = useState('');
+  const navigateTo = useNavigate();
 
-  const [token, setToken] = useRecoilState(tokenState);
+  const setToken = useSetRecoilState(tokenState);
 
   const loginHandler = async (userName, pass) => {
     const response = await login(userName, pass);
@@ -15,6 +17,8 @@ const MainLogin = () => {
     localStorage.setItem('auth_token', JSON.stringify(response.data.token));
     setToken(response.data.token);
     console.log(response);
+    
+    navigateTo('/');
   };
 
   return (
