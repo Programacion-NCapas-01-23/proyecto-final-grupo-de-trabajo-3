@@ -3,6 +3,7 @@ package com.swifticket.web.services;
 import java.util.List;
 import java.util.UUID;
 
+import com.swifticket.web.models.dtos.auth.GoogleUserDTO;
 import com.swifticket.web.models.dtos.user.ChangePasswordDTO;
 import com.swifticket.web.models.dtos.user.UpdateUserDTO;
 import com.swifticket.web.models.entities.*;

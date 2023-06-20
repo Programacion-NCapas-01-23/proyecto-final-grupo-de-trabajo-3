@@ -1,8 +1,9 @@
 package com.swifticket.web.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import com.swifticket.web.models.dtos.auth.TokenDTO;
+import com.swifticket.web.models.dtos.auth.*;
 import com.swifticket.web.models.dtos.user.CreateUserDTO;
 import com.swifticket.web.models.dtos.user.RequestValidationToken;
 import com.swifticket.web.models.dtos.user.UserDTO;
@@ -16,9 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import com.swifticket.web.models.dtos.auth.SignInDTO;
-import com.swifticket.web.models.dtos.auth.SignedInUserDTO;
-import com.swifticket.web.models.dtos.auth.ValidateTokenDTO;
 import com.swifticket.web.models.dtos.response.MessageDTO;
 import com.swifticket.web.services.AuthServices;
 import com.swifticket.web.utils.ErrorHandler;
@@ -41,6 +39,43 @@ private final AuthServices authServices;
 		this.avatarServices = avatarServices;
 		this.userStateServices = userStateServices;
 		this.errorHandler = errorHandler;
+	}
+
+	@PostMapping("/google/signin")
+	public ResponseEntity<?> registerAndLoginUser(@ModelAttribute @Valid IdTokenRequestDTO data, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) {
+			return new ResponseEntity<>(
+					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
+		}
+
+		try {
+			User user = authServices.loginOAuthGoogle(data);
+			if (user == null)
+				return new ResponseEntity<>(new MessageDTO("invalid credentials"), HttpStatus.UNAUTHORIZED);
+
+			// System.out.println("User ID: " + user.getId());
+			// if user exists get user roles
+			List<RolexUser> rolesRelations = user.getRolexUsers();
+			List<Role> roles = new ArrayList<>();
+			if (rolesRelations != null)
+				 roles = rolesRelations.stream().map(RolexUser::getRole).toList();
+
+			// Create and register users JWT
+			AuthToken authToken = userServices.registerToken(user);
+
+			SignedInUserDTO response = new SignedInUserDTO(
+					user.getId().toString(),
+					user.getName(),
+					user.getEmail(),
+					user.getAvatar().getImage(),
+					roles,
+					authToken);
+
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		} catch (Exception e) {
+			// System.out.println("ERROR " + e.getMessage() + e.getLocalizedMessage());
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@PostMapping("/signup")

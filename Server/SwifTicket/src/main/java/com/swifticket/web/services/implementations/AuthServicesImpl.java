@@ -1,73 +1,135 @@
 package com.swifticket.web.services.implementations;
 
-import com.swifticket.web.models.entities.Token;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
+
+import com.swifticket.web.models.dtos.auth.GoogleUserDTO;
+import com.swifticket.web.models.dtos.auth.IdTokenRequestDTO;
+import com.swifticket.web.models.entities.Avatar;
 import com.swifticket.web.models.entities.User;
 import com.swifticket.web.models.entities.UserState;
 import com.swifticket.web.models.entities.VerifyAccountToken;
 import com.swifticket.web.repositories.TokenRepository;
 import com.swifticket.web.repositories.UserRepository;
 import com.swifticket.web.repositories.VerifyAccountTokenRepository;
-import com.swifticket.web.services.AuthServices;
-import com.swifticket.web.services.EmailServices;
-import com.swifticket.web.services.UserStateServices;
+import com.swifticket.web.services.*;
 import com.swifticket.web.utils.RandomCode;
 
 import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.Collections;
 import java.util.Date;
-import java.util.UUID;
 
 @Service
 public class AuthServicesImpl implements AuthServices {
     private final EmailServices emailService;
     private final UserStateServices userStateServices;
     private final UserRepository userRepository;
+    private final UserServices userServices;
     private final TokenRepository tokenRepository;
     private final VerifyAccountTokenRepository accountTokenRepository;
     private final RandomCode randomCode;
+    private final AvatarServices avatarServices;
     public final PasswordEncoder passwordEncoder;
+    private final GoogleIdTokenVerifier verifier;
 
     private final String ACTIVE = "Activo";
     private final String BLOCKED = "Bloqueado";
     private final String UNVERIFIED = "No-verificado";
+    private static final String CLIENT_ID = "893111957431-h36mol3osmc1ajq441slto5mrha4vv9i.apps.googleusercontent.com";
     
     @Autowired
-    public AuthServicesImpl(UserRepository userRepository, EmailServices emailService, UserStateServices userStateServices, TokenRepository tokenRepository, VerifyAccountTokenRepository accountTokenRepository, RandomCode randomCode, PasswordEncoder passwordEncoder) {
+    public AuthServicesImpl(UserRepository userRepository, EmailServices emailService, UserStateServices userStateServices, UserServices userServices, TokenRepository tokenRepository, VerifyAccountTokenRepository accountTokenRepository, RandomCode randomCode, AvatarServices avatarServices, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.emailService = emailService;
         this.userStateServices = userStateServices;
+        this.userServices = userServices;
         this.tokenRepository = tokenRepository;
 		this.accountTokenRepository = accountTokenRepository;
         this.randomCode = randomCode;
+        this.avatarServices = avatarServices;
         this.passwordEncoder = passwordEncoder;
+
+        NetHttpTransport transport = new NetHttpTransport();
+        JsonFactory jsonFactory = new JacksonFactory();
+        this.verifier =  new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
+                .setAudience(Collections.singletonList(CLIENT_ID))
+                .build();
     }
 
-    @Override
-    public Boolean isTokenValid(String id) {
-        // TODO: When using spring security this method will be DEPRECATED
-        /*
-    	try {
-    		UUID _id = UUID.fromString(id);
-            Token token = tokenRepository.findById(_id).orElse(null);
-            if (token != null) {
-                Timestamp createdAt = token.getCreatedAt();
-                Timestamp expiresAt = token.getExpiresAt();
-                Timestamp currentTimestamp = new Timestamp(System.currentTimeMillis());
-                return currentTimestamp.before(expiresAt) && currentTimestamp.after(createdAt);
-            }
-            return false;
-		} catch (Exception e) {
-			return false;
-		}
-        */
-        return true;
+    public User loginOAuthGoogle(IdTokenRequestDTO requestBody) {
+        GoogleUserDTO account = verifyIDToken(requestBody.getIdToken());
+        if (account == null) {
+            // throw new IllegalArgumentException("Invalid token ");
+            return null;
+        }
+        return createOrUpdateUser(account);
     }
+
+    @Transactional
+    public User createOrUpdateUser(GoogleUserDTO account) {
+        User existingAccount = userRepository.findOneByEmail(account.getEmail());
+        if (existingAccount == null) {
+            try {
+                return googleRegister(account);
+            } catch (Exception e) {
+                // System.out.println("ERROR createOrUpdateUser" + e.getMessage());
+                return null;
+            }
+        }
+        // Update user's data if necessary
+        // existingAccount.setName(account.getName());
+        // userRepository.save(existingAccount);
+        return existingAccount;
+    }
+
+    @Transactional(rollbackOn = Exception.class)
+    public User googleRegister(GoogleUserDTO data) throws Exception {
+        Avatar avatar = avatarServices.findById(1);
+        // TODO: after tests update this ID to 3
+        UserState state = userStateServices.findById(1);
+        String password = randomCode.generateConfirmationCode();
+
+        User user = new User(state, avatar, data.getName(), data.getEmail(), passwordEncoder.encode(password));
+        return userRepository.save(user);
+    }
+
+    private GoogleUserDTO verifyIDToken(String idToken) {
+        try {
+            GoogleIdToken idTokenObj = verifier.verify(idToken);
+            if (idTokenObj == null) {
+                return null;
+            }
+
+            GoogleIdToken.Payload payload = idTokenObj.getPayload();
+            String name = (String) payload.get("given_name");
+            String email = payload.getEmail();
+
+            /*
+            System.out.println("DEBUG");
+            System.out.println(name);
+            System.out.println(email);
+             */
+
+            return new GoogleUserDTO(email, name);
+
+        } catch (GeneralSecurityException | IOException e) {
+            // System.out.println("ERROR verifyIDToken" + e.getMessage());
+            return null;
+        }
+    }
+    @Override
+    public Boolean isTokenValid(String id) { return true; }
 
     @Override
     @Transactional(rollbackOn = Exception.class)
