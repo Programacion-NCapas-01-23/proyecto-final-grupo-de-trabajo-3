@@ -12,7 +12,7 @@ import lombok.ToString;
 @Data
 @NoArgsConstructor
 @Entity
-@ToString(exclude={"events"})
+@ToString(exclude={"images/events"})
 @Table(name = "categories")
 public class Category {
     @Id

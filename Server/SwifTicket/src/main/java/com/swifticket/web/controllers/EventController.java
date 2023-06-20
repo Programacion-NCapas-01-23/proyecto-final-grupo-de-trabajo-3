@@ -12,13 +12,16 @@ import com.swifticket.web.models.entities.*;
 import com.swifticket.web.services.*;
 import com.swifticket.web.utils.DateValidator;
 import com.swifticket.web.utils.ErrorHandler;
+import com.swifticket.web.utils.ImageUtils;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @RestController
@@ -37,8 +40,10 @@ public class EventController {
 	private final DateValidator dateValidator;
 	private final int PROGRAMMED = 1;
 
+	private final Environment environment;
+
 	@Autowired
-	public EventController(EventServices eventServices, CategoryServices categoryServices, PlaceServices placeService, OrganizerServices organizerService, EventStateServices eventStateService, ErrorHandler errorHandler, SponsorServices sponsorServices, TierServices tierServices, DateValidator dateValidator) {
+	public EventController(EventServices eventServices, CategoryServices categoryServices, PlaceServices placeService, OrganizerServices organizerService, EventStateServices eventStateService, ErrorHandler errorHandler, SponsorServices sponsorServices, TierServices tierServices, DateValidator dateValidator, Environment environment) {
 		this.eventServices = eventServices;
 		this.categoryServices = categoryServices;
 		this.placeService = placeService;
@@ -48,6 +53,11 @@ public class EventController {
 		this.sponsorServices = sponsorServices;
 		this.tierServices = tierServices;
 		this.dateValidator = dateValidator;
+		this.environment = environment;
+	}
+
+	private String getEventImageUploadPath() {
+		return environment.getProperty("event.image.upload.path");
 	}
 
 	@GetMapping("")
@@ -102,7 +112,9 @@ public class EventController {
 	}
 
 	@PostMapping("")
-	public ResponseEntity<?> createEvent(@ModelAttribute @Valid SaveEventDTO data, BindingResult bindingResult) {
+	public ResponseEntity<?> createEvent(@ModelAttribute @Valid SaveEventDTO data,
+										 @RequestParam("image") MultipartFile image,
+										 BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
@@ -129,16 +141,19 @@ public class EventController {
 			return new ResponseEntity<>(new MessageDTO("Cannot add events on past dates"), HttpStatus.CONFLICT);
 
 		try {
+			data.setImage(image);
 			eventServices.save(data, category, organizer, place, state);
 			return new ResponseEntity<>(new MessageDTO("event created"), HttpStatus.CREATED);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<?> updateEvent(@PathVariable String id, @ModelAttribute @Valid SaveEventDTO data, BindingResult bindingResult) {
+	public ResponseEntity<?> updateEvent(@PathVariable String id,
+										 @ModelAttribute @Valid SaveEventDTO data,
+										 @RequestParam(value = "image", required = false) MultipartFile image,
+										 BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
@@ -169,6 +184,7 @@ public class EventController {
 			return new ResponseEntity<>(new MessageDTO("Cannot add events on past dates"), HttpStatus.CONFLICT);
 
 		try {
+			data.setImage(image);
 			eventServices.update(id, data, category, organizer, place);
 			return new ResponseEntity<>(new MessageDTO("event updated"), HttpStatus.OK);
 		} catch (Exception e) {
