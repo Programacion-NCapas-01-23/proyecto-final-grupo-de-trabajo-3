@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @AllArgsConstructor
@@ -19,7 +20,7 @@ public class SaveEventDTO {
 	private String dateTime;
 	
 	@NotBlank(message = "image is required")
-	private String image;
+	private MultipartFile image;
 	
 	@Positive(message = "place id is required")
 	private int placeId;

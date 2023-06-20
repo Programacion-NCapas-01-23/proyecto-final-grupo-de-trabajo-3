@@ -7,15 +7,19 @@ import com.swifticket.web.models.entities.*;
 import com.swifticket.web.repositories.*;
 import com.swifticket.web.services.EventServices;
 
+import com.swifticket.web.utils.ImageUtils;
 import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.UUID;
@@ -27,16 +31,23 @@ public class EventServicesImpl implements EventServices {
     private final TierRepository tierRepository;
     private final SponsorRepository sponsorRepository;
     private final EventxSponsorRepository eventxSponsorRepository;
-
-
+    private final ImageUtils imageUtils;
+    private final Environment environment;
 
     @Autowired
-    public EventServicesImpl(EventRepository eventRepository, EventStateRepository eventStateRepository, TierRepository tierRepository, SponsorRepository sponsorRepository, EventxSponsorRepository eventxSponsorRepository) {
+    public EventServicesImpl(EventRepository eventRepository, EventStateRepository eventStateRepository, TierRepository tierRepository, SponsorRepository sponsorRepository, EventxSponsorRepository eventxSponsorRepository, ImageUtils imageUtils, Environment environment) {
         this.eventRepository = eventRepository;
         this.eventStateRepository = eventStateRepository;
         this.tierRepository = tierRepository;
         this.sponsorRepository = sponsorRepository;
         this.eventxSponsorRepository = eventxSponsorRepository;
+        this.imageUtils = imageUtils;
+        this.environment = environment;
+    }
+    // Method to save image to disk and return the image path
+    private String saveEventImage(MultipartFile image) throws IOException {
+        String imageDirectory = environment.getProperty("sponsor.image.upload.path");
+        return imageUtils.saveImage(image, imageDirectory);
     }
 
     @Override
@@ -47,7 +58,6 @@ public class EventServicesImpl implements EventServices {
         Pageable pageable = PageRequest.of(page, size, Sort.by("dateTime"));
         return eventRepository.findByTitleContains(title, pageable);
     }
-
     @Override
     public Event findById(String id) {
         try {
@@ -57,11 +67,10 @@ public class EventServicesImpl implements EventServices {
             return null;
         }
     }
-
-
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void save(SaveEventDTO eventInfo, Category category, Organizer organizer, Place place, EventState state) throws Exception {
+        String imagePath = saveEventImage(eventInfo.getImage());
         Event event = new Event(
                 category,
                 organizer,
@@ -69,18 +78,18 @@ public class EventServicesImpl implements EventServices {
                 Double.parseDouble(eventInfo.getDuration()),
                 // TODO: must define a date format for the app
                 new SimpleDateFormat("dd/MM/yyyy").parse(eventInfo.getDateTime()),
-                eventInfo.getImage(),
+                imagePath,
                 place,
                 state
         );
         eventRepository.save(event);
     }
-
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void update(String id, SaveEventDTO eventInfo, Category category, Organizer organizer, Place place) throws Exception {
         UUID eventId = UUID.fromString(id);
         Event event = eventRepository.findById(eventId).orElse(null);
+        String imagePath = saveEventImage(eventInfo.getImage());
 
         if (event != null) {
             event.setCategory(category);
@@ -88,13 +97,12 @@ public class EventServicesImpl implements EventServices {
             event.setTitle(eventInfo.getTitle());
             event.setDuration(Double.parseDouble(eventInfo.getDuration()));
             event.setDateTime(new SimpleDateFormat("dd/MM/yyyy").parse(eventInfo.getDateTime()));
-            event.setImage(eventInfo.getImage());
+            event.setImage(imagePath);
             event.setPlace(place);
 
             eventRepository.save(event);
         }
     }
-
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void changeStatus(Event event, EventState state) throws Exception {
@@ -104,19 +112,16 @@ public class EventServicesImpl implements EventServices {
         event.setState(state);
         eventRepository.save(event);
     }
-
     @Override
     public EventxSponsor findByEventAndSponsor(Event event, Sponsor sponsor) {
         return eventxSponsorRepository.findOneByEventAndSponsor(event, sponsor);
     }
-
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void assignSponsor(Event event, Sponsor sponsor) throws Exception {
         EventxSponsor relation = new EventxSponsor(event, sponsor);
         eventxSponsorRepository.save(relation);
     }
-
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void removeSponsor(Event event, Sponsor sponsor) throws Exception {
@@ -126,7 +131,6 @@ public class EventServicesImpl implements EventServices {
 
         eventxSponsorRepository.deleteById(relation.getId());
     }
-
     @Override
     public List<Tier> findEventTiers(String eventId)  {
         try {
@@ -139,7 +143,6 @@ public class EventServicesImpl implements EventServices {
             return null;
         }
     }
-
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void createTier(SaveTierDTO tierData) throws Exception {
@@ -151,7 +154,6 @@ public class EventServicesImpl implements EventServices {
         Tier newTier = new Tier(event, tierData.getName(), tierData.getCapacity(), tierData.getPrice());
         tierRepository.save(newTier);
     }
-
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void updateTier(String tierId, UpdateTierDTO tierData) throws Exception {
@@ -167,7 +169,6 @@ public class EventServicesImpl implements EventServices {
 
         tierRepository.save(tier);
     }
-
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void deleteTier(String tierId) throws Exception {

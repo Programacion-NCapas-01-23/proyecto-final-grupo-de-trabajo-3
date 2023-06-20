@@ -22,14 +22,17 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class WebSecurityConfiguration {
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
-    @Autowired
-    private UserServices userService;
+    private final UserServices userService;
 
+    private final JWTTokenFilter filter;
     @Autowired
-    private JWTTokenFilter filter;
+    public WebSecurityConfiguration(PasswordEncoder passwordEncoder, UserServices userService, JWTTokenFilter filter) {
+        this.passwordEncoder = passwordEncoder;
+        this.userService = userService;
+        this.filter = filter;
+    }
 
     @Bean
     AuthenticationManager authenticationManagerBean(HttpSecurity http) throws Exception {

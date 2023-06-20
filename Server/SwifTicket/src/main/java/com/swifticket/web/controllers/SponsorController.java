@@ -8,11 +8,13 @@ import com.swifticket.web.services.SponsorServices;
 import com.swifticket.web.utils.ErrorHandler;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -22,10 +24,16 @@ import java.util.List;
 public class SponsorController {
 	private final SponsorServices sponsorServices;
 	private final ErrorHandler errorHandler;
+	private final Environment environment;
 	@Autowired
-	public SponsorController(SponsorServices sponsorServices, ErrorHandler errorHandler) {
+	public SponsorController(SponsorServices sponsorServices, ErrorHandler errorHandler, Environment environment) {
 		this.sponsorServices = sponsorServices;
 		this.errorHandler = errorHandler;
+		this.environment = environment;
+	}
+
+	private String getSponsorImageUploadPath() {
+		return environment.getProperty("sponsor.image.upload.path");
 	}
 
 	@GetMapping("")
@@ -54,9 +62,12 @@ public class SponsorController {
 			return new ResponseEntity<>(new MessageDTO("sponsor not found"), HttpStatus.NOT_FOUND);
 		return new ResponseEntity<>(sponsor, HttpStatus.OK);
 	}
-	
+
+	// Post using multipart form data to upload image
 	@PostMapping("")
-	public ResponseEntity<?> createSponsor(@ModelAttribute @Valid SaveSponsorDTO data, BindingResult validations) {
+	public ResponseEntity<?> createSponsor(@ModelAttribute @Valid SaveSponsorDTO data,
+										   @RequestParam("image") MultipartFile image,
+										   BindingResult validations) {
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
@@ -67,15 +78,19 @@ public class SponsorController {
 			return new ResponseEntity<>(new MessageDTO("sponsor already exists"), HttpStatus.CONFLICT);
 
 		try {
-			sponsorServices.save(data.getName(), data.getImage());
+			sponsorServices.save(data.getName(), image);
 			return new ResponseEntity<>(new MessageDTO("sponsor created"), HttpStatus.CREATED);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
+	// Put using multipart form data to change and upload image
 	@PutMapping("/{id}")
-	public ResponseEntity<?> updateSponsor(@PathVariable int id, @ModelAttribute @Valid SaveSponsorDTO data, BindingResult validations) {
+	public ResponseEntity<?> updateSponsor(@PathVariable int id,
+										   @ModelAttribute @Valid SaveSponsorDTO data,
+										   @RequestParam("image") MultipartFile image,
+										   BindingResult validations) {
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
@@ -88,7 +103,7 @@ public class SponsorController {
 			return new ResponseEntity<>(new MessageDTO("sponsor already exists"), HttpStatus.CONFLICT);
 
 		try {
-			sponsorServices.update(id, data.getName(), data.getImage());
+			sponsorServices.update(id, data.getName(), image);
 			return new ResponseEntity<>(new MessageDTO("sponsor updated"), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

@@ -59,8 +59,7 @@ VALUES (1, 1, 1, 1, 'Conferencia de Tecnología de Mayo', 2, '2023-05-20', 'even
 
 
 -- users
-INSERT INTO users (state_id, avatar_id, name, email, password)
-VALUES (1, 1, 'Carlos Mercado', '00058820@uca.edu.sv', 'secret');
+-- INSERT INTO users (state_id, avatar_id, name, email, password) VALUES (1, 1, 'Carlos Mercado', '00058820@uca.edu.sv', 'secret');
 
 -- tickets
 
