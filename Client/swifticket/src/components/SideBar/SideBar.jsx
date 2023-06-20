@@ -1,33 +1,36 @@
-import { Fragment } from "react";
-import { Dialog, Transition } from "@headlessui/react";
-import { useNavigate } from "react-router-dom"
-import AdminActions from "./components/AdminActions";
-import UserActions from "./components/UserActions";
-import ModActions from "./components/ModActions"
-import CollabActions from "./components/CollabActions";
-import { MdAccountCircle, MdClose, MdLogout, MdPerson } from "react-icons/md";
-
+import { Fragment } from 'react';
+import { Dialog, Transition } from '@headlessui/react';
+import { useNavigate } from 'react-router-dom';
+import AdminActions from './components/AdminActions';
+import UserActions from './components/UserActions';
+import ModActions from './components/ModActions';
+import CollabActions from './components/CollabActions';
+import { MdAccountCircle, MdClose, MdLogout, MdPerson } from 'react-icons/md';
+import { useSetRecoilState } from 'recoil';
+import { tokenState } from '../../state/atoms/tokenState';
 
 export default function SideBar(props) {
-
-  const isGuest = false
-  const isAdmin = false
-  const isMod = false
-  const isCollab = false
-  const isUser = false
-  const user_name = "Pedro Esnifapiedra"
+  const isGuest = false;
+  const isAdmin = false;
+  const isMod = false;
+  const isCollab = false;
+  const isUser = false;
+  const user_name = 'Pedro Esnifapiedra';
   const navigate = useNavigate();
+  const setToken = useSetRecoilState(tokenState);
+
+  const handleLogOut = () => {
+    setToken(null);
+    localStorage.removeItem('auth_token');
+  };
 
   const redirectUser = () => {
-    if (!isGuest)
-      navigate("/user")
-    else
-      navigate("/login")
-  }
-
+    if (!isGuest) navigate('/user');
+    else navigate('/login');
+  };
 
   return (
-    <Transition show={props.open} as={Fragment} >
+    <Transition show={props.open} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={props.setOpen}>
         {/* ----------- BACKGROUND BLUR --------------- */}
         <Transition.Child
@@ -62,14 +65,20 @@ export default function SideBar(props) {
                       <Dialog.Title>
                         <p className="subtitle">
                           Swifticket
-                          <button onClick={() => props.setOpen(false)} className="absolute right-0 px-default">
+                          <button
+                            onClick={() => props.setOpen(false)}
+                            className="absolute right-0 px-default"
+                          >
                             <MdClose />
                           </button>
                         </p>
 
                         <div className="flex flex-col items-center md:my-default-sm my-default-xs">
-                          <MdAccountCircle size={"12rem"} />
-                          <p className="heading-lg"> {isGuest ? "Guest" : user_name} </p>
+                          <MdAccountCircle size={'12rem'} />
+                          <p className="heading-lg">
+                            {' '}
+                            {isGuest ? 'Guest' : user_name}{' '}
+                          </p>
                         </div>
                       </Dialog.Title>
                     </div>
@@ -77,31 +86,45 @@ export default function SideBar(props) {
                     <div className="px-default-lg flex-1 overflow-y-auto">
                       <ul className="divide-y-2 divide-gray-200">
                         <li className="py-default text-xl">
-                          <a className="flex items-center cursor-pointer" onClick={redirectUser} >
-                            <span className="mr-default-xs"> <MdPerson size={"2rem"} /> </span>
-                            {isGuest ? "Log In" : "My Profile"}
+                          <a
+                            className="flex items-center cursor-pointer"
+                            onClick={redirectUser}
+                          >
+                            <span className="mr-default-xs">
+                              {' '}
+                              <MdPerson size={'2rem'} />{' '}
+                            </span>
+                            {isGuest ? 'Log In' : 'My Profile'}
                           </a>
                         </li>
 
                         {/* HERE GOES MAPPING OF ROLE's ACTIONS */}
 
-                        {!isUser && (<UserActions />)}
-                        {!isCollab && (<CollabActions />)}
-                        {!isMod && (<ModActions />)}
-                        {!isAdmin && (<AdminActions />)}
-
+                        {!isUser && <UserActions />}
+                        {!isCollab && <CollabActions />}
+                        {!isMod && <ModActions />}
+                        {!isAdmin && <AdminActions />}
                       </ul>
                     </div>
 
                     {!isGuest && (
                       <div className="m-auto px-4 py-6 sm:px-6">
                         <button className="flex items-center">
-                          <span> <MdLogout size={"2rem"} /> </span>
-                          <a href="/login" className="heading-sm px-default"> Log Out</a>
+                          <span>
+                            {' '}
+                            <MdLogout size={'2rem'} />{' '}
+                          </span>
+                          <a
+                            href="/login"
+                            className="heading-sm px-default"
+                            onClick={() => handleLogOut()}
+                          >
+                            {' '}
+                            Log Out
+                          </a>
                         </button>
                       </div>
                     )}
-
                   </div>
                 </Dialog.Panel>
               </Transition.Child>

@@ -9,16 +9,20 @@ const MainLogin = () => {
   const [pass, setPass] = useState('');
   const navigateTo = useNavigate();
 
+  const [isAdmin, setIsAdmin] = useState(false);
+
   const setToken = useSetRecoilState(tokenState);
 
   const loginHandler = async (userName, pass) => {
     const response = await login(userName, pass);
 
-    localStorage.setItem('auth_token', JSON.stringify(response.data.token));
-    setToken(response.data.token);
+    if (response.status === 200) {
+      localStorage.setItem('auth_token', JSON.stringify(response.data.token));
+      setToken(response.data.token);
+      isAdmin ? navigateTo('/admin') : navigateTo('/');
+    }
+
     console.log(response);
-    
-    navigateTo('/');
   };
 
   return (

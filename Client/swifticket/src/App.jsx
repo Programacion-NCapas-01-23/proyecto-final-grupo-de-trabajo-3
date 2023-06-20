@@ -25,8 +25,12 @@ import CreateEvent from './pages/admin/CreateEvent/CreateEvent';
 import AllEvents from './pages/admin/AllEvents';
 import ModifyCatalogs from './pages/admin/ModifyCatalogs/ModifyCatalogs';
 import ScanQr from './pages/ScanQr/ScanQr';
+import { useRecoilValue } from 'recoil';
+import { tokenState } from './state/atoms/tokenState';
 
 function App() {
+  const token = useRecoilValue(tokenState);
+
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
@@ -53,7 +57,6 @@ function App() {
             </Route>
           </Route>
         </Route>
-
         <Route path="admin" element={<Admin />}>
           <Route index element={<Charts />} />
           <Route path="catalogs" element={<Catalogs />} />
@@ -62,18 +65,29 @@ function App() {
           <Route path="create-event" element={<CreateEvent />} />
           <Route path="all-events" element={<AllEvents />} />
         </Route>
-
-        <Route path="login" element={<Login />} />
-
         <Route path="development" element={<Admin />} />
-
         <Route path="error" element={<Landing />} />
+        <Route path="*" element={<Home />} />
       </>
     )
   );
+
+  const routerLogin = createBrowserRouter(
+    createRoutesFromElements(
+      <>
+        <Route path="login" element={<Login />} />
+        <Route path="*" element={<Login />} />
+      </>
+    )
+  );
+
   return (
     <>
-      <RouterProvider router={router} />
+      {token ? (
+        <RouterProvider router={router} />
+      ) : (
+        <RouterProvider router={routerLogin} />
+      )}
     </>
   );
 }
