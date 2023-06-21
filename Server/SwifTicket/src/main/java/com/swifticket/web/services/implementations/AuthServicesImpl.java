@@ -8,11 +8,7 @@ import com.google.api.client.json.jackson2.JacksonFactory;
 
 import com.swifticket.web.models.dtos.auth.GoogleUserDTO;
 import com.swifticket.web.models.dtos.auth.IdTokenRequestDTO;
-import com.swifticket.web.models.entities.Avatar;
-import com.swifticket.web.models.entities.User;
-import com.swifticket.web.models.entities.UserState;
-import com.swifticket.web.models.entities.VerifyAccountToken;
-import com.swifticket.web.repositories.TokenRepository;
+import com.swifticket.web.models.entities.*;
 import com.swifticket.web.repositories.UserRepository;
 import com.swifticket.web.repositories.VerifyAccountTokenRepository;
 import com.swifticket.web.services.*;
@@ -21,7 +17,6 @@ import com.swifticket.web.utils.RandomCode;
 import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -36,28 +31,29 @@ public class AuthServicesImpl implements AuthServices {
     private final UserStateServices userStateServices;
     private final UserRepository userRepository;
     private final UserServices userServices;
-    private final TokenRepository tokenRepository;
     private final VerifyAccountTokenRepository accountTokenRepository;
     private final RandomCode randomCode;
     private final AvatarServices avatarServices;
+    private final RoleServices roleServices;
     public final PasswordEncoder passwordEncoder;
     private final GoogleIdTokenVerifier verifier;
 
     private final String ACTIVE = "Activo";
     private final String BLOCKED = "Bloqueado";
     private final String UNVERIFIED = "No-verificado";
+    private final int USER_ROLE = 2;
     private static final String CLIENT_ID = "893111957431-h36mol3osmc1ajq441slto5mrha4vv9i.apps.googleusercontent.com";
     
     @Autowired
-    public AuthServicesImpl(UserRepository userRepository, EmailServices emailService, UserStateServices userStateServices, UserServices userServices, TokenRepository tokenRepository, VerifyAccountTokenRepository accountTokenRepository, RandomCode randomCode, AvatarServices avatarServices, PasswordEncoder passwordEncoder) {
+    public AuthServicesImpl(UserRepository userRepository, EmailServices emailService, UserStateServices userStateServices, UserServices userServices, VerifyAccountTokenRepository accountTokenRepository, RandomCode randomCode, AvatarServices avatarServices, RoleServices roleServices, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.emailService = emailService;
         this.userStateServices = userStateServices;
         this.userServices = userServices;
-        this.tokenRepository = tokenRepository;
 		this.accountTokenRepository = accountTokenRepository;
         this.randomCode = randomCode;
         this.avatarServices = avatarServices;
+        this.roleServices = roleServices;
         this.passwordEncoder = passwordEncoder;
 
         NetHttpTransport transport = new NetHttpTransport();
@@ -100,8 +96,14 @@ public class AuthServicesImpl implements AuthServices {
         UserState state = userStateServices.findById(1);
         String password = randomCode.generateConfirmationCode();
 
-        User user = new User(state, avatar, data.getName(), data.getEmail(), passwordEncoder.encode(password));
-        return userRepository.save(user);
+        User newUser = new User(state, avatar, data.getName(), data.getEmail(), passwordEncoder.encode(password));
+        User user = userRepository.save(newUser);
+
+        // Add user role by default
+        Role role = roleServices.findById(USER_ROLE);
+        userServices.assignRole(user, role);
+        
+        return user;
     }
 
     private GoogleUserDTO verifyIDToken(String idToken) {

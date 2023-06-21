@@ -6,11 +6,8 @@ import java.util.List;
 import com.swifticket.web.models.dtos.auth.*;
 import com.swifticket.web.models.dtos.user.CreateUserDTO;
 import com.swifticket.web.models.dtos.user.RequestValidationToken;
-import com.swifticket.web.models.dtos.user.UserDTO;
 import com.swifticket.web.models.entities.*;
-import com.swifticket.web.services.AvatarServices;
-import com.swifticket.web.services.UserServices;
-import com.swifticket.web.services.UserStateServices;
+import com.swifticket.web.services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +15,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import com.swifticket.web.models.dtos.response.MessageDTO;
-import com.swifticket.web.services.AuthServices;
 import com.swifticket.web.utils.ErrorHandler;
 
 import jakarta.validation.Valid;
@@ -30,13 +26,16 @@ public class AuthController {
 private final AuthServices authServices;
 	private final UserServices userServices;
 	private final AvatarServices avatarServices;
+	private final RoleServices roleServices;
 	private final UserStateServices userStateServices;
 	private final ErrorHandler errorHandler;
+	private final int USER_ROLE = 2;
 	@Autowired
-	public AuthController(AuthServices authServices, UserServices userServices, AvatarServices avatarServices, UserStateServices userStateServices, ErrorHandler errorHandler) {
+	public AuthController(AuthServices authServices, UserServices userServices, AvatarServices avatarServices, RoleServices roleServices, UserStateServices userStateServices, ErrorHandler errorHandler) {
 		this.authServices = authServices;
 		this.userServices = userServices;
 		this.avatarServices = avatarServices;
+		this.roleServices = roleServices;
 		this.userStateServices = userStateServices;
 		this.errorHandler = errorHandler;
 	}
@@ -54,9 +53,13 @@ private final AuthServices authServices;
 				return new ResponseEntity<>(new MessageDTO("invalid credentials"), HttpStatus.UNAUTHORIZED);
 
 			// System.out.println("User ID: " + user.getId());
+			// if new user return user role
+			Role role = roleServices.findById(USER_ROLE);
+			List<Role> roles = new ArrayList<>();
+			roles.add(role);
+
 			// if user exists get user roles
 			List<RolexUser> rolesRelations = user.getRolexUsers();
-			List<Role> roles = new ArrayList<>();
 			if (rolesRelations != null)
 				 roles = rolesRelations.stream().map(RolexUser::getRole).toList();
 
