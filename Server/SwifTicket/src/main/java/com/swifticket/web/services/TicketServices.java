@@ -19,7 +19,7 @@ public interface TicketServices {
 	
 	String startTransferTicket(User receiver) throws Exception;
 	Transaction findTransactionById(String transactionId);
-	void acceptTransferTicket(Transaction transaction, User sender, Ticket ticket) throws Exception;
+	String acceptTransferTicket(Transaction transaction, User sender, Ticket ticket) throws Exception;
 	void validateTransfer(Transaction transaction) throws Exception;
 
 	int getEventCapacity(List<Tier> tiers);

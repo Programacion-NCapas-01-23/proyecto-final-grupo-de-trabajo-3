@@ -5,6 +5,7 @@ import com.swifticket.web.models.dtos.response.CodeDTO;
 import com.swifticket.web.models.dtos.response.MessageDTO;
 import com.swifticket.web.models.dtos.ticket.*;
 import com.swifticket.web.models.entities.*;
+import com.swifticket.web.services.EmailServices;
 import com.swifticket.web.services.TicketServices;
 import com.swifticket.web.services.TierServices;
 import com.swifticket.web.services.UserServices;
@@ -18,7 +19,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
-import java.util.List;
 
 @RestController
 @RequestMapping("/tickets")
@@ -29,12 +29,14 @@ public class TicketController {
 	private final TierServices tierServices;
 	private final UserServices userServices;
 	private final ErrorHandler errorHandler;
+	private final EmailServices emailServices;
 	@Autowired
-	public TicketController(TicketServices ticketServices, TierServices tierServices, UserServices userServices, ErrorHandler errorHandler) {
+	public TicketController(TicketServices ticketServices, TierServices tierServices, UserServices userServices, ErrorHandler errorHandler, EmailServices emailServices) {
 		this.ticketServices = ticketServices;
 		this.tierServices = tierServices;
 		this.userServices = userServices;
 		this.errorHandler = errorHandler;
+		this.emailServices = emailServices;
 	}
 
 	@GetMapping("/{id}")
@@ -205,7 +207,9 @@ public class TicketController {
 			return new ResponseEntity<>(new MessageDTO("user not found"), HttpStatus.NOT_FOUND);
 
 		try {
-			ticketServices.acceptTransferTicket(transaction, userFrom, ticket);
+			String code = ticketServices.acceptTransferTicket(transaction, userFrom, ticket);
+			// Notify sender user to confirm transaction
+			emailServices.sendVerificationTransactionCode(userFrom.getEmail(), code);
 			return new ResponseEntity<>(new MessageDTO("confirm ticket transaction by email"), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

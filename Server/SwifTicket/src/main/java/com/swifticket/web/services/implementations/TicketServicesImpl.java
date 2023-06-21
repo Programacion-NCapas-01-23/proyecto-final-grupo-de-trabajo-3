@@ -157,15 +157,15 @@ public class TicketServicesImpl implements TicketServices {
 
     @Override
     @Transactional(rollbackOn = Exception.class)
-    public void acceptTransferTicket(Transaction transaction, User sender, Ticket ticket) throws Exception {
+    public String acceptTransferTicket(Transaction transaction, User sender, Ticket ticket) throws Exception {
         Date currentDate = new Date();
         // Expiration date is set to 10 minutes
         Date acceptExpiresAt = new Date(currentDate.getTime() + (1000 * 60 * 10));
 
         // Validate that reqExpiresAt hasn't happened
-        if (transaction.getReqExpiresAt().compareTo(currentDate) < 0) return;
+        if (transaction.getReqExpiresAt().compareTo(currentDate) < 0) return "";
         // Validate if ticket was not used before
-        if (isTicketUsed(ticket)) return;
+        if (isTicketUsed(ticket)) return "";
 
         // Update accepted date and this step expiration date
         transaction.setAcceptAt(currentDate);
@@ -176,7 +176,9 @@ public class TicketServicesImpl implements TicketServices {
         // Update ticket that will be sent
         transaction.setTicket(ticket);
 
-        transactionRepository.save(transaction);
+        // return transaction code
+        Transaction newTransaction = transactionRepository.save(transaction);
+        return newTransaction.getId().toString();
     }
 
     @Override
