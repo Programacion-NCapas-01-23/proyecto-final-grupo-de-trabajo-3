@@ -1,57 +1,22 @@
 import axios from 'axios';
+import uriDataConstructor from './UriDataConstructor';
 
-const BASE_URL = 'http://localhost:8080/';
+const BASE_URL = 'http://localhost:8080/users';
 
-const uriDataConstructor = (dataObject) => {
-  return Object.keys(dataObject)
-    .map(
-      (key) =>
-        encodeURIComponent(key) + '=' + encodeURIComponent(dataObject[key])
-    )
-    .join('&');
-};
-
-export const login = async (user, pass) => {
+export const changePass = async (email, pass, newPass) => {
   let response = undefined;
   const uriDataObject = {
-    email: user,
+    email: email,
     password: pass,
+    newPassword: newPass,
   };
   let body = uriDataConstructor(uriDataObject);
 
   try {
     const data = await axios({
-      method: 'POST',
+      method: 'PATCH',
       baseURL: BASE_URL,
-      url: '/auth/signin',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      data: `${body}`,
-    });
-
-    if (data) {
-      response = data;
-    }
-  } catch (error) {
-    console.log(error);
-  } finally {
-    return response;
-  }
-};
-
-export const googleSignIn = async (token) => {
-  let response = undefined;
-  const uriDataObject = {
-    idToken: token,
-  };
-  let body = uriDataConstructor(uriDataObject);
-
-  try {
-    const data = await axios({
-      method: 'POST',
-      baseURL: BASE_URL,
-      url: '/auth/google/signin',
+      url: '/change-password',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },

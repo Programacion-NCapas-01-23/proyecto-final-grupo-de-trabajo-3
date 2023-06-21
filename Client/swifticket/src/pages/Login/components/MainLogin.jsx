@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { login } from '../../../services/User.Services';
+import { login } from '../../../services/Auth.Services';
 import { useSetRecoilState } from 'recoil';
 import { tokenState } from '../../../state/atoms/tokenState';
 import { useNavigate } from 'react-router-dom';

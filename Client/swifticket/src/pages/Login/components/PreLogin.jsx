@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import googleLogo from '../../../assets/googleLogo.svg';
 import GoogleLogin from './GoogleLogin';
-import { googleSignIn } from '../../../services/User.Services';
+import { googleSignIn } from '../../../services/Auth.Services';
 import { useSetRecoilState } from 'recoil';
 import { tokenState } from '../../../state/atoms/tokenState';
 import { useNavigate } from 'react-router-dom';
@@ -15,7 +15,6 @@ const PreLogin = ({ setIsLoginViews }) => {
 
   const onGoogleSignIn = async (res) => {
     const { credential } = res;
-    // console.log(credential);
     localStorage.setItem('auth_token', JSON.stringify(credential));
     setToken(googleSignIn(credential));
     isAdmin ? navigateTo('/admin') : navigateTo('/');
