@@ -1,6 +1,7 @@
 package com.swifticket.web.models.dtos.event;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,7 +20,7 @@ public class SaveEventDTO {
 	@NotBlank(message = "date and time is required")
 	private String dateTime;
 	
-	@NotBlank(message = "image is required")
+	@NotNull(message = "image is required")
 	private MultipartFile image;
 	
 	@Positive(message = "place id is required")

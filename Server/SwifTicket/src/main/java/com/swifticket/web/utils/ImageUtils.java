@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.UUID;
 
 @Component
 public class ImageUtils {
@@ -31,15 +32,16 @@ public class ImageUtils {
         }
 
         String imageName = image.getOriginalFilename();
-        String imagePath = imageDirectory + "/" + imageName;
+        String extension = StringUtils.getFilenameExtension(imageName);
+        String fileName = UUID.randomUUID().toString() + "." + extension;
+        Path destinationPath = Paths.get(imageDirectory, fileName);
 
         try {
             // Save image to disk (create directory if not exists)
-            Path destinationPath = Paths.get(imagePath);
             Files.createDirectories(destinationPath.getParent());
             Files.write(destinationPath, image.getBytes());
 
-            return imagePath;
+            return destinationPath.toString();
         } catch (IOException e) {
             throw new RuntimeException("Failed to save image: " + e.getMessage());
         }

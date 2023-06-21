@@ -4,7 +4,6 @@ import com.swifticket.web.models.entities.Sponsor;
 import com.swifticket.web.repositories.SponsorRepository;
 import com.swifticket.web.services.SponsorServices;
 import com.swifticket.web.utils.ImageUtils;
-import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
@@ -15,9 +14,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 @Service
@@ -32,8 +28,9 @@ public class SponsorServicesImpl implements SponsorServices {
         this.environment = environment;
         this.imageUtils = imageUtils;
     }
+
     // Method to save image to disk and return the image path
-    private String saveSponsorImage(MultipartFile image) throws IOException {
+    private String saveSponsorImage(MultipartFile image) {
         String imageDirectory = environment.getProperty("sponsor.image.upload.path");
         return imageUtils.saveImage(image, imageDirectory);
     }
@@ -65,31 +62,40 @@ public class SponsorServicesImpl implements SponsorServices {
     }
 
     @Override
-    @Transactional(rollbackOn = Exception.class)
-    public void save(String name, MultipartFile image) throws Exception {
-        String imagePath = saveSponsorImage(image);
-        Sponsor sponsor = new Sponsor(name, imagePath);
-        repository.save(sponsor);
-    }
-
-    @Override
-    @Transactional(rollbackOn = Exception.class)
-    public void update(int id, String name, MultipartFile image) throws Exception {
-        Sponsor sponsor = repository.findById(id).orElse(null);
-        if (sponsor == null) {
-            throw new Exception("Sponsor not found");
+    public void save(String name, MultipartFile image) {
+        try {
+            String imagePath = saveSponsorImage(image);
+            Sponsor sponsor = new Sponsor(name, imagePath);
+            repository.save(sponsor);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create sponsor: " + e.getMessage());
         }
-
-        String imagePath = saveSponsorImage(image);
-        sponsor.setName(name);
-        sponsor.setImage(imagePath);
-
-        repository.save(sponsor);
     }
 
     @Override
-    @Transactional(rollbackOn = Exception.class)
-    public void delete(int id) throws Exception {
-        repository.deleteById(id);
+    public void update(int id, String name, MultipartFile image) {
+        try {
+            Sponsor sponsor = repository.findById(id).orElse(null);
+            if (sponsor == null) {
+                throw new IllegalArgumentException("Sponsor not found");
+            }
+
+            String imagePath = saveSponsorImage(image);
+            sponsor.setName(name);
+            sponsor.setImage(imagePath);
+
+            repository.save(sponsor);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to update sponsor: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public void delete(int id) {
+        try {
+            repository.deleteById(id);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to delete sponsor: " + e.getMessage());
+        }
     }
 }
