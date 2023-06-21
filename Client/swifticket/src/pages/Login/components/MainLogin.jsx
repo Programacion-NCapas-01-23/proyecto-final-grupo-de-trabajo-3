@@ -5,7 +5,7 @@ import { tokenState } from '../../../state/atoms/tokenState';
 import { useNavigate } from 'react-router-dom';
 import LoginAlert from '../../../components/Alerts/LoginAlert';
 
-const MainLogin = () => {
+const MainLogin = ({ setIsLoginViews }) => {
   const [userName, setUserName] = useState('');
   let [hasErrors, setHasErrors] = useState(false);
   const [pass, setPass] = useState('');
@@ -18,8 +18,8 @@ const MainLogin = () => {
   const loginHandler = async (userName, pass) => {
     const response = await login(userName, pass);
 
-    if (response === undefined || response.status !== 200){
-      setHasErrors(true)
+    if (response === undefined || response.status !== 200) {
+      setHasErrors(true);
     }
 
     if (response.status === 200) {
@@ -33,7 +33,7 @@ const MainLogin = () => {
 
   return (
     <div className="container-login flex flex-col justify-between items-center w-full h-full">
-      <LoginAlert hasErrors={hasErrors} setHasErrors={setHasErrors}/>
+      <LoginAlert hasErrors={hasErrors} setHasErrors={setHasErrors} />
       <div></div>
       <div className="flex flex-col justify-center sm:justify-evenly items-center gap-y-6 sm:gap-y-0 h-full sm:h-3/5 w-full">
         <div className="flex flex-col justify-evenly items-center w-full h-1/2">
@@ -64,7 +64,12 @@ const MainLogin = () => {
           Login
         </button>
       </div>
-      <button className="btn-forgot my-2">Forgot your password?</button>
+      <button
+        className="btn-forgot my-2"
+        onClick={() => setIsLoginViews([false, false, true, false])}
+      >
+        Forgot your password?
+      </button>
     </div>
   );
 };

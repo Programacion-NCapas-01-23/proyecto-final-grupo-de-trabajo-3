@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import './Login.css';
 import swifticketLogo from '../../assets/swifticketLogo.png';
 import loginFooter from '../../assets/loginFooter.svg';
@@ -8,6 +8,8 @@ import ForgotPass from './components/ForgotPass';
 import RecoveryCode from './components/RecoveryCode';
 
 const Login = () => {
+  const [isLoginViews, setIsLoginViews] = useState([true, false, false, false]);
+
   return (
     <>
       <div className="bg-login w-screen h-screen flex justify-center items-center">
@@ -19,10 +21,26 @@ const Login = () => {
           </div>
           {/* Right container */}
           <div className="flex flex-col justify-center items-center w-full sm:w-1/2 h-[50vh] sm:h-full">
-            {/* <PreLogin /> */}
-            <MainLogin />
-            {/* <ForgotPass /> */}
-            {/* <RecoveryCode /> */}
+            {isLoginViews[0] ? (
+              <PreLogin setIsLoginViews={setIsLoginViews} />
+            ) : (
+              ''
+            )}
+            {isLoginViews[1] ? (
+              <MainLogin setIsLoginViews={setIsLoginViews} />
+            ) : (
+              ''
+            )}
+            {isLoginViews[2] ? (
+              <ForgotPass setIsLoginViews={setIsLoginViews} />
+            ) : (
+              ''
+            )}
+            {isLoginViews[3] ? (
+              <RecoveryCode setIsLoginViews={setIsLoginViews} />
+            ) : (
+              ''
+            )}
           </div>
         </div>
       </div>

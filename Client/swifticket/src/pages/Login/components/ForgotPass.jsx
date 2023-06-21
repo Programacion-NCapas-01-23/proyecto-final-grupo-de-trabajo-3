@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ForgotPass = () => {
+const ForgotPass = ({ setIsLoginViews }) => {
   return (
     <div className="container-login flex flex-col justify-around items-center w-full h-full">
       <div className="flex flex-col justify-start sm:justify-evenly items-center gap-y-6 sm:gap-y-0 h-full sm:h-2/5 w-full">
@@ -18,7 +18,10 @@ const ForgotPass = () => {
         />
       </div>
       <div className="flex flex-col justify-evenly items-center h-1/3 w-full">
-        <button className="btn-recovery h-10 px-4 flex justify-center items-center w-4/5">
+        <button
+          className="btn-recovery h-10 px-4 flex justify-center items-center w-4/5"
+          onClick={() => setIsLoginViews([false, false, false, true])}
+        >
           Send code
         </button>
         <button className="btn-cancel my-2">Cancel</button>
