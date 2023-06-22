@@ -27,7 +27,6 @@ import java.util.Date;
 
 @Service
 public class AuthServicesImpl implements AuthServices {
-    private final EmailServices emailService;
     private final UserStateServices userStateServices;
     private final UserRepository userRepository;
     private final UserServices userServices;
@@ -45,9 +44,8 @@ public class AuthServicesImpl implements AuthServices {
     private static final String CLIENT_ID = "893111957431-h36mol3osmc1ajq441slto5mrha4vv9i.apps.googleusercontent.com";
     
     @Autowired
-    public AuthServicesImpl(UserRepository userRepository, EmailServices emailService, UserStateServices userStateServices, UserServices userServices, VerifyAccountTokenRepository accountTokenRepository, RandomCode randomCode, AvatarServices avatarServices, RoleServices roleServices, PasswordEncoder passwordEncoder) {
+    public AuthServicesImpl(UserRepository userRepository, UserStateServices userStateServices, UserServices userServices, VerifyAccountTokenRepository accountTokenRepository, RandomCode randomCode, AvatarServices avatarServices, RoleServices roleServices, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.emailService = emailService;
         this.userStateServices = userStateServices;
         this.userServices = userServices;
 		this.accountTokenRepository = accountTokenRepository;
@@ -102,7 +100,8 @@ public class AuthServicesImpl implements AuthServices {
         // Add user role by default
         Role role = roleServices.findById(USER_ROLE);
         userServices.assignRole(user, role);
-        
+
+        user.setIsNewUser(true);
         return user;
     }
 
@@ -117,7 +116,7 @@ public class AuthServicesImpl implements AuthServices {
             String name = (String) payload.get("given_name");
             String email = payload.getEmail();
 
-            /*
+            /* debug
             System.out.println("DEBUG");
             System.out.println(name);
             System.out.println(email);

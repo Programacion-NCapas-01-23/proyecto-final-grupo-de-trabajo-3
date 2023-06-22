@@ -66,6 +66,9 @@ public class User implements UserDetails {
     @JsonIgnore
     private List<AuthToken> authTokens;
 
+    @Transient
+    private Boolean isNewUser = false;
+
     public User(UserState state, Avatar avatar, String name, String email, String password) {
         this.state = state;
         this.avatar = avatar;

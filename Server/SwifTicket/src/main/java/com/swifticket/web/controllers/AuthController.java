@@ -29,15 +29,17 @@ private final AuthServices authServices;
 	private final RoleServices roleServices;
 	private final UserStateServices userStateServices;
 	private final ErrorHandler errorHandler;
+	private final EmailServices emailServices;
 	private final int USER_ROLE = 2;
 	@Autowired
-	public AuthController(AuthServices authServices, UserServices userServices, AvatarServices avatarServices, RoleServices roleServices, UserStateServices userStateServices, ErrorHandler errorHandler) {
+	public AuthController(AuthServices authServices, UserServices userServices, AvatarServices avatarServices, RoleServices roleServices, UserStateServices userStateServices, ErrorHandler errorHandler, EmailServices emailServices) {
 		this.authServices = authServices;
 		this.userServices = userServices;
 		this.avatarServices = avatarServices;
 		this.roleServices = roleServices;
 		this.userStateServices = userStateServices;
 		this.errorHandler = errorHandler;
+		this.emailServices = emailServices;
 	}
 
 	@PostMapping("/google/signin")
@@ -52,7 +54,6 @@ private final AuthServices authServices;
 			if (user == null)
 				return new ResponseEntity<>(new MessageDTO("invalid credentials"), HttpStatus.UNAUTHORIZED);
 
-			// System.out.println("User ID: " + user.getId());
 			// if new user return user role
 			Role role = roleServices.findById(USER_ROLE);
 			List<Role> roles = new ArrayList<>();
@@ -61,7 +62,13 @@ private final AuthServices authServices;
 			// if user exists get user roles
 			List<RolexUser> rolesRelations = user.getRolexUsers();
 			if (rolesRelations != null)
-				 roles = rolesRelations.stream().map(RolexUser::getRole).toList();
+				roles = rolesRelations.stream().map(RolexUser::getRole).toList();
+
+			// If the user is new then send verification code to it's email
+			if (user.getIsNewUser()) {
+				String code = authServices.generateVerifyAccountToken(user.getEmail());
+				emailServices.sendVerificationAccountCode(user.getEmail(), code);
+			}
 
 			// Create and register users JWT
 			AuthToken authToken = userServices.registerToken(user);
@@ -71,6 +78,7 @@ private final AuthServices authServices;
 					user.getName(),
 					user.getEmail(),
 					user.getAvatar().getImage(),
+					user.getState().getName(),
 					roles,
 					authToken);
 
@@ -102,8 +110,9 @@ private final AuthServices authServices;
 
 		try {
 			userServices.register(userData.getName(), userData.getEmail(), userData.getPassword(), avatar, state);
+			// Send verification code to user
 			String code = authServices.generateVerifyAccountToken(userData.getEmail());
-			// TODO: send code to user via email
+			emailServices.sendVerificationAccountCode(userData.getEmail(), code);
 
 			return new ResponseEntity<>(new MessageDTO("User registered"), HttpStatus.CREATED);
 		} catch (Exception e) {
@@ -150,7 +159,7 @@ private final AuthServices authServices;
 
 		try {
 			String code = authServices.generateVerifyAccountToken(data.getEmail());
-			// TODO : send code to user via email
+			emailServices.sendVerificationAccountCode(user.getEmail(), code);
 
 			return new ResponseEntity<>(new MessageDTO("validation code sent to email"), HttpStatus.OK);
 		} catch (Exception e) {
@@ -179,6 +188,7 @@ private final AuthServices authServices;
 					user.getName(),
 					user.getEmail(),
 					user.getAvatar().getImage(),
+					user.getState().getName(),
 					roles,
 					authToken);
 
