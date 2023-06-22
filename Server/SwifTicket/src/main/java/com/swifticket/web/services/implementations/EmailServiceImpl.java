@@ -22,13 +22,6 @@ public class EmailServiceImpl implements EmailServices {
 
     @Value("${email-service-smtp-password}")
     private String SMTP_PASSWORD;
-    /*
-    private static final String SMTP_HOST = "";
-    private static final int SMTP_PORT = 587;
-    private static final String SMTP_USERNAME = "swifticket@outlook.com";
-    private static final String SMTP_PASSWORD = "Aloha23#";
-
-     */
 
     @Value("${project-base-url}")
     private String BASE;
