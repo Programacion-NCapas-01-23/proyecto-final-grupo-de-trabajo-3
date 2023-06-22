@@ -19,6 +19,7 @@ import com.swifticket.web.utils.UserStateCatalog;
 import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +39,9 @@ public class AuthServicesImpl implements AuthServices {
     private final RoleServices roleServices;
     public final PasswordEncoder passwordEncoder;
     private final GoogleIdTokenVerifier verifier;
-    private static final String CLIENT_ID = "893111957431-h36mol3osmc1ajq441slto5mrha4vv9i.apps.googleusercontent.com";
+
+    @Value("${app.googleClientId}")
+    private String CLIENT_ID;
     
     @Autowired
     public AuthServicesImpl(UserRepository userRepository, UserStateServices userStateServices, UserServices userServices, VerifyAccountTokenRepository accountTokenRepository, RandomCode randomCode, AvatarServices avatarServices, RoleServices roleServices, PasswordEncoder passwordEncoder) {
