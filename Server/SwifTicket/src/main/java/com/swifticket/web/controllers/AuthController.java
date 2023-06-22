@@ -125,6 +125,10 @@ private final AuthServices authServices;
 
 	@GetMapping("/validate-token")
 	public ResponseEntity<?> validateAuthToken(@ModelAttribute ValidateTokenDTO data) {
+		// TODO: fix this to show authenticated user
+		User authUser = userServices.findUserAuthenticated();
+		System.out.println(authUser);
+
 		return new ResponseEntity<>(new MessageDTO("valid auth token"), HttpStatus.OK);
 	}
 	

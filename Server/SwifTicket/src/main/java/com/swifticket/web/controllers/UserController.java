@@ -45,6 +45,12 @@ public class UserController {
 			@RequestParam(defaultValue = "") String name,
 			@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "10") int size) {
+		// Grant access by user's role -> ADMIN, MODERATOR
+		User authUser = userService.findUserAuthenticated();
+		System.out.println("Auth user: " + authUser);
+		if (!(userService.hasRole(authUser, RoleCatalog.ADMIN) || userService.hasRole(authUser, RoleCatalog.MODERATOR)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		// List<User> users = userService.findAll();
 		Page<User> users = userService.findAll(name, page, size);
 		PageDTO<User> response = new PageDTO<>(
@@ -65,7 +71,9 @@ public class UserController {
 		User user = userService.findOneByEmail(id);
 		if (user == null)
 			return new ResponseEntity<>(new MessageDTO("user not found"), HttpStatus.NOT_FOUND);
-		return new ResponseEntity<>(user, HttpStatus.OK);
+
+		UserDTO _user = new UserDTO(user, userService.getUserRoles(user));
+		return new ResponseEntity<>(_user, HttpStatus.OK);
 	}
 
 	@PutMapping("/{id}")
@@ -228,7 +236,7 @@ public class UserController {
 
 		// Check if user has the 'collaborator' role
 		if(userService.hasRole(user, RoleCatalog.COLLABORATOR))
-			return new ResponseEntity<>(new MessageDTO("user doesn't have the 'collaborator' role"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(new MessageDTO("user doesn't have the 'collaborator' role"), HttpStatus.CONFLICT);
 
 		// Check if user is active
 		if(user.getState().getId() != UserStateCatalog.ACTIVE)

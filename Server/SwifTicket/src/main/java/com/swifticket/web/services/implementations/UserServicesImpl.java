@@ -1,6 +1,5 @@
 package com.swifticket.web.services.implementations;
 
-import com.swifticket.web.models.dtos.response.MessageDTO;
 import com.swifticket.web.models.dtos.user.ChangePasswordDTO;
 import com.swifticket.web.models.dtos.user.UpdateUserDTO;
 import com.swifticket.web.models.entities.*;
@@ -16,8 +15,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -108,8 +105,16 @@ public class UserServicesImpl implements UserServices {
 
     @Override
     public Boolean hasRole(User user, int roleId) {
+        if (user == null) return false;
         List<RolexUser> roles = user.getRolexUsers();
         return roles.stream().anyMatch(role -> role.getRole().getId() == roleId);
+    }
+
+    @Override
+    public List<Role> getUserRoles(User user) {
+        if (user == null) return null;
+        List<RolexUser> relations = user.getRolexUsers();
+        return relations.stream().map(RolexUser::getRole).toList();
     }
 
     @Override
@@ -206,6 +211,7 @@ public class UserServicesImpl implements UserServices {
                 .getAuthentication()
                 .getName();
 
+        System.out.println("findUserAuthenticated username: " + username);
         return userRepository.findOneByEmail(username);
     }
 }

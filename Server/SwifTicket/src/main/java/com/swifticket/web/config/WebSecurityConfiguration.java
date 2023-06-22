@@ -42,10 +42,13 @@ public class WebSecurityConfiguration {
 
         managerBuilder
                 .userDetailsService(identifier -> {
+                    System.out.println("ID: " + identifier);
                     User user = userService.findOneByEmail(identifier);
 
-                    if(user == null)
+                    if(user == null) {
+                        System.out.println("User: " + identifier + ", not found!");
                         throw new UsernameNotFoundException("User: " + identifier + ", not found!");
+                    }
 
                     return user;
                 })
