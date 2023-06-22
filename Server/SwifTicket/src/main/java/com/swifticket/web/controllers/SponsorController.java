@@ -9,7 +9,6 @@ import com.swifticket.web.utils.ErrorHandler;
 import com.swifticket.web.utils.ImageUpload;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,18 +22,12 @@ import org.springframework.web.multipart.MultipartFile;
 public class SponsorController {
 	private final SponsorServices sponsorServices;
 	private final ErrorHandler errorHandler;
-	private final Environment environment;
 	private final ImageUpload imageUpload;
 	@Autowired
-	public SponsorController(SponsorServices sponsorServices, ErrorHandler errorHandler, Environment environment, ImageUpload imageUpload) {
+	public SponsorController(SponsorServices sponsorServices, ErrorHandler errorHandler, ImageUpload imageUpload) {
 		this.sponsorServices = sponsorServices;
 		this.errorHandler = errorHandler;
-		this.environment = environment;
 		this.imageUpload = imageUpload;
-	}
-
-	private String getSponsorImageUploadPath() {
-		return environment.getProperty("sponsor.image.upload.path");
 	}
 
 	@GetMapping("")
@@ -82,7 +75,6 @@ public class SponsorController {
 			String src = imageUpload.uploadImage(image);
 			if (src == null)
 				return new ResponseEntity<>(new MessageDTO("Could not save image"), HttpStatus.BAD_REQUEST);
-
 			sponsorServices.save(data.getName(), src);
 			return new ResponseEntity<>(new MessageDTO("sponsor created"), HttpStatus.CREATED);
 		} catch (Exception e) {
@@ -103,14 +95,17 @@ public class SponsorController {
 		if (sponsorServices.findById(id) == null)
 			return new ResponseEntity<>(new MessageDTO("sponsor not found"), HttpStatus.NOT_FOUND);
 
-		// Check if sponsor already exists
-		if (sponsorServices.findByName(data.getName()) != null &&
-				sponsorServices.findOneByNameAndImage(data.getName(), data.getImage().getOriginalFilename()) != null) {
-			return new ResponseEntity<>(new MessageDTO("sponsor already exists"), HttpStatus.CONFLICT);
-		}
-
 		try {
-			sponsorServices.update(id, data.getName(), image);
+			String src = imageUpload.uploadImage(image);
+			// Check if sponsor already exists
+			if (sponsorServices.findByName(data.getName()) != null &&
+					sponsorServices.findOneByNameAndImage(data.getName(), src) != null) {
+				return new ResponseEntity<>(new MessageDTO("sponsor already exists"), HttpStatus.CONFLICT);
+			}
+			if (src == null)
+				return new ResponseEntity<>(new MessageDTO("Could not save image"), HttpStatus.BAD_REQUEST);
+
+			sponsorServices.update(id, data.getName(), src);
 			return new ResponseEntity<>(new MessageDTO("sponsor updated"), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);

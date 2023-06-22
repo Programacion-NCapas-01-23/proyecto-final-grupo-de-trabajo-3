@@ -19,9 +19,8 @@ public class SaveEventDTO {
 	
 	@NotBlank(message = "date and time is required")
 	private String dateTime;
-	
-	@NotNull(message = "image is required")
-	private MultipartFile image;
+
+	private String src;
 	
 	@Positive(message = "place id is required")
 	private int placeId;

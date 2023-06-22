@@ -13,6 +13,6 @@ public interface SponsorServices {
 	Sponsor findByName(String name);
 	Sponsor findOneByNameAndImage(String name, String image);
 	void save(String name, String image) throws Exception;
-	void update(int id, String name, MultipartFile image) throws Exception;
+	void update(int id, String name, String image) throws Exception;
 	void delete(int id) throws Exception;
 }

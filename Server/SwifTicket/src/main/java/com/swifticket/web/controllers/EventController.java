@@ -12,7 +12,7 @@ import com.swifticket.web.models.entities.*;
 import com.swifticket.web.services.*;
 import com.swifticket.web.utils.DateValidator;
 import com.swifticket.web.utils.ErrorHandler;
-import com.swifticket.web.utils.ImageUtils;
+import com.swifticket.web.utils.ImageUpload;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -39,11 +39,14 @@ public class EventController {
 	private final TierServices tierServices;
 	private final DateValidator dateValidator;
 	private final int PROGRAMMED = 1;
-
-	private final Environment environment;
+	private final ImageUpload imageUpload;
 
 	@Autowired
-	public EventController(EventServices eventServices, CategoryServices categoryServices, PlaceServices placeService, OrganizerServices organizerService, EventStateServices eventStateService, ErrorHandler errorHandler, SponsorServices sponsorServices, TierServices tierServices, DateValidator dateValidator, Environment environment) {
+	public EventController(EventServices eventServices, CategoryServices categoryServices,
+						   PlaceServices placeService, OrganizerServices organizerService,
+						   EventStateServices eventStateService, ErrorHandler errorHandler,
+						   SponsorServices sponsorServices, TierServices tierServices,
+						   DateValidator dateValidator, ImageUpload imageUpload) {
 		this.eventServices = eventServices;
 		this.categoryServices = categoryServices;
 		this.placeService = placeService;
@@ -53,11 +56,7 @@ public class EventController {
 		this.sponsorServices = sponsorServices;
 		this.tierServices = tierServices;
 		this.dateValidator = dateValidator;
-		this.environment = environment;
-	}
-
-	private String getEventImageUploadPath() {
-		return environment.getProperty("event.image.upload.path");
+		this.imageUpload = imageUpload;
 	}
 
 	@GetMapping("")
@@ -141,7 +140,10 @@ public class EventController {
 			return new ResponseEntity<>(new MessageDTO("Cannot add events on past dates"), HttpStatus.CONFLICT);
 
 		try {
-			data.setImage(image);
+			String src = imageUpload.uploadImage(image);
+			if (src == null)
+				return new ResponseEntity<>(new MessageDTO("Could not save image"), HttpStatus.BAD_REQUEST);
+			data.setSrc(src);
 			eventServices.save(data, category, organizer, place, state);
 			return new ResponseEntity<>(new MessageDTO("event created"), HttpStatus.CREATED);
 		} catch (Exception e) {
@@ -184,7 +186,10 @@ public class EventController {
 			return new ResponseEntity<>(new MessageDTO("Cannot add events on past dates"), HttpStatus.CONFLICT);
 
 		try {
-			data.setImage(image);
+			String src = imageUpload.uploadImage(image);
+			if (src == null)
+				return new ResponseEntity<>(new MessageDTO("Could not save image"), HttpStatus.BAD_REQUEST);
+			data.setSrc(src);
 			eventServices.update(id, data, category, organizer, place);
 			return new ResponseEntity<>(new MessageDTO("event updated"), HttpStatus.OK);
 		} catch (Exception e) {
