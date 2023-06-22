@@ -62,14 +62,9 @@ public class SponsorServicesImpl implements SponsorServices {
     }
 
     @Override
-    public void save(String name, MultipartFile image) {
-        try {
-            String imagePath = saveSponsorImage(image);
-            Sponsor sponsor = new Sponsor(name, imagePath);
-            repository.save(sponsor);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to create sponsor: " + e.getMessage());
-        }
+    public void save(String name, String image) {
+        Sponsor sponsor = new Sponsor(name, image);
+        repository.save(sponsor);
     }
 
     @Override

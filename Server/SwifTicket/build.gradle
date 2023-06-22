@@ -32,6 +32,9 @@ dependencies {
     // Mail
     implementation 'javax.mail:javax.mail-api:1.6.2'
     implementation 'com.sun.mail:javax.mail:1.6.2'
+    // Cloudinary
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'com.cloudinary:cloudinary-http44:1.28.0' // Cloudinary SDK for HTTP 4.4
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'org.postgresql:postgresql'

@@ -6,6 +6,7 @@ import com.swifticket.web.models.dtos.sponsor.SaveSponsorDTO;
 import com.swifticket.web.models.entities.Sponsor;
 import com.swifticket.web.services.SponsorServices;
 import com.swifticket.web.utils.ErrorHandler;
+import com.swifticket.web.utils.ImageUpload;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
@@ -16,8 +17,6 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-
 @RestController
 @RequestMapping("/sponsors")
 @CrossOrigin("*")
@@ -25,11 +24,13 @@ public class SponsorController {
 	private final SponsorServices sponsorServices;
 	private final ErrorHandler errorHandler;
 	private final Environment environment;
+	private final ImageUpload imageUpload;
 	@Autowired
-	public SponsorController(SponsorServices sponsorServices, ErrorHandler errorHandler, Environment environment) {
+	public SponsorController(SponsorServices sponsorServices, ErrorHandler errorHandler, Environment environment, ImageUpload imageUpload) {
 		this.sponsorServices = sponsorServices;
 		this.errorHandler = errorHandler;
 		this.environment = environment;
+		this.imageUpload = imageUpload;
 	}
 
 	private String getSponsorImageUploadPath() {
@@ -78,7 +79,11 @@ public class SponsorController {
 			return new ResponseEntity<>(new MessageDTO("sponsor already exists"), HttpStatus.CONFLICT);
 
 		try {
-			sponsorServices.save(data.getName(), image);
+			String src = imageUpload.uploadImage(image);
+			if (src == null)
+				return new ResponseEntity<>(new MessageDTO("Could not save image"), HttpStatus.BAD_REQUEST);
+
+			sponsorServices.save(data.getName(), src);
 			return new ResponseEntity<>(new MessageDTO("sponsor created"), HttpStatus.CREATED);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
