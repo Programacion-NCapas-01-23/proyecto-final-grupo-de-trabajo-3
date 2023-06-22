@@ -1,6 +1,7 @@
 package com.swifticket.web.services.implementations;
 
 import com.swifticket.web.services.EmailServices;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -10,11 +11,27 @@ import java.util.Properties;
 @Service
 public class EmailServiceImpl implements EmailServices {
     // Local SMTP server configuration
-    private static final String SMTP_HOST = "smtp.office365.com";
+    @Value("${email-service-smtp-host}")
+    private String SMTP_HOST;
+
+    @Value("${email-service-smtp-port}")
+    private String SMTP_PORT;
+
+    @Value("${email-service-smtp-username}")
+    private String SMTP_USERNAME;
+
+    @Value("${email-service-smtp-password}")
+    private String SMTP_PASSWORD;
+    /*
+    private static final String SMTP_HOST = "";
     private static final int SMTP_PORT = 587;
     private static final String SMTP_USERNAME = "swifticket@outlook.com";
     private static final String SMTP_PASSWORD = "Aloha23#";
-    private static final String BASE = "http://localhost:8080";
+
+     */
+
+    @Value("${project-base-url}")
+    private String BASE;
     
     @Override
     public void sendVerificationAccountCode(String email, String confirmationCode) {
