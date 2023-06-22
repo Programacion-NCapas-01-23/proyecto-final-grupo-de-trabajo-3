@@ -32,6 +32,7 @@ public class JWTTokenFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        String ACTIVE = "Activo";
         String tokenHeader = request.getHeader("Authorization");
         String username = null;
         String token = null;
@@ -58,7 +59,8 @@ public class JWTTokenFilter extends OncePerRequestFilter {
             if(user != null) {
                 Boolean tokenValidity = userService.isTokenValid(user, token);
 
-                if(tokenValidity) {
+                // Validate if user is active and if token is valid
+                if(tokenValidity && user.getState().getName().equals(ACTIVE)) {
                     //Preparing the authentication token.
                     UsernamePasswordAuthenticationToken authToken
                             = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
