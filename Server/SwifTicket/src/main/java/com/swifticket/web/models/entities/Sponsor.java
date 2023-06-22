@@ -34,4 +34,3 @@ public class Sponsor {
         this.image = image;
     }
 }
-

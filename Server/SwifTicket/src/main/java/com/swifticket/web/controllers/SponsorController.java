@@ -98,9 +98,11 @@ public class SponsorController {
 		if (sponsorServices.findById(id) == null)
 			return new ResponseEntity<>(new MessageDTO("sponsor not found"), HttpStatus.NOT_FOUND);
 
-		// check if sponsor already exists
-		if (sponsorServices.findByName(data.getName()) != null && sponsorServices.findOneByNameAndImage(data.getName(), data.getImage()) != null)
+		// Check if sponsor already exists
+		if (sponsorServices.findByName(data.getName()) != null &&
+				sponsorServices.findOneByNameAndImage(data.getName(), data.getImage().getOriginalFilename()) != null) {
 			return new ResponseEntity<>(new MessageDTO("sponsor already exists"), HttpStatus.CONFLICT);
+		}
 
 		try {
 			sponsorServices.update(id, data.getName(), image);
@@ -109,7 +111,8 @@ public class SponsorController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
+
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteSponsor(@PathVariable int id) {
 		Sponsor sponsor = sponsorServices.findById(id);
