@@ -20,7 +20,6 @@ public class JWTTools {
 
     public String generateToken(User user) {
         Map<String, Object> claims = new HashMap<>();
-        System.out.println("generating token for: " + user.getEmail());
 
         return Jwts.builder()
                 .addClaims(claims)

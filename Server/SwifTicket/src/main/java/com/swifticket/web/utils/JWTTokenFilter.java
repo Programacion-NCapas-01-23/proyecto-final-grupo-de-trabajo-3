@@ -60,8 +60,7 @@ public class JWTTokenFilter extends OncePerRequestFilter {
 
                 // Validate if user is active and if token is valid
                 if(tokenValidity && user.getState().getId() == UserStateCatalog.ACTIVE) {
-                    System.out.println("setAuthentication: " + user);
-                    //Preparing the authentication token.
+                    // Preparing the authentication token.
                     UsernamePasswordAuthenticationToken authToken
                             = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 
@@ -69,7 +68,7 @@ public class JWTTokenFilter extends OncePerRequestFilter {
                             new WebAuthenticationDetailsSource().buildDetails(request)
                     );
 
-                    //This line, sets the user to security context to be handled by the filter chain
+                    // This line, sets the user to security context to be handled by the filter chain
                     SecurityContextHolder
                             .getContext()
                             .setAuthentication(authToken);

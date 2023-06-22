@@ -211,7 +211,6 @@ public class UserServicesImpl implements UserServices {
                 .getAuthentication()
                 .getName();
 
-        System.out.println("findUserAuthenticated username: " + username);
         return userRepository.findOneByEmail(username);
     }
 }

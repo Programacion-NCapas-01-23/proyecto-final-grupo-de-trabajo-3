@@ -67,6 +67,7 @@ public class User implements UserDetails {
     private List<AuthToken> authTokens;
 
     @Transient
+    @JsonIgnore
     private Boolean isNewUser = false;
 
     public User(UserState state, Avatar avatar, String name, String email, String password) {
@@ -86,7 +87,7 @@ public class User implements UserDetails {
     @Override
     @JsonIgnore
     public String getUsername() {
-        return null;
+        return this.email;
     }
 
     @Override
