@@ -19,6 +19,7 @@ public interface UserServices {
 	void update(User user, UpdateUserDTO data, Avatar avatar) throws Exception;
 	Boolean changePassword(User user, ChangePasswordDTO data) throws Exception;
 	void toggleStatus(User user, UserState state) throws Exception;
+	Boolean hasRole(User user, int roleId);
 
 	RolexUser findByRoleAndUser(User user, Role role);
 	void assignRole(User user, Role role) throws Exception;

@@ -6,6 +6,8 @@ import com.swifticket.web.models.dtos.user.*;
 import com.swifticket.web.models.entities.*;
 import com.swifticket.web.services.*;
 import com.swifticket.web.utils.ErrorHandler;
+import com.swifticket.web.utils.RoleCatalog;
+import com.swifticket.web.utils.UserStateCatalog;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -225,13 +227,11 @@ public class UserController {
 			return new ResponseEntity<>(new MessageDTO("user not found"), HttpStatus.NOT_FOUND);
 
 		// Check if user has the 'collaborator' role
-		List<RolexUser> roles = user.getRolexUsers();
-		boolean isCollaborator = roles.stream().anyMatch(role -> role.getRole().getId() == 4);
-		if(!isCollaborator)
+		if(userService.hasRole(user, RoleCatalog.COLLABORATOR))
 			return new ResponseEntity<>(new MessageDTO("user doesn't have the 'collaborator' role"), HttpStatus.BAD_REQUEST);
 
 		// Check if user is active
-		if(user.getState().getId() != 1)
+		if(user.getState().getId() != UserStateCatalog.ACTIVE)
 			return new ResponseEntity<>(new MessageDTO("user is not active"), HttpStatus.BAD_REQUEST);
 
 		// Check if event exists

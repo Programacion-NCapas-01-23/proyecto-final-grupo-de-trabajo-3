@@ -14,6 +14,8 @@ import com.swifticket.web.repositories.VerifyAccountTokenRepository;
 import com.swifticket.web.services.*;
 import com.swifticket.web.utils.RandomCode;
 
+import com.swifticket.web.utils.RoleCatalog;
+import com.swifticket.web.utils.UserStateCatalog;
 import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,11 +38,6 @@ public class AuthServicesImpl implements AuthServices {
     private final RoleServices roleServices;
     public final PasswordEncoder passwordEncoder;
     private final GoogleIdTokenVerifier verifier;
-
-    private final String ACTIVE = "Activo";
-    private final String BLOCKED = "Bloqueado";
-    private final String UNVERIFIED = "No-verificado";
-    private final int USER_ROLE = 2;
     private static final String CLIENT_ID = "893111957431-h36mol3osmc1ajq441slto5mrha4vv9i.apps.googleusercontent.com";
     
     @Autowired
@@ -90,15 +87,15 @@ public class AuthServicesImpl implements AuthServices {
     @Transactional(rollbackOn = Exception.class)
     public User googleRegister(GoogleUserDTO data) throws Exception {
         Avatar avatar = avatarServices.findById(1);
-        // TODO: after tests update this ID to 3
-        UserState state = userStateServices.findById(1);
+        // TODO: after tests update this ID to UNVERIFIED
+        UserState state = userStateServices.findById(UserStateCatalog.ACTIVE);
         String password = randomCode.generateConfirmationCode();
 
         User newUser = new User(state, avatar, data.getName(), data.getEmail(), passwordEncoder.encode(password));
         User user = userRepository.save(newUser);
 
         // Add user role by default
-        Role role = roleServices.findById(USER_ROLE);
+        Role role = roleServices.findById(RoleCatalog.USER);
         userServices.assignRole(user, role);
 
         user.setIsNewUser(true);
@@ -179,7 +176,7 @@ public class AuthServicesImpl implements AuthServices {
 
         if (user != null
         		&& passwordEncoder.matches(password, user.getPassword()) 
-        		&& user.getState().getName().equals(ACTIVE)) {
+        		&& user.getState().getId() == UserStateCatalog.ACTIVE) {
             return user;
         }
         return null;

@@ -8,6 +8,8 @@ import com.swifticket.web.models.dtos.user.CreateUserDTO;
 import com.swifticket.web.models.dtos.user.RequestValidationToken;
 import com.swifticket.web.models.entities.*;
 import com.swifticket.web.services.*;
+import com.swifticket.web.utils.RoleCatalog;
+import com.swifticket.web.utils.UserStateCatalog;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +32,7 @@ private final AuthServices authServices;
 	private final UserStateServices userStateServices;
 	private final ErrorHandler errorHandler;
 	private final EmailServices emailServices;
-	private final int USER_ROLE = 2;
+
 	@Autowired
 	public AuthController(AuthServices authServices, UserServices userServices, AvatarServices avatarServices, RoleServices roleServices, UserStateServices userStateServices, ErrorHandler errorHandler, EmailServices emailServices) {
 		this.authServices = authServices;
@@ -55,7 +57,7 @@ private final AuthServices authServices;
 				return new ResponseEntity<>(new MessageDTO("invalid credentials"), HttpStatus.UNAUTHORIZED);
 
 			// if new user return user role
-			Role role = roleServices.findById(USER_ROLE);
+			Role role = roleServices.findById(RoleCatalog.USER);
 			List<Role> roles = new ArrayList<>();
 			roles.add(role);
 
@@ -100,7 +102,8 @@ private final AuthServices authServices;
 		if (avatar == null)
 			return new ResponseEntity<>(new MessageDTO("invalid avatar"), HttpStatus.NOT_FOUND);
 
-		UserState state = userStateServices.findById(3);
+		// When user's signs up it's state is UNVERIFIED
+		UserState state = userStateServices.findById(UserStateCatalog.UNVERIFIED);
 		if (state == null)
 			return new ResponseEntity<>(new MessageDTO("state not found"), HttpStatus.NOT_FOUND);
 
@@ -122,7 +125,6 @@ private final AuthServices authServices;
 
 	@GetMapping("/validate-token")
 	public ResponseEntity<?> validateAuthToken(@ModelAttribute ValidateTokenDTO data) {
-		// TODO: When using spring security this method will be DEPRECATED
 		return new ResponseEntity<>(new MessageDTO("valid auth token"), HttpStatus.OK);
 	}
 	
@@ -134,7 +136,7 @@ private final AuthServices authServices;
 				return new ResponseEntity<>(new MessageDTO("invalid validation code"), HttpStatus.NOT_FOUND);
 
 			// Update user state to Active
-			UserState state = userStateServices.findById(1);
+			UserState state = userStateServices.findById(UserStateCatalog.ACTIVE);
 			userServices.toggleStatus(user, state);
 
 				return new ResponseEntity<>(new MessageDTO("account validated"), HttpStatus.OK);
@@ -154,7 +156,8 @@ private final AuthServices authServices;
 		User user = userServices.findOneByEmail(data.getEmail());
 		if (user == null)
 			return new ResponseEntity<>(new MessageDTO("user not found"), HttpStatus.NOT_FOUND);
-		if (user.getState().getId() != 3)
+		// Check if user's has already been verified
+		if (user.getState().getId() != UserStateCatalog.UNVERIFIED)
 			return new ResponseEntity<>(new MessageDTO("user already validated"), HttpStatus.CONFLICT);
 
 		try {
