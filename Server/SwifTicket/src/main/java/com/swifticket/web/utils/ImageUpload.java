@@ -14,6 +14,7 @@ public class ImageUpload {
     private static final List<String> SUPPORTED_IMAGE_TYPES = Arrays.asList(
             "image/jpeg",
             "image/png",
+            "image/webp",
             "image/gif",
             "image/svg+xml"
     );
