@@ -12,7 +12,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "organizers")
-@ToString(exclude = {"images/events"})
+@ToString(exclude = {"events"})
 public class Organizer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
