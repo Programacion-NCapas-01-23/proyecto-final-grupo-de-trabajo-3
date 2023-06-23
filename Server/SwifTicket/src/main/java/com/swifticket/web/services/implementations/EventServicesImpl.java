@@ -7,6 +7,7 @@ import com.swifticket.web.models.entities.*;
 import com.swifticket.web.repositories.*;
 import com.swifticket.web.services.EventServices;
 
+import com.swifticket.web.utils.DateFormats;
 import com.swifticket.web.utils.ImageUpload;
 import jakarta.transaction.Transactional;
 
@@ -63,8 +64,8 @@ public class EventServicesImpl implements EventServices {
                 organizer,
                 eventInfo.getTitle(),
                 Double.parseDouble(eventInfo.getDuration()),
-                // TODO: must define a date format for the app
-                new SimpleDateFormat("dd/MM/yyyy").parse(eventInfo.getDateTime()),
+                // TODO: add time to format??
+                new SimpleDateFormat(DateFormats.EVENT_DATE_TIME).parse(eventInfo.getDateTime()),
                 eventInfo.getSrc(),
                 place,
                 state
@@ -82,7 +83,7 @@ public class EventServicesImpl implements EventServices {
             event.setOrganizer(organizer);
             event.setTitle(eventInfo.getTitle());
             event.setDuration(Double.parseDouble(eventInfo.getDuration()));
-            event.setDateTime(new SimpleDateFormat("dd/MM/yyyy").parse(eventInfo.getDateTime()));
+            event.setDateTime(new SimpleDateFormat(DateFormats.EVENT_DATE_TIME).parse(eventInfo.getDateTime()));
             event.setImage(eventInfo.getSrc());
             event.setPlace(place);
 

@@ -2,6 +2,7 @@ package com.swifticket.web.models.dtos.event;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,6 +19,7 @@ public class SaveEventDTO {
 	private String duration;
 	
 	@NotBlank(message = "date and time is required")
+	@Pattern(regexp = "^(0[1-9]|1[0-9]|2[0-9]|3[01])/(0[1-9]|1[012])/\\d{4}$", message = "date format must be dd/MM/yyyy")
 	private String dateTime;
 
 	private String src;
