@@ -10,6 +10,8 @@ import com.swifticket.web.services.TicketServices;
 import com.swifticket.web.services.TierServices;
 import com.swifticket.web.services.UserServices;
 import com.swifticket.web.utils.ErrorHandler;
+import com.swifticket.web.utils.RoleCatalog;
+import com.swifticket.web.utils.RoleVerifier;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -41,6 +43,12 @@ public class TicketController {
 
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getTicket(@PathVariable String id) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.USER, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		Ticket ticket = ticketServices.findOneById(id);
 		if (ticket == null)
 			return new ResponseEntity<>(new MessageDTO("ticket not found"), HttpStatus.NOT_FOUND);
@@ -52,6 +60,12 @@ public class TicketController {
 	public ResponseEntity<?> getTicketsByUser(@PathVariable String id,
 											  @RequestParam(defaultValue = "0") int page,
 											  @RequestParam(defaultValue = "10") int size) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.USER, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		User user = userServices.findOneByEmail(id);
 		if (user == null)
 			return new ResponseEntity<>(new MessageDTO("user not found"), HttpStatus.NOT_FOUND);
@@ -72,6 +86,12 @@ public class TicketController {
 	@PostMapping("")
 	public ResponseEntity<?> createTicket(
 			@ModelAttribute @Valid CreateTicketDTO data, BindingResult validations) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> USER
+		int[] validRoles = {RoleCatalog.USER, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
@@ -100,6 +120,12 @@ public class TicketController {
 	@PostMapping("/generate-code")
 	public ResponseEntity<?> generateValidateTicketCode(
 			@ModelAttribute @Valid GenerateTicketCodeDTO data, BindingResult validations) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> USER
+		int[] validRoles = {RoleCatalog.USER, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
@@ -123,6 +149,12 @@ public class TicketController {
 	@PatchMapping("/validate-ticket")
 	public ResponseEntity<?> validateTicket(
 			@ModelAttribute @Valid ValidateTicketDTO data, BindingResult validations) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> COLLABORATOR
+		int[] validRoles = {RoleCatalog.COLLABORATOR, RoleCatalog.SUPER_ADMIN	};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
@@ -159,6 +191,12 @@ public class TicketController {
 	@PostMapping("/transfer")
 	public ResponseEntity<?> startTransferTicket(
 			@ModelAttribute @Valid StartTransferTicketDTO data, BindingResult validations) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> USER
+		int[] validRoles = {RoleCatalog.USER, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
@@ -179,6 +217,11 @@ public class TicketController {
 	@PutMapping("/transfer")
 	public ResponseEntity<?> acceptTransferTicket(
 			@ModelAttribute @Valid AcceptTransferDTO data, BindingResult validations) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> USER
+		int[] validRoles = {RoleCatalog.USER, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);

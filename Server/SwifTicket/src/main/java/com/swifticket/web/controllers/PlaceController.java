@@ -1,8 +1,10 @@
 package com.swifticket.web.controllers;
 
-import java.util.List;
-
 import com.swifticket.web.models.dtos.page.PageDTO;
+import com.swifticket.web.models.entities.User;
+import com.swifticket.web.services.UserServices;
+import com.swifticket.web.utils.RoleCatalog;
+import com.swifticket.web.utils.RoleVerifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -24,10 +26,12 @@ import jakarta.validation.Valid;
 public class PlaceController {
 	private final PlaceServices placeServices;
 	private final ErrorHandler errorHandler;
+	private final UserServices userServices;
 	@Autowired
-	public PlaceController(PlaceServices placeServices, ErrorHandler errorHandler) {
+	public PlaceController(PlaceServices placeServices, ErrorHandler errorHandler, UserServices userServices) {
 		this.placeServices = placeServices;
 		this.errorHandler = errorHandler;
+		this.userServices = userServices;
 	}
 
 	@GetMapping("")
@@ -61,6 +65,11 @@ public class PlaceController {
 	public ResponseEntity<?> createPlace(
 			@ModelAttribute @Valid SavePlaceDTO data, 
 			BindingResult validations) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
 		
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(
@@ -82,6 +91,12 @@ public class PlaceController {
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deletePlace(@PathVariable int id) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		Place place = placeServices.findById(id);
 		
 		if (place == null)

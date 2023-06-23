@@ -1,8 +1,10 @@
 package com.swifticket.web.controllers;
 
-import java.util.List;
-
 import com.swifticket.web.models.dtos.page.PageDTO;
+import com.swifticket.web.models.entities.User;
+import com.swifticket.web.services.UserServices;
+import com.swifticket.web.utils.RoleCatalog;
+import com.swifticket.web.utils.RoleVerifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -24,10 +26,12 @@ import jakarta.validation.Valid;
 public class OrganizerController {
 	private final OrganizerServices organizerServices;
 	private final ErrorHandler errorHandler;
+	private final UserServices userServices;
 	@Autowired
-	public OrganizerController(OrganizerServices organizerServices, ErrorHandler errorHandler) {
+	public OrganizerController(OrganizerServices organizerServices, ErrorHandler errorHandler, UserServices userServices) {
 		this.organizerServices = organizerServices;
 		this.errorHandler = errorHandler;
+		this.userServices = userServices;
 	}
 
 	@GetMapping("")
@@ -51,6 +55,11 @@ public class OrganizerController {
 	public ResponseEntity<?> createOrganizer(
 			@ModelAttribute @Valid SaveOrganizerDTO data, 
 			BindingResult validations) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
 		
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(
@@ -73,6 +82,11 @@ public class OrganizerController {
 			@PathVariable int id, 
 			@ModelAttribute @Valid SaveOrganizerDTO data, 
 			BindingResult validations) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
 		
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(
@@ -92,6 +106,12 @@ public class OrganizerController {
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteOrganizer(@PathVariable int id) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		Organizer organizer = organizerServices.findById(id);
 		if (organizer == null)
 			return new ResponseEntity<>(new MessageDTO("organizer not found"), HttpStatus.NOT_FOUND);

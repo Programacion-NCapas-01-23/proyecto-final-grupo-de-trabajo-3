@@ -13,6 +13,8 @@ import com.swifticket.web.services.EventServices;
 import com.swifticket.web.services.TicketServices;
 import com.swifticket.web.services.UserServices;
 import com.swifticket.web.utils.DateFormatter;
+import com.swifticket.web.utils.RoleCatalog;
+import com.swifticket.web.utils.RoleVerifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,6 +46,12 @@ public class StatsController {
 
 	@GetMapping("/general")
 	public ResponseEntity<?> getGeneralStats() {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		List<User> users = userServices.findAll();
 		List<Event> events = eventServices.findAll();
 
@@ -64,6 +72,12 @@ public class StatsController {
 	
 	@GetMapping("/event/{id}")
 	public ResponseEntity<?> getEventStats(@PathVariable String id) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		Event event = eventServices.findById(id);
 		if (event == null)
 			return new ResponseEntity<>(new MessageDTO("event not found"), HttpStatus.NOT_FOUND);
@@ -126,6 +140,12 @@ public class StatsController {
 	
 	@GetMapping("/event/{id}/attendance")
 	public ResponseEntity<?> getEventAttendanceStats(@PathVariable String id) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		Event event = eventServices.findById(id);
 		if (event == null)
 			return new ResponseEntity<>(new MessageDTO("event not found"), HttpStatus.NOT_FOUND);

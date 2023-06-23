@@ -1,5 +1,9 @@
 package com.swifticket.web.controllers;
 
+import com.swifticket.web.models.entities.User;
+import com.swifticket.web.services.UserServices;
+import com.swifticket.web.utils.RoleCatalog;
+import com.swifticket.web.utils.RoleVerifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,13 +24,21 @@ public class SystemController {
 
 	private final int UNSET = -1;
 	private final SystemStateService systemService;
+	private final UserServices userServices;
 	@Autowired
-	public SystemController(SystemStateService systemService) {
+	public SystemController(SystemStateService systemService, UserServices userServices) {
 		this.systemService = systemService;
+		this.userServices = userServices;
 	}
 
 	@PostMapping("/suspend-service")
 	public ResponseEntity<?> suspendService() {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		int state = systemService.getStatus();
 		if (state == UNSET)
 			return new ResponseEntity<>(
@@ -52,5 +64,4 @@ public class SystemController {
 
 		return new ResponseEntity<>(new StateDTO(state), HttpStatus.OK);
 	}
-
 }

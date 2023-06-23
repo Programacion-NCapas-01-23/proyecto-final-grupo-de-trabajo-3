@@ -4,9 +4,13 @@ import com.swifticket.web.models.dtos.page.PageDTO;
 import com.swifticket.web.models.dtos.response.MessageDTO;
 import com.swifticket.web.models.dtos.sponsor.SaveSponsorDTO;
 import com.swifticket.web.models.entities.Sponsor;
+import com.swifticket.web.models.entities.User;
 import com.swifticket.web.services.SponsorServices;
+import com.swifticket.web.services.UserServices;
 import com.swifticket.web.utils.ErrorHandler;
 import com.swifticket.web.utils.ImageUpload;
+import com.swifticket.web.utils.RoleCatalog;
+import com.swifticket.web.utils.RoleVerifier;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -23,11 +27,13 @@ public class SponsorController {
 	private final SponsorServices sponsorServices;
 	private final ErrorHandler errorHandler;
 	private final ImageUpload imageUpload;
+	private final UserServices userServices;
 	@Autowired
-	public SponsorController(SponsorServices sponsorServices, ErrorHandler errorHandler, ImageUpload imageUpload) {
+	public SponsorController(SponsorServices sponsorServices, ErrorHandler errorHandler, ImageUpload imageUpload, UserServices userServices) {
 		this.sponsorServices = sponsorServices;
 		this.errorHandler = errorHandler;
 		this.imageUpload = imageUpload;
+		this.userServices = userServices;
 	}
 
 	@GetMapping("")
@@ -62,6 +68,12 @@ public class SponsorController {
 	public ResponseEntity<?> createSponsor(@ModelAttribute @Valid SaveSponsorDTO data,
 										   @RequestParam("image") MultipartFile image,
 										   BindingResult validations) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
@@ -90,6 +102,12 @@ public class SponsorController {
 										   @ModelAttribute @Valid SaveSponsorDTO data,
 										   @RequestParam("image") MultipartFile image,
 										   BindingResult validations) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
@@ -118,6 +136,12 @@ public class SponsorController {
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteSponsor(@PathVariable int id) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		Sponsor sponsor = sponsorServices.findById(id);
 		if (sponsor == null)
 			return new ResponseEntity<>(new MessageDTO("sponsor not found"), HttpStatus.NOT_FOUND);

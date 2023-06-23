@@ -163,6 +163,12 @@ public class EventController {
 										 @ModelAttribute @Valid SaveEventDTO data,
 										 @RequestParam(value = "image", required = false) MultipartFile image,
 										 BindingResult bindingResult) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		if (bindingResult.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
@@ -207,8 +213,14 @@ public class EventController {
 	}
 
 	@PatchMapping("/change-status")
-	public ResponseEntity<?> changeEventStatus(
-			@ModelAttribute @Valid ChangeEventStatusDTO data, BindingResult validations) {
+	public ResponseEntity<?> changeEventStatus(@ModelAttribute @Valid ChangeEventStatusDTO data,
+											   BindingResult validations) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
@@ -231,7 +243,14 @@ public class EventController {
 	}
 
 	@PostMapping("/sponsors")
-	public ResponseEntity<?> assignSponsor(@ModelAttribute @Valid AssignSponsorToEventDTO data, BindingResult bindingResult) {
+	public ResponseEntity<?> assignSponsor(@ModelAttribute @Valid AssignSponsorToEventDTO data,
+										   BindingResult bindingResult) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		if (bindingResult.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
@@ -258,7 +277,14 @@ public class EventController {
 	}
 
 	@DeleteMapping("/sponsors")
-	public ResponseEntity<?> removeSponsor(@ModelAttribute @Valid RemoveSponsorFromEventDTO data, BindingResult bindingResult) {
+	public ResponseEntity<?> removeSponsor(@ModelAttribute @Valid RemoveSponsorFromEventDTO data,
+										   BindingResult bindingResult) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		if (bindingResult.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
@@ -296,6 +322,12 @@ public class EventController {
 
 	@PostMapping("/tiers")
 	public ResponseEntity<?> createEventTier(@ModelAttribute @Valid SaveTierDTO data, BindingResult bindingResult) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		if (bindingResult.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
@@ -314,7 +346,15 @@ public class EventController {
 	}
 
 	@PutMapping("/tiers/{tierId}")
-	public ResponseEntity<?> updateEventTier(@PathVariable String tierId, @ModelAttribute @Valid UpdateTierDTO data, BindingResult bindingResult) {
+	public ResponseEntity<?> updateEventTier(@PathVariable String tierId,
+											 @ModelAttribute @Valid UpdateTierDTO data,
+											 BindingResult bindingResult) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		if (bindingResult.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
@@ -341,6 +381,12 @@ public class EventController {
 
 	@DeleteMapping("/tiers/{tierId}")
 	public ResponseEntity<?> deleteEventTier(@PathVariable String tierId) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		Tier tier = tierServices.findById(tierId);
 		if (tier == null) {
 			return new ResponseEntity<>(new MessageDTO("Tier not found"), HttpStatus.NOT_FOUND);

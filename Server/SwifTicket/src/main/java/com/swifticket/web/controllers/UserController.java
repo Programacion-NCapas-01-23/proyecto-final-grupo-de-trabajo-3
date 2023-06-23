@@ -17,8 +17,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -32,15 +30,17 @@ public class UserController {
 	private final UserStateServices userStateServices;
 	private final EventServices eventServices;
 	private final ErrorHandler errorHandler;
+	private final UserServices userServices;
 
 	@Autowired
-	public UserController(UserServices userService, AvatarServices avatarServices, RoleServices roleServices, UserStateServices userStateServices, EventServices eventServices, ErrorHandler errorHandler) {
+	public UserController(UserServices userService, AvatarServices avatarServices, RoleServices roleServices, UserStateServices userStateServices, EventServices eventServices, ErrorHandler errorHandler, UserServices userServices) {
 		this.userService = userService;
 		this.avatarServices = avatarServices;
 		this.roleServices = roleServices;
 		this.userStateServices = userStateServices;
 		this.eventServices = eventServices;
 		this.errorHandler = errorHandler;
+		this.userServices = userServices;
 	}
 
 	@GetMapping("")
@@ -141,6 +141,12 @@ public class UserController {
 	@PatchMapping("/toggle-status")
 	public ResponseEntity<?> toggleStatus(
 			@ModelAttribute @Valid ToggleStatusDTO data, BindingResult validations) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> MODERATOR
+		int[] validRoles = {RoleCatalog.MODERATOR, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
@@ -167,6 +173,12 @@ public class UserController {
 	@PostMapping("/role")
 	public ResponseEntity<?> assignRole(
 			@ModelAttribute @Valid AssignRoleDTO data, BindingResult validations) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
@@ -198,6 +210,12 @@ public class UserController {
 	@DeleteMapping("/role")
 	public ResponseEntity<?> removeRole(
 			@ModelAttribute @Valid RemoveRoleDTO data, BindingResult validations) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
@@ -229,6 +247,12 @@ public class UserController {
 	@PostMapping("/assign-to-event")
 	public ResponseEntity<?> assignToEvent(
 			@ModelAttribute @Valid AssignUserToEventDTO data, BindingResult validations) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
@@ -268,6 +292,12 @@ public class UserController {
 	@DeleteMapping("/remove-from-event")
 	public ResponseEntity<?> removeFromEvent(
 			@ModelAttribute @Valid RemoveUserFromEventDTO data, BindingResult validations) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);

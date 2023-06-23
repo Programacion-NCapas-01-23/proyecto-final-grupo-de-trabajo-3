@@ -15,6 +15,7 @@ public class ImageUpload {
             "image/jpeg",
             "image/png",
             "image/webp",
+            "image/webp2",
             "image/gif",
             "image/svg+xml"
     );
