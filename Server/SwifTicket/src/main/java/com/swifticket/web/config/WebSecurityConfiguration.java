@@ -62,8 +62,7 @@ public class WebSecurityConfiguration {
         //Route filter
         http.authorizeHttpRequests(auth ->
                 auth
-                        .requestMatchers("/**").permitAll() // RULE TO ALLOW ALL
-                        /*
+                        //.requestMatchers("/**").permitAll() // RULE TO ALLOW ALL
                         .requestMatchers(HttpMethod.GET,"/auth/validate-token").authenticated()
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/email/**").permitAll()
@@ -74,7 +73,6 @@ public class WebSecurityConfiguration {
                         .requestMatchers(HttpMethod.GET,"/categories").permitAll()
                         .requestMatchers(HttpMethod.GET,"/places/**").permitAll()
                         .requestMatchers(HttpMethod.GET,"/tickets/transfer/validate-transfer/**").permitAll()
-                         */
                         .anyRequest().authenticated()
         );
 
