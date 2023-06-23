@@ -53,8 +53,10 @@ public class UserController {
 
 		// List<User> users = userService.findAll();
 		Page<User> users = userService.findAll(name, page, size);
-		PageDTO<User> response = new PageDTO<>(
-				users.getContent(),
+		List<UserDTO> _users = users.stream().map(user -> new UserDTO(user, userService.getUserRoles(user))).toList();
+
+		PageDTO<UserDTO> response = new PageDTO<>(
+				_users,
 				users.getNumber(),
 				users.getSize(),
 				users.getTotalElements(),
