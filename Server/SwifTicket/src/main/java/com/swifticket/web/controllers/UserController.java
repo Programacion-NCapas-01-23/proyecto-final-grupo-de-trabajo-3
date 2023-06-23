@@ -7,6 +7,7 @@ import com.swifticket.web.models.entities.*;
 import com.swifticket.web.services.*;
 import com.swifticket.web.utils.ErrorHandler;
 import com.swifticket.web.utils.RoleCatalog;
+import com.swifticket.web.utils.RoleVerifier;
 import com.swifticket.web.utils.UserStateCatalog;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -45,10 +48,10 @@ public class UserController {
 			@RequestParam(defaultValue = "") String name,
 			@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "10") int size) {
-		// Grant access by user's role -> ADMIN, MODERATOR
 		User authUser = userService.findUserAuthenticated();
-		System.out.println("Auth user: " + authUser);
-		if (!(userService.hasRole(authUser, RoleCatalog.ADMIN) || userService.hasRole(authUser, RoleCatalog.MODERATOR)))
+		// Grant access by user's role -> ADMIN, MODERATOR, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.MODERATOR, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userService.getUserRoles(authUser)))
 			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
 
 		// List<User> users = userService.findAll();

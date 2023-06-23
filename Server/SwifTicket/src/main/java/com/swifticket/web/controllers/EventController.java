@@ -10,10 +10,7 @@ import com.swifticket.web.models.dtos.tier.SaveTierDTO;
 import com.swifticket.web.models.dtos.tier.UpdateTierDTO;
 import com.swifticket.web.models.entities.*;
 import com.swifticket.web.services.*;
-import com.swifticket.web.utils.DateValidator;
-import com.swifticket.web.utils.ErrorHandler;
-import com.swifticket.web.utils.ImageUpload;
-import com.swifticket.web.utils.RoleCatalog;
+import com.swifticket.web.utils.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -116,9 +113,10 @@ public class EventController {
 	public ResponseEntity<?> createEvent(@ModelAttribute @Valid SaveEventDTO data,
 										 @RequestParam("image") MultipartFile image,
 										 BindingResult bindingResult) {
-		// Grant access by user's role -> ADMIN, SUPER ADMIN
 		User authUser = userServices.findUserAuthenticated();
-		if (!(userServices.hasRole(authUser, RoleCatalog.ADMIN) || userServices.hasRole(authUser, RoleCatalog.SUPER_ADMIN)))
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
 			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
 
 		if (bindingResult.hasErrors()) {
