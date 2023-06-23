@@ -13,9 +13,9 @@ import com.swifticket.web.services.*;
 import com.swifticket.web.utils.DateValidator;
 import com.swifticket.web.utils.ErrorHandler;
 import com.swifticket.web.utils.ImageUpload;
+import com.swifticket.web.utils.RoleCatalog;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +38,7 @@ public class EventController {
 	private final SponsorServices sponsorServices;
 	private final TierServices tierServices;
 	private final DateValidator dateValidator;
+	private final UserServices userServices;
 	private final int PROGRAMMED = 1;
 	private final ImageUpload imageUpload;
 
@@ -46,7 +47,7 @@ public class EventController {
 						   PlaceServices placeService, OrganizerServices organizerService,
 						   EventStateServices eventStateService, ErrorHandler errorHandler,
 						   SponsorServices sponsorServices, TierServices tierServices,
-						   DateValidator dateValidator, ImageUpload imageUpload) {
+						   DateValidator dateValidator, UserServices userServices, ImageUpload imageUpload) {
 		this.eventServices = eventServices;
 		this.categoryServices = categoryServices;
 		this.placeService = placeService;
@@ -56,6 +57,7 @@ public class EventController {
 		this.sponsorServices = sponsorServices;
 		this.tierServices = tierServices;
 		this.dateValidator = dateValidator;
+		this.userServices = userServices;
 		this.imageUpload = imageUpload;
 	}
 
@@ -114,6 +116,11 @@ public class EventController {
 	public ResponseEntity<?> createEvent(@ModelAttribute @Valid SaveEventDTO data,
 										 @RequestParam("image") MultipartFile image,
 										 BindingResult bindingResult) {
+		// Grant access by user's role -> ADMIN, SUPER ADMIN
+		User authUser = userServices.findUserAuthenticated();
+		if (!(userServices.hasRole(authUser, RoleCatalog.ADMIN) || userServices.hasRole(authUser, RoleCatalog.SUPER_ADMIN)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		if (bindingResult.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
