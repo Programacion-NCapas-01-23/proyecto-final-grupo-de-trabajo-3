@@ -142,7 +142,9 @@ public class EventController {
 		try {
 			String src = imageUpload.uploadImage(image);
 			if (src == null)
-				return new ResponseEntity<>(new MessageDTO("Could not save image"), HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<>(new MessageDTO(
+						"Failed to save image, please check that the size is less than 5MB and that the uploaded file has an image format"),
+						HttpStatus.BAD_REQUEST);
 			data.setSrc(src);
 			eventServices.save(data, category, organizer, place, state);
 			return new ResponseEntity<>(new MessageDTO("event created"), HttpStatus.CREATED);
@@ -188,7 +190,9 @@ public class EventController {
 		try {
 			String src = imageUpload.uploadImage(image);
 			if (src == null)
-				return new ResponseEntity<>(new MessageDTO("Could not save image"), HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<>(new MessageDTO(
+						"Failed to save image, please check that the size is less than 5MB and that the uploaded file has an image format"),
+						HttpStatus.BAD_REQUEST);
 			data.setSrc(src);
 			eventServices.update(id, data, category, organizer, place);
 			return new ResponseEntity<>(new MessageDTO("event updated"), HttpStatus.OK);

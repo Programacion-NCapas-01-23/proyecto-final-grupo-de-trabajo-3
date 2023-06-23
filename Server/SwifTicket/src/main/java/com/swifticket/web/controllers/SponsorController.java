@@ -74,7 +74,9 @@ public class SponsorController {
 		try {
 			String src = imageUpload.uploadImage(image);
 			if (src == null)
-				return new ResponseEntity<>(new MessageDTO("Could not save image"), HttpStatus.BAD_REQUEST);
+				return new ResponseEntity<>(new MessageDTO(
+						"Failed to save image, please check that the size is less than 5MB and that the uploaded file has an image format"),
+						HttpStatus.BAD_REQUEST);
 			sponsorServices.save(data.getName(), src);
 			return new ResponseEntity<>(new MessageDTO("sponsor created"), HttpStatus.CREATED);
 		} catch (Exception e) {
@@ -103,8 +105,9 @@ public class SponsorController {
 				return new ResponseEntity<>(new MessageDTO("sponsor already exists"), HttpStatus.CONFLICT);
 			}
 			if (src == null)
-				return new ResponseEntity<>(new MessageDTO("Could not save image"), HttpStatus.BAD_REQUEST);
-
+				return new ResponseEntity<>(new MessageDTO(
+						"Failed to save image, please check that the size is less than 5MB and that the uploaded file has an image format"),
+						HttpStatus.BAD_REQUEST);
 			sponsorServices.update(id, data.getName(), src);
 			return new ResponseEntity<>(new MessageDTO("sponsor updated"), HttpStatus.OK);
 		} catch (Exception e) {
