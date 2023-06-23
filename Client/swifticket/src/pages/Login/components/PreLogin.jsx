@@ -1,5 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
-import googleLogo from '../../../assets/googleLogo.svg';
+import React, { useRef, useState } from 'react';
 import GoogleLogin from './GoogleLogin';
 import { googleSignIn } from '../../../services/Auth.Services';
 import { useSetRecoilState } from 'recoil';
