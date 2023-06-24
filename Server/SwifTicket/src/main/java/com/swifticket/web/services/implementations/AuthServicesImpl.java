@@ -90,8 +90,7 @@ public class AuthServicesImpl implements AuthServices {
     @Transactional(rollbackOn = Exception.class)
     public User googleRegister(GoogleUserDTO data) throws Exception {
         Avatar avatar = avatarServices.findById(1);
-        // TODO: after tests update this ID to UNVERIFIED
-        UserState state = userStateServices.findById(UserStateCatalog.ACTIVE);
+        UserState state = userStateServices.findById(UserStateCatalog.UNVERIFIED);
         String password = randomCode.generateConfirmationCode();
 
         User newUser = new User(state, avatar, data.getName(), data.getEmail(), passwordEncoder.encode(password));
