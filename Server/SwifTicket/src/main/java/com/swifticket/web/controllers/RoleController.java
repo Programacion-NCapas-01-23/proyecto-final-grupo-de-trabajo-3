@@ -20,7 +20,6 @@ import com.swifticket.web.services.RoleServices;
 
 @RestController
 @RequestMapping("/roles")
-@CrossOrigin("*")
 public class RoleController {
 	private final RoleServices roleServices;
 	private final UserServices userServices;

@@ -23,7 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/events")
-@CrossOrigin("*")
 public class EventController {
 
 	private final EventServices eventServices;

@@ -22,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/sponsors")
-@CrossOrigin("*")
 public class SponsorController {
 	private final SponsorServices sponsorServices;
 	private final ErrorHandler errorHandler;

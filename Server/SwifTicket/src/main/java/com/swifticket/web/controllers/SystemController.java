@@ -19,7 +19,6 @@ import com.swifticket.web.services.SystemStateService;
 
 @RestController
 @RequestMapping("/system")
-@CrossOrigin("*")
 public class SystemController {
 
 	private final int UNSET = -1;

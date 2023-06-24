@@ -28,8 +28,6 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/stats")
-@CrossOrigin("*")
-// TODO: implement methods to provide charts data
 public class StatsController {
 	private final TicketServices ticketServices;
 	private final UserServices userServices;

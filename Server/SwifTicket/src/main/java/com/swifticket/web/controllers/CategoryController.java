@@ -30,7 +30,6 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/categories")
-@CrossOrigin("*")
 public class CategoryController {
 	
 	private final CategoryServices categoryService;

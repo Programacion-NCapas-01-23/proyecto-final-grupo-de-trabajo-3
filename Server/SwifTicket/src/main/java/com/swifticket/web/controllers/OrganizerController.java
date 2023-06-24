@@ -22,7 +22,6 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/organizers")
-@CrossOrigin("*")
 public class OrganizerController {
 	private final OrganizerServices organizerServices;
 	private final ErrorHandler errorHandler;

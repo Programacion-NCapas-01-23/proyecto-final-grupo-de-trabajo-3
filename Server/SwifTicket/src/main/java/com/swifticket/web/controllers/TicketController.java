@@ -24,7 +24,6 @@ import java.util.Date;
 
 @RestController
 @RequestMapping("/tickets")
-@CrossOrigin("*")
 public class TicketController {
 
 	private final TicketServices ticketServices;

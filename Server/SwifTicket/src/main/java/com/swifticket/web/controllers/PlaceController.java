@@ -22,7 +22,6 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/places")
-@CrossOrigin("*")
 public class PlaceController {
 	private final PlaceServices placeServices;
 	private final ErrorHandler errorHandler;

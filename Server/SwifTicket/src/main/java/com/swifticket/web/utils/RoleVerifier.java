@@ -2,7 +2,6 @@ package com.swifticket.web.utils;
 
 import com.swifticket.web.models.entities.Role;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class RoleVerifier {
