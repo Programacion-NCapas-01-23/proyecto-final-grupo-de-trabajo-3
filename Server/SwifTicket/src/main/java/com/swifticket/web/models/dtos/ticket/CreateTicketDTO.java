@@ -7,9 +7,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class CreateTicketDTO {
-	@NotBlank(message = "user id is required")
-	private String userId;
-	
 	@NotBlank(message = "tier id is required")
 	private String tierId;
 }

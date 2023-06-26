@@ -43,7 +43,7 @@ public class TicketController {
 	@GetMapping("/{id}")
 	public ResponseEntity<?> getTicket(@PathVariable String id) {
 		User authUser = userServices.findUserAuthenticated();
-		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		// Grant access by user's role -> USER (owner), SUPER_ADMIN
 		int[] validRoles = {RoleCatalog.USER, RoleCatalog.SUPER_ADMIN};
 		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
 			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
@@ -52,24 +52,24 @@ public class TicketController {
 		if (ticket == null)
 			return new ResponseEntity<>(new MessageDTO("ticket not found"), HttpStatus.NOT_FOUND);
 
+		// Validate ticket ownership
+		if (ticket.getUser().getId() != authUser.getId())
+			return new ResponseEntity<>(new MessageDTO("current user is not the owner of this ticket"), HttpStatus.UNAUTHORIZED);
+
 		return new ResponseEntity<>(ticket, HttpStatus.OK);
 	}
-	
-	@GetMapping("/user/{id}")
-	public ResponseEntity<?> getTicketsByUser(@PathVariable String id,
-											  @RequestParam(defaultValue = "0") int page,
+
+	// TODO: update documentation
+	@GetMapping("/user")
+	public ResponseEntity<?> getTicketsByUser(@RequestParam(defaultValue = "0") int page,
 											  @RequestParam(defaultValue = "10") int size) {
 		User authUser = userServices.findUserAuthenticated();
-		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		// Grant access by user's role -> USER (owner), SUPER_ADMIN
 		int[] validRoles = {RoleCatalog.USER, RoleCatalog.SUPER_ADMIN};
 		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
 			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
 
-		User user = userServices.findOneByEmail(id);
-		if (user == null)
-			return new ResponseEntity<>(new MessageDTO("user not found"), HttpStatus.NOT_FOUND);
-
-		Page<Ticket> tickets = ticketServices.findAllByUser(user, page, size);
+		Page<Ticket> tickets = ticketServices.findAllByUser(authUser, page, size);
 		//List<Ticket> tickets = user.getTickets();
 		PageDTO<Ticket> response = new PageDTO<>(
 				tickets.getContent(),
@@ -81,7 +81,8 @@ public class TicketController {
 		);
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
-	
+
+	// TODO: update documentation
 	@PostMapping("")
 	public ResponseEntity<?> createTicket(
 			@ModelAttribute @Valid CreateTicketDTO data, BindingResult validations) {
@@ -100,16 +101,12 @@ public class TicketController {
 		if (tier == null)
 			return new ResponseEntity<>(new MessageDTO("tier not found"), HttpStatus.NOT_FOUND);
 
-		User user = userServices.findOneByEmail(data.getUserId());
-		if (user == null)
-			return new ResponseEntity<>(new MessageDTO("user not found"), HttpStatus.NOT_FOUND);
-
 		// Validate capacity availability
 		if (tier.getTickets().size() >= tier.getCapacity())
 			return new ResponseEntity<>(new MessageDTO("event tier is sold out"), HttpStatus.CONFLICT);
 
 		try {
-			ticketServices.create(user, tier);
+			ticketServices.create(authUser, tier);
 			return new ResponseEntity<>(new MessageDTO("ticket created"), HttpStatus.CREATED);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -186,27 +183,18 @@ public class TicketController {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
+	// TODO: update documentation
 	@PostMapping("/transfer")
-	public ResponseEntity<?> startTransferTicket(
-			@ModelAttribute @Valid StartTransferTicketDTO data, BindingResult validations) {
+	public ResponseEntity<?> startTransferTicket() {
 		User authUser = userServices.findUserAuthenticated();
 		// Grant access by user's role -> USER
 		int[] validRoles = {RoleCatalog.USER, RoleCatalog.SUPER_ADMIN};
 		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
 			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
 
-		if (validations.hasErrors()) {
-			return new ResponseEntity<>(
-					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
-		}
-
-		User user = userServices.findOneByEmail(data.getToId());
-		if (user == null)
-			return new ResponseEntity<>(new MessageDTO("user not found"), HttpStatus.NOT_FOUND);
-
 		try {
-			String code = ticketServices.startTransferTicket(user);
+			String code = ticketServices.startTransferTicket(authUser);
 			return new ResponseEntity<>(new CodeDTO(code), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
