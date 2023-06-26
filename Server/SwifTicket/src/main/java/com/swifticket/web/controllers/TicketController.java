@@ -131,6 +131,10 @@ public class TicketController {
 		if (ticket == null)
 			return new ResponseEntity<>(new MessageDTO("ticket not found"), HttpStatus.NOT_FOUND);
 
+		// Validate ticket ownership
+		if (ticket.getUser().getId() != authUser.getId())
+			return new ResponseEntity<>(new MessageDTO("current user is not the owner of this ticket"), HttpStatus.UNAUTHORIZED);
+
 		try {
 			String code = ticketServices.generateUseTicketCode(ticket);
 			if (code.isEmpty())
