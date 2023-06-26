@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.io.Serial;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -22,6 +23,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 @ToString(exclude = {"rolexUsers", "eventxValidators", "tickets", "authTokens"})
 public class User implements UserDetails {
 
+    @Serial
     private static final long serialVersionUID = 1460435087476558985L;
 
     @Id

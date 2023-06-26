@@ -17,6 +17,6 @@ public class AvatarServicesImpl implements AvatarServices {
 
     @Override
     public Avatar findById(int id) {
-        return repository.findById(id).orElse(null);
+        return repository.findById(id);
     }
 }

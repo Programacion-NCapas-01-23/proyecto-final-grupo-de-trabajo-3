@@ -9,8 +9,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserStateServiceImpl implements UserStateServices {
 
+    private final UserStateRepository userStateRepository;
+
     @Autowired
-    private UserStateRepository userStateRepository;
+    public UserStateServiceImpl(UserStateRepository userStateRepository) {
+        this.userStateRepository = userStateRepository;
+    }
 
     @Override
     public UserState findById(int id) {
