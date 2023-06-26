@@ -46,7 +46,7 @@ public class ImageUpload {
 
             // Process the upload result as needed
             return (String) uploadResult.get("secure_url");
-        } catch (IOException e) {
+        } catch (Exception e) {
             System.out.println("Failed to upload image" + e.getMessage());
             return null;
         }
