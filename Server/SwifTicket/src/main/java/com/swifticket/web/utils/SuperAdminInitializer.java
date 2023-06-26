@@ -26,6 +26,12 @@ public class SuperAdminInitializer implements ApplicationRunner {
     private final RoleServices roleServices;
     private final AvatarRepository avatarRepository;
     private final UserServices userServices;
+    private final static String SUPER_ADMIN_EMAIL = "dsolismarroquin@gmail.com";
+    private final static String SUPER_ADMIN_PASSWORD = "sysadmin!2023";
+    private final static String SUPER_ADMIN_NAME = "Super Admin";
+    private final static int SUPER_ADMIN_ROLE_ID = 1;
+    private final static int SUPER_ADMIN_STATE_ID = 1;
+    private final static int SUPER_ADMIN_AVATAR_ID = 1;
 
     @Autowired
     public SuperAdminInitializer(UserRepository userRepository,
@@ -45,17 +51,20 @@ public class SuperAdminInitializer implements ApplicationRunner {
     @Override
     public void run(ApplicationArguments args) throws Exception {
         // Verify if super admin exists in the database and create one if not
-        if (!userRepository.existsByEmail("superadmin@example.com")) {
-            Role role = roleServices.findById(1);
-            UserState userState = userStateServices.findById(1);
+        if (!userRepository.existsByEmail(SUPER_ADMIN_EMAIL)) {
+            // Get super admin role and state from database
+            Role role = roleServices.findById(SUPER_ADMIN_ROLE_ID);
+            UserState userState = userStateServices.findById(SUPER_ADMIN_STATE_ID);
 
+            // Create super admin
             User superAdmin = new User();
-            superAdmin.setEmail("dsolismarroquin@gmail.com");
-            superAdmin.setPassword(authService.hashPassword("sysadmin!2023"));
-            superAdmin.setAvatar(avatarRepository.findById(1));
-            superAdmin.setName("Super Admin");
+            superAdmin.setEmail(SUPER_ADMIN_EMAIL);
+            superAdmin.setPassword(authService.hashPassword(SUPER_ADMIN_PASSWORD));
+            superAdmin.setAvatar(avatarRepository.findById(SUPER_ADMIN_AVATAR_ID));
+            superAdmin.setName(SUPER_ADMIN_NAME);
             superAdmin.setState(userState);
 
+            // Save super admin and assign role
             userRepository.save(superAdmin);
             userServices.assignRole(superAdmin, role);
             userRepository.save(superAdmin);
