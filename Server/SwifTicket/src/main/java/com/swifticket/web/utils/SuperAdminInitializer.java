@@ -11,6 +11,7 @@ import com.swifticket.web.services.RoleServices;
 import com.swifticket.web.services.UserServices;
 import com.swifticket.web.services.UserStateServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -26,12 +27,24 @@ public class SuperAdminInitializer implements ApplicationRunner {
     private final RoleServices roleServices;
     private final AvatarRepository avatarRepository;
     private final UserServices userServices;
-    private final static String SUPER_ADMIN_EMAIL = "dsolismarroquin@gmail.com";
-    private final static String SUPER_ADMIN_PASSWORD = "sysadmin!2023";
-    private final static String SUPER_ADMIN_NAME = "Super Admin";
-    private final static int SUPER_ADMIN_ROLE_ID = 1;
-    private final static int SUPER_ADMIN_STATE_ID = 1;
-    private final static int SUPER_ADMIN_AVATAR_ID = 1;
+    // Get super admin DATA from application.properties
+    @Value("${SUPER_ADMIN_EMAIL}")
+    private String SUPER_ADMIN_EMAIL;
+
+    @Value("${SUPER_ADMIN_PASSWORD}")
+    private String SUPER_ADMIN_PASSWORD;
+
+    @Value("${SUPER_ADMIN_NAME}")
+    private String SUPER_ADMIN_NAME;
+
+    @Value("${SUPER_ADMIN_ROLE_ID}")
+    private int SUPER_ADMIN_ROLE_ID;
+
+    @Value("${SUPER_ADMIN_STATE_ID}")
+    private int SUPER_ADMIN_STATE_ID;
+
+    @Value("${SUPER_ADMIN_AVATAR_ID}")
+    private int SUPER_ADMIN_AVATAR_ID;
 
     @Autowired
     public SuperAdminInitializer(UserRepository userRepository,
