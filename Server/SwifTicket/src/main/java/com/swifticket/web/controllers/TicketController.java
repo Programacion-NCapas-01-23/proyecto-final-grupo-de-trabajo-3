@@ -243,10 +243,13 @@ public class TicketController {
 		if (ticketServices.isTicketUsed(ticket))
 			return new ResponseEntity<>(new MessageDTO("ticket has already been used"), HttpStatus.CONFLICT);
 
-		// TODO : validate ownership with auth token
 		User userFrom = ticket.getUser();
 		if (userFrom == null)
 			return new ResponseEntity<>(new MessageDTO("user not found"), HttpStatus.NOT_FOUND);
+
+		// Validate ticket ownership
+		if (ticket.getUser().getId() != authUser.getId())
+			return new ResponseEntity<>(new MessageDTO("current user is not the owner of this ticket"), HttpStatus.CONFLICT);
 
 		try {
 			String code = ticketServices.acceptTransferTicket(transaction, userFrom, ticket);
