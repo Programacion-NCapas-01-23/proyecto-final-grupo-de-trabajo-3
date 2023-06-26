@@ -147,7 +147,7 @@ public class EventController {
 			String src = imageUpload.uploadImage(image);
 			if (src == null)
 				return new ResponseEntity<>(new MessageDTO(
-						"Failed to save image, please check that the size is less than 5MB and that the uploaded file has an image format"),
+						"The uploaded file is not an image. Allowed formats: JPEG, PNG, GIF, WEBP, WEBP2, SVG."),
 						HttpStatus.BAD_REQUEST);
 			data.setSrc(src);
 			eventServices.save(data, category, organizer, place, state);
@@ -201,7 +201,7 @@ public class EventController {
 			String src = imageUpload.uploadImage(image);
 			if (src == null)
 				return new ResponseEntity<>(new MessageDTO(
-						"Failed to save image, please check that the size is less than 5MB and that the uploaded file has an image format"),
+						"The uploaded file is not an image. Allowed formats: JPEG, PNG, GIF, WEBP, WEBP2, SVG."),
 						HttpStatus.BAD_REQUEST);
 			data.setSrc(src);
 			eventServices.update(id, data, category, organizer, place);

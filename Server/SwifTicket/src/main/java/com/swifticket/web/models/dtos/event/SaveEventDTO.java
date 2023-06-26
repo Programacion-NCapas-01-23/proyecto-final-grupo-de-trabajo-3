@@ -19,7 +19,7 @@ public class SaveEventDTO {
 	private String duration;
 	
 	@NotBlank(message = "date and time is required")
-	@Pattern(regexp = "^(0[1-9]|1[0-9]|2[0-9]|3[01])/(0[1-9]|1[012])/\\d{4}$", message = "date format must be dd/MM/yyyy")
+	@Pattern(regexp = "^(0[1-9]|1[0-9]|2[0-9]|3[01])/(0[1-9]|1[012])/\\d{4}$", message = "Format error: Date format must be exactly DD/MM/YYYY")
 	private String dateTime;
 
 	private String src;

@@ -59,7 +59,6 @@ public class TicketController {
 		return new ResponseEntity<>(ticket, HttpStatus.OK);
 	}
 
-	// TODO: update documentation
 	@GetMapping("/user")
 	public ResponseEntity<?> getTicketsByUser(@RequestParam(defaultValue = "0") int page,
 											  @RequestParam(defaultValue = "10") int size) {
@@ -82,7 +81,6 @@ public class TicketController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
-	// TODO: update documentation
 	@PostMapping("")
 	public ResponseEntity<?> createTicket(
 			@ModelAttribute @Valid CreateTicketDTO data, BindingResult validations) {
@@ -188,7 +186,6 @@ public class TicketController {
 		}
 	}
 
-	// TODO: update documentation
 	@PostMapping("/transfer")
 	public ResponseEntity<?> startTransferTicket() {
 		User authUser = userServices.findUserAuthenticated();
@@ -259,7 +256,7 @@ public class TicketController {
 		if (transaction == null)
 			return new ResponseEntity<>(new MessageDTO("transaction not found"), HttpStatus.NOT_FOUND);
 		if (transaction.getFinishedAt() != null)
-			return new ResponseEntity<>(new MessageDTO("transaction already confirmed"), HttpStatus.OK);
+			return new ResponseEntity<>(new MessageDTO("transaction already confirmed"), HttpStatus.CONFLICT);
 
 		Ticket ticket = transaction.getTicket();
 		if (ticket == null)

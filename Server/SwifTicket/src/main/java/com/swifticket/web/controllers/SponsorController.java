@@ -86,7 +86,7 @@ public class SponsorController {
 			String src = imageUpload.uploadImage(image);
 			if (src == null)
 				return new ResponseEntity<>(new MessageDTO(
-						"Failed to save image, please check that the size is less than 5MB and that the uploaded file has an image format"),
+						"The uploaded file is not an image. Allowed formats: JPEG, PNG, GIF, WEBP, WEBP2, SVG."),
 						HttpStatus.BAD_REQUEST);
 			sponsorServices.save(data.getName(), src);
 			return new ResponseEntity<>(new MessageDTO("sponsor created"), HttpStatus.CREATED);
@@ -123,7 +123,7 @@ public class SponsorController {
 			}
 			if (src == null)
 				return new ResponseEntity<>(new MessageDTO(
-						"Failed to save image, please check that the size is less than 5MB and that the uploaded file has an image format"),
+						"The uploaded file is not an image. Allowed formats: JPEG, PNG, GIF, WEBP, WEBP2, SVG."),
 						HttpStatus.BAD_REQUEST);
 			sponsorServices.update(id, data.getName(), src);
 			return new ResponseEntity<>(new MessageDTO("sponsor updated"), HttpStatus.OK);
@@ -148,7 +148,7 @@ public class SponsorController {
 		// A sponsor that's assigned to one or more events can't be deleted
 		if (sponsor.getEventxSponsors().size() > 0)
 			return new ResponseEntity<>(
-					new MessageDTO("this sponsor can´t be deleted since it has been assigned"), HttpStatus.CONFLICT);
+					new MessageDTO("This sponsor can´t be deleted since it has been assigned"), HttpStatus.CONFLICT);
 
 		try {
 			sponsorServices.delete(id);

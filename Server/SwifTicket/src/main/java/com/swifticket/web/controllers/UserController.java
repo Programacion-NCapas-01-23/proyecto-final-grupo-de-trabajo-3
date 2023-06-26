@@ -80,7 +80,6 @@ public class UserController {
 		return new ResponseEntity<>(_user, HttpStatus.OK);
 	}
 
-	// TODO: Update documentation
 	@PutMapping("")
 	public ResponseEntity<?> updateUser(@ModelAttribute @Valid UpdateUserDTO data, BindingResult bindingResult) {
 		User authUser = userServices.findUserAuthenticated();
