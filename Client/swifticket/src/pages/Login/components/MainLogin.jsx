@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { login } from '../../../services/Auth.Services';
+import { signIn } from '../../../services/Auth.Services';
 import { useSetRecoilState } from 'recoil';
 import { tokenState } from '../../../state/atoms/tokenState';
 import { useNavigate } from 'react-router-dom';
@@ -16,7 +16,7 @@ const MainLogin = ({ setIsLoginViews }) => {
   const setRoles = useSetRecoilState(roleState);
 
   const loginHandler = async (userName, pass) => {
-    const response = await login(userName, pass);
+    const response = await signIn(userName, pass);
 
     if (response === undefined || response.status !== 200) {
       setHasErrors(true);

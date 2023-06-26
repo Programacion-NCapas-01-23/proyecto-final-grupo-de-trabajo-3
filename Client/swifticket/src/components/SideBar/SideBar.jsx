@@ -8,6 +8,7 @@ import CollabActions from './components/CollabActions';
 import { MdAccountCircle, MdClose, MdLogout, MdPerson } from 'react-icons/md';
 import { useSetRecoilState } from 'recoil';
 import { tokenState } from '../../state/atoms/tokenState';
+import { roleState } from '../../state/atoms/roleState';
 
 export default function SideBar(props) {
   const isGuest = false;
@@ -18,10 +19,13 @@ export default function SideBar(props) {
   const user_name = 'Pedro Esnifapiedra';
   const navigate = useNavigate();
   const setToken = useSetRecoilState(tokenState);
+  const setRole = useSetRecoilState(roleState);
 
   const handleLogOut = () => {
     setToken(null);
+    setRole(null);
     localStorage.removeItem('auth_token');
+    localStorage.removeItem('roles');
   };
 
   const redirectUser = () => {
