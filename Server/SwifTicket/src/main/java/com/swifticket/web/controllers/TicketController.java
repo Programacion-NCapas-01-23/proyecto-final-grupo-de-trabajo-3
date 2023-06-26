@@ -238,7 +238,7 @@ public class TicketController {
 
 		// Validate ticket ownership
 		if (ticket.getUser().getId() != authUser.getId())
-			return new ResponseEntity<>(new MessageDTO("current user is not the owner of this ticket"), HttpStatus.CONFLICT);
+			return new ResponseEntity<>(new MessageDTO("current user is not the owner of this ticket"), HttpStatus.UNAUTHORIZED);
 
 		try {
 			String code = ticketServices.acceptTransferTicket(transaction, userFrom, ticket);

@@ -108,7 +108,6 @@ public class UserController {
 		}
 	}
 
-	// TODO: Update documentation
 	@PatchMapping("/change-password")
 	public ResponseEntity<?> changePassword(
 			@ModelAttribute @Valid ChangePasswordDTO data, BindingResult bindingResult) {
