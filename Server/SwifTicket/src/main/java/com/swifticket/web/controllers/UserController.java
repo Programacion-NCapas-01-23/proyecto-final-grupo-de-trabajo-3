@@ -80,18 +80,14 @@ public class UserController {
 		return new ResponseEntity<>(_user, HttpStatus.OK);
 	}
 
-	@PutMapping("/{id}")
-	public ResponseEntity<?> updateUser(
-			@PathVariable String id, @ModelAttribute @Valid UpdateUserDTO data, BindingResult bindingResult) {
+	// TODO: Update documentation
+	@PutMapping("")
+	public ResponseEntity<?> updateUser(@ModelAttribute @Valid UpdateUserDTO data, BindingResult bindingResult) {
+		User authUser = userServices.findUserAuthenticated();
 		if (bindingResult.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
-
-		// Check if user exists
-		User user = userService.findOneByEmail(id);
-		if (user == null)
-			return new ResponseEntity<>(new MessageDTO("user not found"), HttpStatus.NOT_FOUND);
 
 		// Cast to int to avoid null pointer exception
 		Avatar avatar;
@@ -106,29 +102,26 @@ public class UserController {
 			return new ResponseEntity<>(new MessageDTO("avatar not found"), HttpStatus.NOT_FOUND);
 
 		try {
-			userService.update(user, data, avatar);
+			userService.update(authUser, data, avatar);
 			return new ResponseEntity<>(new MessageDTO("User updated"), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
+	// TODO: Update documentation
 	@PatchMapping("/change-password")
 	public ResponseEntity<?> changePassword(
 			@ModelAttribute @Valid ChangePasswordDTO data, BindingResult bindingResult) {
+		User authUser = userServices.findUserAuthenticated();
 		if (bindingResult.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
 
-		// Check if user exists
-		User user = userService.findOneByEmail(data.getEmail());
-		if (user == null)
-			return new ResponseEntity<>(new MessageDTO("invalid credentials! - email unregistered"), HttpStatus.UNAUTHORIZED);
-
 		try {
 			// Check if password is correct
-			Boolean response = userService.changePassword(user, data);
+			Boolean response = userService.changePassword(authUser, data);
 			if (!response)
 				return new ResponseEntity<>(new MessageDTO("invalid credentials! - password incorrect"), HttpStatus.UNAUTHORIZED);
 			return new ResponseEntity<>(new MessageDTO("password changed successfully"), HttpStatus.OK);

@@ -10,10 +10,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ChangePasswordDTO {
-	@NotBlank(message = "email is required")
-	@Email(message = "Format error: email format is required")
-	private String email;
-
 	@NotBlank(message = "password is required")
 	@Size(min = 8, message = "password size is 8 characters min")
 	@Pattern(regexp = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d)(?=.*[!@#$%^&*()_\\-+=<>?])[A-Za-z\\d!@#$%^&*()_\\-+=<>?]+$",
