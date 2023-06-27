@@ -34,3 +34,34 @@ export async function getPlace(placeID, token){
         return error.response
     }
 }
+
+export async function createPlace(token, _name, _address) {
+    try {
+        const response = await axios.post(
+        `${BASE}/${endpoint}`,
+        `${uriDataConstructor({
+            name: _name,
+            address: _address
+        })}`,
+        { headers: {...postHeaderEncoded , ...getHeader(token)} }
+        );
+        return response;
+    }
+    catch (error) {
+        console.log(error);
+        return error.response;
+    }
+}
+
+export async function deletePlace(token, placeID){
+    try {
+        const response = await axios.delete(
+            `${BASE}/${endpoint}/${placeID}`,
+            {headers: getHeader(token)}
+        )
+        return response
+    } catch (error) {
+        console.log(error);
+        return error.response
+    }
+}
