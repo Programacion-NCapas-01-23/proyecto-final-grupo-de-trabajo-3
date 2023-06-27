@@ -43,3 +43,51 @@ export async function getSponsorByName(sponsorName, token) {
         return error.response;
     }
 }
+
+export async function createSponsor(token, _name, _image) {
+    try {
+        const response = await axios.postForm(
+        `${BASE}/${endpoint}`,{
+            name: _name,
+            image: _image
+        },
+        { headers: {...postHeaderForm , ...getHeader(token)} }
+        );
+        return response;
+    }
+    catch (error) {
+        console.log(error);
+        return error.response;
+    }
+}
+
+export async function updateSponsor(token, sponsorID, _name, _image) {
+    try {
+        const response = await axios.putForm(
+        `${BASE}/${endpoint}/${sponsorID}`,{
+            name: _name,
+            image: _image
+        },
+        { headers: {...postHeaderForm , ...getHeader(token)} }
+        );
+        return response;
+    }
+    catch (error) {
+        console.log(error);
+        return error.response;
+    }
+}
+
+export async function deleteSponsor(token, sponsorID) {
+    try {
+        const response = await axios.delete(
+        `${BASE}/${endpoint}/${sponsorID}`,
+        { headers: {...postHeaderEncoded , ...getHeader(token)} }
+        );
+        return response;
+    }
+    catch (error) {
+        console.log(error);
+        return error.response;
+    }
+}
