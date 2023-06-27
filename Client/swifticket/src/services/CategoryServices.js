@@ -2,8 +2,6 @@ import axios from "axios";
 import BASE from "./BASE";
 
 const endpoint = "categories";
-const postHeaderEncoded = { "Content-Type": "application/x-www-form-urlencoded" };
-const postHeaderForm = { "Content-Type": "multipart/form-data" };
 const getHeader = (token) => {
     return { Authorization: `Bearer ${token}` };
 }; 
