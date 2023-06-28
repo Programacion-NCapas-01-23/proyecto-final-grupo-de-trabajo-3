@@ -40,8 +40,7 @@ public class AuthServicesImpl implements AuthServices {
     public final PasswordEncoder passwordEncoder;
     private final GoogleIdTokenVerifier verifier;
 
-    @Value("${app.googleClientId}")
-    private String CLIENT_ID;
+    private static final String CLIENT_ID = "893111957431-h36mol3osmc1ajq441slto5mrha4vv9i.apps.googleusercontent.com";
     
     @Autowired
     public AuthServicesImpl(UserRepository userRepository, UserStateServices userStateServices, UserServices userServices, VerifyAccountTokenRepository accountTokenRepository, RandomCode randomCode, AvatarServices avatarServices, RoleServices roleServices, PasswordEncoder passwordEncoder) {
