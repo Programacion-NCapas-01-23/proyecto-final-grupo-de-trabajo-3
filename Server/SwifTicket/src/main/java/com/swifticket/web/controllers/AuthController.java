@@ -6,6 +6,7 @@ import java.util.List;
 import com.swifticket.web.models.dtos.auth.*;
 import com.swifticket.web.models.dtos.user.CreateUserDTO;
 import com.swifticket.web.models.dtos.user.RequestValidationToken;
+import com.swifticket.web.models.dtos.user.UserDTO;
 import com.swifticket.web.models.entities.*;
 import com.swifticket.web.services.*;
 import com.swifticket.web.utils.RoleCatalog;
@@ -127,7 +128,11 @@ private final AuthServices authServices;
 		User authUser = userServices.findUserAuthenticated();
 		System.out.println("Authenticated user: " + authUser);
 
-		return new ResponseEntity<>(new MessageDTO("valid auth token"), HttpStatus.OK);
+		List<RolexUser> rolesRelations = authUser.getRolexUsers();
+		List<Role> roles = rolesRelations.stream().map(RolexUser::getRole).toList();
+
+		UserDTO _user = new UserDTO(authUser, roles);
+		return new ResponseEntity<>(_user, HttpStatus.OK);
 	}
 	
 	@GetMapping("/validate-account/{code}")
