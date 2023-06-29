@@ -1,5 +1,6 @@
 import axios from 'axios';
 import uriDataConstructor from './UriDataConstructor';
+import BASE from './BASE';
 
 const BASE_URL = `${BASE}/users`;
 
@@ -165,7 +166,7 @@ export const getOneUser = async (id) => {
   }
 };
 
-export const updateUser = async (id, name, avatar) => {
+export const updateUser = async (name, avatar) => {
   let response = undefined;
   const uriDataObject = {
     name: name,
@@ -177,7 +178,6 @@ export const updateUser = async (id, name, avatar) => {
     const data = await axios({
       method: 'PUT',
       baseURL: BASE_URL,
-      url: `/${id}`,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
@@ -194,10 +194,9 @@ export const updateUser = async (id, name, avatar) => {
   }
 };
 
-export const changePass = async (email, pass, newPass) => {
+export const changePass = async (token, pass, newPass) => {
   let response = undefined;
   const uriDataObject = {
-    email: email,
     password: pass,
     newPassword: newPass,
   };
@@ -209,6 +208,7 @@ export const changePass = async (email, pass, newPass) => {
       baseURL: BASE_URL,
       url: '/change-password',
       headers: {
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       data: `${body}`,

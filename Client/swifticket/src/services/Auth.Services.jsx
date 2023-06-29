@@ -1,7 +1,8 @@
 import axios from 'axios';
 import uriDataConstructor from './UriDataConstructor';
+import BASE from './BASE';
 
-const BASE_URL = 'ec2-3-223-145-52.compute-1.amazonaws.com/auth';
+const BASE_URL = `${BASE}/auth`;
 
 // AUTH
 

@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
-import { MdShoppingCart, MdMenu, MdHome, MdSearch } from "react-icons/md";
-import ShoppingSideBar from "./ShoppingSideBar";
-import SideBar from "./SideBar/SideBar";
+import React, { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { MdShoppingCart, MdMenu, MdHome, MdSearch } from 'react-icons/md';
+import ShoppingSideBar from './ShoppingSideBar';
+import SideBar from './SideBar/SideBar';
 
-export const NavBar = () => {
+const NavBar = () => {
   const [shoppingCart, setShoppingCart] = useState(false);
   const [sidebar, setSidebar] = useState(false);
 
@@ -61,9 +61,9 @@ const Search = () => {
   }, [showSearchInput]);
 
   useEffect(() => {
-    document.addEventListener("mousedown", handleOutsideClick);
+    document.addEventListener('mousedown', handleOutsideClick);
     return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener('mousedown', handleOutsideClick);
     };
   }, []);
 
@@ -89,3 +89,5 @@ const Search = () => {
     </div>
   );
 };
+
+export default NavBar;

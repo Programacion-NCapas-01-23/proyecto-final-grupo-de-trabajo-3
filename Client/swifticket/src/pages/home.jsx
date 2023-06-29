@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import EventCardSt from '../components/EventCards/Standard/EventCardSt';
 import EventCardMi from '../components/EventCards/Minimized/EventCardMi';
-import { getAllEvents } from '../services/Events.Services';
 
 export default function Home() {
 
@@ -17,6 +16,7 @@ export default function Home() {
 
   return (
     <div className="min-h-[calc(100vh-52px-4rem)]">
+      <button onClick={() => handleToken(token)}>TOKEEEEN</button>
       <section className="">
         <TitileWithLines title="What's New?" />
         <div className="flex md:flex-row flex-col justify-evenly">
