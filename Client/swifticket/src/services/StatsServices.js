@@ -1,6 +1,5 @@
 import axios from 'axios';
 import BASE from './BASE';
-import uriDataConstructor from './UriDataConstructor';
 
 const endpoint = 'stats';
 const getHeader = (token) => {

@@ -1,6 +1,5 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import userPlaceholder from '../../../assets/userPlaceholder.png';
 import { MdComputer, MdTableRows, MdLogout } from 'react-icons/md';
 
 const SideBar = () => {

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import uriDataConstructor from './UriDataConstructor';
 
-const BASE_URL = 'http://localhost:8080/auth';
+const BASE_URL = 'ec2-3-223-145-52.compute-1.amazonaws.com/auth';
 
 // AUTH
 

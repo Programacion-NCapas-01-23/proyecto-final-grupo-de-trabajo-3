@@ -15,6 +15,7 @@ const PreLogin = ({ setIsLoginViews }) => {
   const onGoogleSignIn = async (res) => {
     const { credential } = res;
     localStorage.setItem('auth_token', JSON.stringify(credential));
+    console.log(credential);
     setToken(googleSignIn(credential));
     isAdmin ? navigateTo('/admin') : navigateTo('/');
   };
