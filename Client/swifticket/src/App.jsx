@@ -71,7 +71,7 @@ function App() {
           <Route path="user">
             <Route index element={<User />} />
             <Route path="owned-tickets" element={<OwnedTickets />} />
-            <Route path="tickets/:ticket" element={<Ticket />} />
+            <Route path="tickets/:id" element={<Ticket />} />
             <Route path="change-avatar" element={<Avatars />} />
             <Route path="change-password" element={<ChangePassword />} />
             <Route path="my-account" element={<AccountInfo />} />
