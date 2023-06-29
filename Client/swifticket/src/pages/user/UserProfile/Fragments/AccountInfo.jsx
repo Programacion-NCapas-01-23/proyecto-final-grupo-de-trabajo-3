@@ -40,8 +40,6 @@ export default function AccountInfo() {
         setFormData({ ...formData, avatar: user.avatar.id })
         let response = await updateUser(formData.name, formData.avatar, token)
 
-        console.log(response);
-
         if (response.status == 200){
             toast.success("User Updated")
             setTimeout(() => {
