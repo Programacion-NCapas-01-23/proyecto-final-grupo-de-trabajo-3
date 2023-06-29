@@ -1,9 +1,11 @@
 package com.swifticket.web.controllers;
 
+import com.swifticket.web.models.dtos.event.EventDTO;
 import com.swifticket.web.models.dtos.page.PageDTO;
 import com.swifticket.web.models.dtos.response.CodeDTO;
 import com.swifticket.web.models.dtos.response.MessageDTO;
 import com.swifticket.web.models.dtos.ticket.*;
+import com.swifticket.web.models.dtos.tier.TierDTO;
 import com.swifticket.web.models.entities.*;
 import com.swifticket.web.services.EmailServices;
 import com.swifticket.web.services.TicketServices;
@@ -21,6 +23,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
+import java.util.List;
 
 @RestController
 @RequestMapping("/tickets")
@@ -56,7 +59,12 @@ public class TicketController {
 		if (ticket.getUser().getId() != authUser.getId())
 			return new ResponseEntity<>(new MessageDTO("current user is not the owner of this ticket"), HttpStatus.UNAUTHORIZED);
 
-		return new ResponseEntity<>(ticket, HttpStatus.OK);
+		// Return formatted ticket
+		Event event = ticket.getTier().getEvent();
+		EventDTO _event = new EventDTO(event, true);
+		TicketDTO _ticket = new TicketDTO(ticket, _event);
+
+		return new ResponseEntity<>(_ticket, HttpStatus.OK);
 	}
 
 	@GetMapping("/user")
@@ -69,9 +77,15 @@ public class TicketController {
 			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
 
 		Page<Ticket> tickets = ticketServices.findAllByUser(authUser, page, size);
-		//List<Ticket> tickets = user.getTickets();
-		PageDTO<Ticket> response = new PageDTO<>(
-				tickets.getContent(),
+
+		List<TicketDTO> _tickets = tickets.getContent().stream().map(ticket -> {
+			Event event = ticket.getTier().getEvent();
+			EventDTO _event = new EventDTO(event, true);
+			return new TicketDTO(ticket, _event);
+		}).toList();
+
+		PageDTO<TicketDTO> response = new PageDTO<>(
+				_tickets,
 				tickets.getNumber(),
 				tickets.getSize(),
 				tickets.getTotalElements(),
