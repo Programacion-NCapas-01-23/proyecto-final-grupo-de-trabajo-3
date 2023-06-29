@@ -21,10 +21,10 @@ export async function getTicketByID(token, ticketID){
     }
 }
 
-export async function getTicketByUser(token, userID){
+export async function getTicketByUser(token){
     try {
         const response = await axios.get(
-            `${BASE}/${endpoint}/${userID}`,
+            `${BASE}/${endpoint}/user`,
             {headers: getHeader(token)}
         )
         return response

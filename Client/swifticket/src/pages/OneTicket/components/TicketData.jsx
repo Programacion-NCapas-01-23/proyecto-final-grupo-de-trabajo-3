@@ -3,7 +3,7 @@ import Placeholder from '../../../assets/Placeholder.png';
 import QRPlaceholder from '../../../assets/QRPlaceholder.png';
 import LoadingQRPlaceholder from '../../../assets/LoadingQRPlaceholder.png';
 
-const Ticket = () => {
+export default function TicketData() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -65,5 +65,3 @@ const Ticket = () => {
     </div>
   );
 };
-
-export default Ticket;

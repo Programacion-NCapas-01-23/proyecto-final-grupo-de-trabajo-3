@@ -52,6 +52,7 @@ import { tokenState } from './state/atoms/tokenState';
 import AccountInfo from './pages/user/UserProfile/Fragments/AccountInfo';
 import Avatars from './pages/user/UserProfile/Fragments/Avatars';
 import ChangePassword from './pages/user/UserProfile/Fragments/ChangePassword';
+import { Ticket } from './pages/OneTicket/Ticket';
 
 function App() {
   const token = useRecoilValue(tokenState);
@@ -70,6 +71,7 @@ function App() {
           <Route path="user">
             <Route index element={<User />} />
             <Route path="owned-tickets" element={<OwnedTickets />} />
+            <Route path="tickets/:ticket" element={<Ticket />} />
             <Route path="change-avatar" element={<Avatars />} />
             <Route path="change-password" element={<ChangePassword />} />
             <Route path="my-account" element={<AccountInfo />} />
