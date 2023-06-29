@@ -15,7 +15,7 @@ export const testUser = {
 	},
 	"avatar": {
 		"id": 1,
-		"image": "avatar1.jpg"
+		"image": "avatar0.jpg"
 	},
 	"roles": [
 		{
