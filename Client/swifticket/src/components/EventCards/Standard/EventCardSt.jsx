@@ -1,12 +1,13 @@
 import EventInfo from "./components/EventInfo";
 import {useNavigate} from "react-router-dom" 
 
-export default function EventCardSt(props) {
+export default function EventCardSt({event}) {
 
   const navigate = useNavigate();
+  const date_time = new Date(event.dateTime)
 
   const redirectUser = () => {
-    navigate(`/event/${props.event.id}`);
+    navigate(`/event/${event.id}`);
   };
 
 
@@ -16,15 +17,15 @@ export default function EventCardSt(props) {
         <div className="relative md:w-[16rem] w-40">
           <img
             className="object-cover h-full w-full shadow-md rounded-l-2xl"
-            src={props.event.img}
+            src={event.img}
             alt="event_img"
           />
           <span className="absolute bottom-0 bg-secondary text-center px-3 py-2 rounded-bl-2xl shadow-md shadow-black">
-            <p className="text-4xl">{props.event.date_time.getDate()}</p>
-            <p className="uppercase -mt-2">{props.event.date_time.toLocaleString('en-US', { month: 'short' })}</p>
+            <p className="text-4xl"> 8 </p>
+            <p className="uppercase -mt-2">{date_time.toLocaleString('en-US', { month: 'short' })}</p>
           </span>
         </div>
-        <EventInfo event={props.event}></EventInfo>
+        <EventInfo event={event} date={date_time}></EventInfo>
       </div>
     </a>
   );

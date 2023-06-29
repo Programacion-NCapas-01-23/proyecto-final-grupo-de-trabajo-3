@@ -1,9 +1,7 @@
 import LinnedText from "./LinnedText";
 
-export default function EventInfo(props) {
-  const dateTime = props.event.date_time
-  const eventTitle = props.event.title
-  const eventLocation = props.event.place
+export default function EventInfo({ event, date }) {
+  const eventTitle = event.title
 
   return (
     <div className="relative pl-default-lg pr-1 md:pr-default-lg">
@@ -11,8 +9,8 @@ export default function EventInfo(props) {
       <div className="w-full relative py-default max-h-48 overflow-auto">
         <h1 className="subtitle">{eventTitle}</h1>
         <div>
-          <LinnedText text={eventLocation} />
-          <LinnedText text={dateTime.toLocaleString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })} />
+          <LinnedText text={event.place.name} />
+          <LinnedText text={date.toLocaleString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })} />
         </div>
       </div>
     </div>

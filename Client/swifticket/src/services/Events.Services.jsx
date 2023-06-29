@@ -161,14 +161,13 @@ export const deleteEventTier = async (tierId) => {
 
 // EVENTS
 
-export const getAllEvents = async (token) => {
+export const getAllEvents = async () => {
   let response = undefined;
 
   try {
     const data = await axios({
       method: 'GET',
-      baseURL: BASE_URL,
-      headers: { Authorization: `Bearer ${token}` },
+      url: "http://ec2-3-223-145-52.compute-1.amazonaws.com/events",
     });
 
     if (data) {
