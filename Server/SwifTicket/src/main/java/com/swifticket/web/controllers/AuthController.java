@@ -69,7 +69,7 @@ private final AuthServices authServices;
 			// If the user is new then send verification code to it's email
 			if (user.getIsNewUser()) {
 				String code = authServices.generateVerifyAccountToken(user.getEmail());
-				emailServices.sendVerificationAccountCode(user.getEmail(), code);
+				emailServices.sendVerificationAccountCode(user.getEmail(), code, user.getNewPassword());
 			}
 
 			// Create and register users JWT

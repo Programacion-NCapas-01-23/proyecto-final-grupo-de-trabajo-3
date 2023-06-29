@@ -19,7 +19,6 @@ import com.swifticket.web.utils.UserStateCatalog;
 import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -100,6 +99,7 @@ public class AuthServicesImpl implements AuthServices {
         userServices.assignRole(user, role);
 
         user.setIsNewUser(true);
+        user.setNewPassword(password);
         return user;
     }
 

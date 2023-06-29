@@ -25,11 +25,20 @@ public class EmailServiceImpl implements EmailServices {
 
     @Value("${project-base-url}")
     private String BASE;
-    
+
     @Override
     public void sendVerificationAccountCode(String email, String confirmationCode) {
         String subject = "Swifticket - Verifica tu cuenta";
         String body = "Para verificar tu cuenta, haz clic en el siguiente enlace:  " +  BASE + "/auth/validate-account/" + confirmationCode;
+
+        sendEmail(email, subject, body);
+    }
+
+    @Override
+    public void sendVerificationAccountCode(String email, String confirmationCode, String password) {
+        String subject = "Swifticket - Verifica tu cuenta";
+        String body = "Tu contraseña temporal es: " + password + "\n\n"
+                + "Para verificar tu cuenta, haz clic en el siguiente enlace:  " +  BASE + "/auth/validate-account/" + confirmationCode;
 
         sendEmail(email, subject, body);
     }

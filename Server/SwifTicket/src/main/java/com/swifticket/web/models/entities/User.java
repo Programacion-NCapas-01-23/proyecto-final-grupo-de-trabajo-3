@@ -72,6 +72,10 @@ public class User implements UserDetails {
     @JsonIgnore
     private Boolean isNewUser = false;
 
+    @Transient
+    @JsonIgnore
+    private String newPassword = "";
+
     public User(UserState state, Avatar avatar, String name, String email, String password) {
         this.state = state;
         this.avatar = avatar;
