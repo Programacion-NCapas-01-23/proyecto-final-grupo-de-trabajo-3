@@ -23,6 +23,9 @@ docker stop $(docker ps -aq)
 ### Delete all containers using the following command
 docker rm -f $(docker ps -a -q)
 
+### Remove one image
+docker rmi swifticket.jar
+
 ### Remove all images
 docker rmi $(docker images -q)
 
