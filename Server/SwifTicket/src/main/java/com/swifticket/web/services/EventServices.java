@@ -11,6 +11,7 @@ public interface EventServices {
 	List<Event> findAll();
 	Page<Event> findAll(String title, int page, int size);
 	Event findById(String id);
+	boolean isAvailable(Event event);
 	void save(SaveEventDTO eventInfo, Category category, Organizer organizer, Place place, EventState state) throws Exception;
 	void update(String id, SaveEventDTO eventInfo, Category category, Organizer organizer, Place place) throws Exception;
 	void changeStatus(Event event, EventState state) throws Exception;

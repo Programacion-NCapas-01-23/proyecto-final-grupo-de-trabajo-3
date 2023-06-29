@@ -56,6 +56,21 @@ public class EventServicesImpl implements EventServices {
             return null;
         }
     }
+
+    @Override
+    public boolean isAvailable(Event event) {
+        boolean available = false;
+        List<Tier> tiers = event.getTiers();
+        for (Tier tier : tiers){
+            if (tier.getCapacity() > tier.getTickets().size()) {
+                available = true;
+                break;
+            }
+        }
+
+        return  available;
+    }
+
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void save(SaveEventDTO eventInfo, Category category, Organizer organizer, Place place, EventState state) throws Exception {

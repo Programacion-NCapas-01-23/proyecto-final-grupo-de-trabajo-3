@@ -7,6 +7,7 @@ import com.swifticket.web.models.dtos.page.PageDTO;
 import com.swifticket.web.models.dtos.response.MessageAndSoldTicketsDTO;
 import com.swifticket.web.models.dtos.response.MessageDTO;
 import com.swifticket.web.models.dtos.tier.SaveTierDTO;
+import com.swifticket.web.models.dtos.tier.TierDTO;
 import com.swifticket.web.models.dtos.tier.UpdateTierDTO;
 import com.swifticket.web.models.entities.*;
 import com.swifticket.web.services.*;
@@ -62,8 +63,10 @@ public class EventController {
 									   @RequestParam(defaultValue = "0") int page,
 									   @RequestParam(defaultValue = "10") int size) {
 		Page<Event> events = eventServices.findAll(title, page, size);
-		PageDTO<Event> response = new PageDTO<>(
-				events.getContent(),
+		List<EventDTO> _events = events.getContent().stream().map(event -> new EventDTO(event, eventServices.isAvailable(event))).toList();
+
+		PageDTO<EventDTO> response = new PageDTO<>(
+				_events,
 				events.getNumber(),
 				events.getSize(),
 				events.getTotalElements(),
@@ -79,10 +82,15 @@ public class EventController {
 		if (event == null)
 			return new ResponseEntity<>(new MessageDTO("Event not found"), HttpStatus.NOT_FOUND);
 
+		// Get event sponsors
 		List<EventxSponsor> relations = event.getEventSponsors();
 		List<Sponsor> sponsors = relations.stream().map(EventxSponsor::getSponsor).toList();
+		// Get event tiers
+		List<TierDTO> tiers = event.getTiers().stream().map(TierDTO::new).toList();
+		// check if available
+		boolean isAvailable = eventServices.isAvailable(event);
 
-		EventWithSponsorsDTO _event = new EventWithSponsorsDTO(event, sponsors);
+		EventWithSponsorsDTO _event = new EventWithSponsorsDTO(event, tiers, sponsors, isAvailable);
 		return new ResponseEntity<>(_event, HttpStatus.OK);
 	}
 
