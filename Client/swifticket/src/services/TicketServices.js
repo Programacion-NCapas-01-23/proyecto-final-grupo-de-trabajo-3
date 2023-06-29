@@ -50,3 +50,20 @@ export async function createTicket(token, _tierId) {
         return error.response;
     }
 }
+
+export async function generateTicketCode(token, _tokenId) {
+    try {
+        const response = await axios.post(
+        `${BASE}/${endpoint}/generate-code`,
+        `${uriDataConstructor({
+            ticketId: _tokenId
+        })}`,
+        { headers: {...postHeaderEncoded , ...getHeader(token)} }
+        );
+        return response;
+    }
+    catch (error) {
+        console.log(error);
+        return error.response;
+    }
+}

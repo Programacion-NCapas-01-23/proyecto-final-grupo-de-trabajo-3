@@ -14,8 +14,8 @@ const OwnedTickets = () => {
 
   const getUserTickets = async () => {
     let response = await getTicketByUser(token);
-    console.log(response);
-    setTickets(response.data.content)
+    if (response.status == 200)
+      setTickets(response.data.content);
   }
 
   useEffect(() => {
