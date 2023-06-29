@@ -7,9 +7,9 @@ import { useRecoilValue } from 'recoil';
 import { tokenState } from '../../state/atoms/tokenState';
 
 export const testUser = {
-	"id": "9ec2e152-05b4-4628-8c15-a265f1d8ebdc",
-	"name": "Super Admin",
-	"email": "dsolismarroquin@gmail.com",
+	"id": "",
+	"name": "Name",
+	"email": "Email",
 	"state": {
 		"id": 1,
 		"name": "Activo"
@@ -20,11 +20,11 @@ export const testUser = {
 	},
 	"roles": [
 		{
-			"id": 5,
-			"name": "Super-admin"
+			"id": 2,
+			"name": "Usuario"
 		}
 	],
-	"createdAt": "2023-06-26T16:30:13.957+00:00"
+	"createdAt": "2020-06-26T16:30:13.957+00:00"
 }
 
 

@@ -166,7 +166,7 @@ export const getOneUser = async (id) => {
   }
 };
 
-export const updateUser = async (name, avatar) => {
+export const updateUser = async (name, avatar, token) => {
   let response = undefined;
   const uriDataObject = {
     name: name,
@@ -179,6 +179,7 @@ export const updateUser = async (name, avatar) => {
       method: 'PUT',
       baseURL: BASE_URL,
       headers: {
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       data: `${body}`,
@@ -189,6 +190,7 @@ export const updateUser = async (name, avatar) => {
     }
   } catch (error) {
     console.log(error);
+    response = error.response;
   } finally {
     return response;
   }
