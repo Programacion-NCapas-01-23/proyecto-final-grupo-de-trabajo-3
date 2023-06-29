@@ -49,6 +49,9 @@ const ScanQr = lazy(() => import('./pages/ScanQr/ScanQr'));
 // import ScanQr from './pages/ScanQr/ScanQr';
 import { useRecoilValue } from 'recoil';
 import { tokenState } from './state/atoms/tokenState';
+import AccountInfo from './pages/user/UserProfile/Fragments/AccountInfo';
+import Avatars from './pages/user/UserProfile/Fragments/Avatars';
+import ChangePassword from './pages/user/UserProfile/Fragments/ChangePassword';
 
 function App() {
   const token = useRecoilValue(tokenState);
@@ -67,6 +70,9 @@ function App() {
           <Route path="user">
             <Route index element={<User />} />
             <Route path="owned-tickets" element={<OwnedTickets />} />
+            <Route path="change-avatar" element={<Avatars />} />
+            <Route path="change-password" element={<ChangePassword />} />
+            <Route path="my-account" element={<AccountInfo />} />
           </Route>
 
           <Route path="event">
