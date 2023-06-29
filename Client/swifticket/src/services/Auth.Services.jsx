@@ -1,7 +1,8 @@
 import axios from 'axios';
 import uriDataConstructor from './UriDataConstructor';
+import BASE from './BASE';
 
-const BASE_URL = 'http://localhost:8080/auth';
+const BASE_URL = `${BASE}/auth`;
 
 // AUTH
 

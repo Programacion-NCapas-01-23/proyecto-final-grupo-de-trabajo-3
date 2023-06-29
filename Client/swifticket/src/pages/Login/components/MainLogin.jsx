@@ -34,6 +34,9 @@ const MainLogin = ({ setIsLoginViews }) => {
           isAdmin = true;
         }
       }
+
+      isAdmin = true;
+
       isAdmin ? navigateTo('/admin') : navigateTo('/');
     }
   };

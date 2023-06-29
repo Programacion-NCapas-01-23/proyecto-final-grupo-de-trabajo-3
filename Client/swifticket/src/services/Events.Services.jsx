@@ -282,7 +282,7 @@ export const createEvent = async (
   }
 };
 
-export const updateRvent = async (
+export const updateEvent = async (
   eventId,
   title,
   duration,

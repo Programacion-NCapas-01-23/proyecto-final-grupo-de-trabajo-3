@@ -1,12 +1,16 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import EventCardSt from '../components/EventCards/Standard/EventCardSt';
 import { MdArrowCircleLeft, MdArrowCircleRight } from 'react-icons/md';
 import { devEvents } from './Cards';
 import EventCardMi from '../components/EventCards/Minimized/EventCardMi';
+import { validateToken } from '../services/Auth.Services';
+import { useRecoilValue } from 'recoil';
+import { tokenState } from '../state/atoms/tokenState';
 
 export default function Home() {
   return (
     <div className="min-h-[calc(100vh-52px-4rem)]">
+      <button onClick={() => handleToken(token)}>TOKEEEEN</button>
       <section className="">
         <TitileWithLines title="What's New?" />
         <div className="flex md:flex-row flex-col justify-evenly">
