@@ -4,6 +4,7 @@ import { googleSignIn } from '../../../services/Auth.Services';
 import { useSetRecoilState } from 'recoil';
 import { tokenState } from '../../../state/atoms/tokenState';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
 
 const PreLogin = ({ setIsLoginViews }) => {
   const loginRef = useRef(null);
@@ -14,9 +15,14 @@ const PreLogin = ({ setIsLoginViews }) => {
 
   const onGoogleSignIn = async (res) => {
     const { credential } = res;
-    localStorage.setItem('auth_token', JSON.stringify(credential));
-    console.log(credential);
-    setToken(googleSignIn(credential));
+    const singInResponse = await googleSignIn(credential)
+    if (singInResponse == undefined){
+      toast.error("Sorry, try again later...")
+      return
+    }
+    console.log(singInResponse.data.token);
+    setToken(singInResponse.data.token);
+    localStorage.setItem('auth_token', JSON.stringify(singInResponse.data.token));
     isAdmin ? navigateTo('/admin') : navigateTo('/');
   };
 

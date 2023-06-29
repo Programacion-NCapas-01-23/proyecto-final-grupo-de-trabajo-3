@@ -9,6 +9,7 @@ import { tokenState } from '../state/atoms/tokenState';
 export default function Home() {
 
   const [events, setEvents] = useState([])
+  const [latestEvent, setLatestEvent] = useState()
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -16,13 +17,12 @@ export default function Home() {
       setEvents(response.data)
     }
     fetchEvents()
-  }, [events])
+  }, [])
 
   return (
-    <div className="min-h-[calc(100vh-52px-4rem)]">
-      <button onClick={() => handleToken(token)}>TOKEEEEN</button>
+    <div className="min-h-[calc(100vh-52px-3.5rem)]">
       <section className="">
-        <TitileWithLines title="What's New?" />
+        <TitileWithLines title="What's Next?" />
         <div className="flex md:flex-row flex-col justify-evenly">
           {events.content && events.content.length > 0 ? (
             <EventCardSt event={events.content[0]} />
