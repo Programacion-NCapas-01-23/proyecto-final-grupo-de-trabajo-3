@@ -203,7 +203,7 @@ export const changePass = async (token, pass, newPass) => {
     newPassword: newPass,
   };
   let body = uriDataConstructor(uriDataObject);
-
+  
   try {
     const data = await axios({
       method: 'PATCH',
@@ -215,11 +215,12 @@ export const changePass = async (token, pass, newPass) => {
       },
       data: `${body}`,
     });
-
+    
     if (data) {
       response = data;
     }
   } catch (error) {
+    response = error.response;
     console.log(error);
   } finally {
     return response;
