@@ -23,7 +23,7 @@ const SendTicket = () => {
     }
 
     console.log("transferId", code);
-    let response = await acceptTransferTicket("ticketid", code, token);
+    let response = await acceptTransferTicket(token, "ticketid", code);
     
     // console.log(response);
 

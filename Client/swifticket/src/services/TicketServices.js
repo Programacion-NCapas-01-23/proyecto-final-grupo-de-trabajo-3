@@ -21,10 +21,11 @@ export async function getTicketByID(token, ticketID){
     }
 }
 
-export async function getTicketByUser(token){
+export async function getTicketByUser(token, page = 1){
+    page -= 1;
     try {
         const response = await axios.get(
-            `${BASE}/${endpoint}/user`,
+            `${BASE}/${endpoint}/user?page=${page}`,
             {headers: getHeader(token)}
         )
         return response
@@ -100,7 +101,7 @@ export async function startTransferTicket(token) {
     }
 }
 
-export async function acceptTransferTicket(_ticketId, _transferId, token) {
+export async function acceptTransferTicket(token, _ticketId, _transferId) {
     try {
         const response = await axios.put(
         `${BASE}/${endpoint}/transfer`,
