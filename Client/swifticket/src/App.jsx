@@ -53,6 +53,7 @@ import AccountInfo from './pages/user/UserProfile/Fragments/AccountInfo';
 import Avatars from './pages/user/UserProfile/Fragments/Avatars';
 import ChangePassword from './pages/user/UserProfile/Fragments/ChangePassword';
 import { Ticket } from './pages/OneTicket/Ticket';
+import SendTicket from './pages/SendTicket/SendTicket';
 
 function App() {
   const token = useRecoilValue(tokenState);
@@ -66,7 +67,9 @@ function App() {
           <Route path="checkout" element={<Checkout />} />
 
           <Route path="receive-qr" element={<ReceiveQR />} />
-          <Route path="scan-qr" element={<ScanQr />} />
+          {/* Este sera para el validador */}
+          <Route path="validate-qr" element={<ScanQr />} /> 
+          <Route path="scan-qr" element={<SendTicket />} />
 
           <Route path="user">
             <Route index element={<User />} />

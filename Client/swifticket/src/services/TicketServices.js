@@ -67,3 +67,53 @@ export async function generateTicketCode(token, _tokenId) {
         return error.response;
     }
 }
+
+export async function validateTicket(token, _code) {
+    try {
+        const response = await axios.patch(
+        `${BASE}/${endpoint}/validate-ticket`,
+        `${uriDataConstructor({
+            verificationToken: _code
+        })}`,
+        { headers: {...postHeaderEncoded , ...getHeader(token)} }
+        );
+        return response;
+    }
+    catch (error) {
+        console.log(error);
+        return error.response;
+    }
+}
+
+export async function startTransferTicket(token) {
+    try {
+        const response = await axios.post(
+        `${BASE}/${endpoint}/transfer`,
+        null,
+        { headers: {...postHeaderEncoded , ...getHeader(token)} }
+        );
+        return response;
+    }
+    catch (error) {
+        console.log(error);
+        return error.response;
+    }
+}
+
+export async function acceptTransferTicket(_ticketId, _transferId, token) {
+    try {
+        const response = await axios.put(
+        `${BASE}/${endpoint}/transfer`,
+        `${uriDataConstructor({
+            ticketId: _ticketId,
+            transferId: _transferId
+        })}`,
+        { headers: {...postHeaderEncoded , ...getHeader(token)} }
+        );
+        return response;
+    }
+    catch (error) {
+        console.log(error);
+        return error.response;
+    }
+}
