@@ -30,6 +30,7 @@ export const assignUserToEvent = async (userId, eventId) => {
     }
   } catch (error) {
     console.log(error);
+    response = error.response;
   } finally {
     return response;
   }
@@ -59,6 +60,7 @@ export const removeUserFromEvent = async (userId, eventId) => {
     }
   } catch (error) {
     console.log(error);
+    response = error.response;
   } finally {
     return response;
   }
@@ -66,7 +68,7 @@ export const removeUserFromEvent = async (userId, eventId) => {
 
 // ROLES
 
-export const removeRole = async (id, role) => {
+export const removeRole = async (token, id, role) => {
   let response = undefined;
   const uriDataObject = {
     userId: id,
@@ -81,6 +83,7 @@ export const removeRole = async (id, role) => {
       url: '/role',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: `Bearer ${token}`,
       },
       data: `${body}`,
     });
@@ -89,13 +92,14 @@ export const removeRole = async (id, role) => {
       response = data;
     }
   } catch (error) {
+    response = error.response;
     console.log(error);
   } finally {
     return response;
   }
 };
 
-export const assignRole = async (id, role) => {
+export const assignRole = async (token, id, role) => {
   let response = undefined;
   const uriDataObject = {
     userId: id,
@@ -110,6 +114,7 @@ export const assignRole = async (id, role) => {
       url: '/role',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: `Bearer ${token}`,
       },
       data: `${body}`,
     });
@@ -119,6 +124,7 @@ export const assignRole = async (id, role) => {
     }
   } catch (error) {
     console.log(error);
+    response = error.response;
   } finally {
     return response;
   }
@@ -126,14 +132,14 @@ export const assignRole = async (id, role) => {
 
 // USER
 
-export const getAllUsers = async () => {
+export const getAllUsers = async (token) => {
   let response = undefined;
 
   try {
     const data = await axios({
       method: 'GET',
       baseURL: BASE_URL,
-      url: `/`,
+      headers: { Authorization: `Bearer ${token}` },
     });
 
     if (data) {
@@ -161,6 +167,7 @@ export const getOneUser = async (id) => {
     }
   } catch (error) {
     console.log(error);
+    response = error.response;
   } finally {
     return response;
   }
@@ -189,6 +196,7 @@ export const updateUser = async (name, avatar) => {
     }
   } catch (error) {
     console.log(error);
+    response = error.response;
   } finally {
     return response;
   }
@@ -219,12 +227,13 @@ export const changePass = async (token, pass, newPass) => {
     }
   } catch (error) {
     console.log(error);
+    response = error.response;
   } finally {
     return response;
   }
 };
 
-export const toggleStatus = async (userId, state) => {
+export const toggleStatus = async (token, userId, state) => {
   let response = undefined;
   const uriDataObject = {
     userId: userId,
@@ -239,6 +248,7 @@ export const toggleStatus = async (userId, state) => {
       url: '/toggle-status',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: `Bearer ${token}`,
       },
       data: `${body}`,
     });
@@ -248,6 +258,8 @@ export const toggleStatus = async (userId, state) => {
     }
   } catch (error) {
     console.log(error);
+    response = error.response;
+    response = error.response;
   } finally {
     return response;
   }

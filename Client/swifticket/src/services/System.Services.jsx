@@ -20,12 +20,13 @@ export const getSystemState = async () => {
     }
   } catch (error) {
     console.log(error);
+    response = error.response;
   } finally {
     return response;
   }
 };
 
-export const suspendService = async () => {
+export const suspendService = async (token) => {
   let response = undefined;
 
   try {
@@ -33,6 +34,7 @@ export const suspendService = async () => {
       method: 'POST',
       baseURL: BASE_URL,
       url: '/suspend-service',
+      headers: { Authorization: `Bearer ${token}` },
     });
 
     if (data) {
@@ -40,6 +42,7 @@ export const suspendService = async () => {
     }
   } catch (error) {
     console.log(error);
+    response = error.response;
   } finally {
     return response;
   }

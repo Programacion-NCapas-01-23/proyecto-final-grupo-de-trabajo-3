@@ -1,16 +1,60 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import BarChart from './components/BarChart';
 import LineChart from './components/LineChart';
-import { MdWarning } from 'react-icons/md';
 import Widget from './components/Widget';
+import { ToggleServices } from './components/ToggleServices';
+import { getGeneralStats } from '../../services/StatsServices';
+import { tokenState } from '../../state/atoms/tokenState';
+import { useRecoilValue } from 'recoil';
+import { getSystemState } from '../../services/System.Services';
 
 const Charts = () => {
-  const widgets = [
-    { id: 1, label: 'Users quantity', value: 450 },
-    { id: 2, label: 'Events held', value: 28 },
-    { id: 3, label: 'Tickets sold', value: 420 },
-    { id: 4, label: 'Event attendance percentage', value: [40, 60] },
-  ];
+  const token = useRecoilValue(tokenState);
+  const [isActive, setIsActive] = useState(false);
+  const [widgets, setWidgets] = useState(null);
+
+  const handleSystemState = async () => {
+    const response = await getSystemState();
+
+    console.log(response);
+
+    if (response.status === 200) {
+      response.data.status === 1 ? setIsActive(true) : setIsActive(false);
+    }
+  };
+
+  const handleWidgets = async () => {
+    const response = await getGeneralStats(token);
+
+    if (response.status === 200) {
+      setWidgets([
+        { id: 1, label: 'Users quantity', value: response.data.users },
+        { id: 2, label: 'Events held', value: response.data.events },
+        { id: 3, label: 'Tickets sold', value: response.data.ticketsSold },
+        {
+          id: 4,
+          label: 'Event attendance percentage',
+          value: response.data.attendanceSingleVsGroup,
+        },
+      ]);
+    } else {
+      setWidgets([
+        { id: 1, label: 'Users quantity', value: 0 },
+        { id: 2, label: 'Events held', value: 0 },
+        { id: 3, label: 'Tickets sold', value: 0 },
+        {
+          id: 4,
+          label: 'Event attendance percentage',
+          value: [0, 0],
+        },
+      ]);
+    }
+  };
+
+  useEffect(() => {
+    handleSystemState();
+    handleWidgets();
+  }, []);
 
   return (
     <div className="flex flex-col h-screen w-screen sm:w-[80vw]">
@@ -20,19 +64,17 @@ const Charts = () => {
           <p className="title">Dashboard</p>
         </div>
         <div className="flex justify-center items-center w-full sm:w-auto sm:h-full">
-          <button className="flex justify-between items-center px-4 rounded-3xl sm:rounded-r-none sm:rounded-l-3xl w-44 h-9 bg-primary">
-            <MdWarning />
-            <p>Start Services</p>
-            <div className=""></div>
-          </button>
+          <ToggleServices isActive={isActive} setIsActive={setIsActive} />
         </div>
       </div>
       <div className="flex flex-wrap sm:flex-nowrap h-[40vh] sm:h-[20vh] w-full justify-evenly items-center">
-        {widgets.map((widget) => {
-          const { id, label, value } = widget;
+        {widgets
+          ? widgets.map((widget) => {
+              const { id, label, value } = widget;
 
-          return <Widget key={id} label={label} value={value} />;
-        })}
+              return <Widget key={id} label={label} value={value} />;
+            })
+          : ''}
       </div>
       <div className="flex flex-col sm:flex-row gap-4 py-4 sm:gap-0 h-[65vh] sm:h-[35vh] w-full justify-evenly items-center">
         <div className="flex justify-center items-center h-[30vh] sm:h-[30vh] w-4/5 sm:w-[35vw] bg-white">
