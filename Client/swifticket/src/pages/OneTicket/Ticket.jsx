@@ -23,7 +23,7 @@ export function Ticket() {
     }, []);
 
     return (
-        <div className="min-h-[calc(100vh-52px-4rem)] flex justify-center items-center">
+        <div className="min-h-[calc(100vh-52px-3.5rem)] flex justify-center items-center overflow-hidden">
             <TicketData isLoading={isLoading} ticket={ticket} />
         </div>
     );

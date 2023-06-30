@@ -44,14 +44,12 @@ export default function TicketData({ isLoading, ticket }) {
         style={{ display: 'flex' }}
       >
         { (code == "") ?
-        <img
-          src={LoadingQRPlaceholder}
-          alt="QR"
-          className="w-1/2 sm:w-3/4 mt-[-6rem] sm:mt-0"
-          onClick={requestTicketCode}
-        />
-        :
-        <div className='w-1/2 sm:w-3/4 mt-[-6rem] sm:mt-0'>
+          <div className='text-white -mt-5 sm:m-0  sm:flex-col sm:gap-8 sm:p-default-lg flex w-full justify-evenly pb-default'>
+            <button className='bg-secondary shadow-xl px-4 py-2 rounded-2xl heading-sm mx-[1vw]'>{isLoading ? '...' :'Enviar ticket'}</button>
+            <button onClick={requestTicketCode} className='bg-secondary shadow-xl px-4 py-2 rounded-2xl heading-sm mx-[1vw]'>{isLoading ? '...' :'Generar QR'}</button>
+          </div>
+          :
+        <div className='-mt-28 sm:m-0 p-2 bg-white sm:mb-2 mb-default-xs shadow-xl rounded'>
           <QRCode
             title="ticket"
             value={code}
@@ -66,22 +64,22 @@ export default function TicketData({ isLoading, ticket }) {
           {isLoading ? '...' : ticket?.id.split("-")[0]}
         </p>
       </div>
-      <div className="flex flex-col justify-evenly items-start w-full sm:w-1/3 h-2/5 sm:h-full ml-16 sm:ml-0">
-        <div className="flex flex-col">
+      <div className="flex flex-col justify-evenly items-start w-full pb-4 sm:w-1/3 h-2/5 sm:h-full ml-16 sm:ml-0">
+        <div className="flex flex-col gap-2">
           <p className="text-secondary">Event</p>
-          <p className="heading-lg text-black">
+          <p className="heading-lg tracking-tighter leading-7 text-black">
             {isLoading ? '...' : ticket.event.title}
           </p>
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-2">
           <p className="text-secondary">Tier</p>
-          <p className="heading-lg text-black">
+          <p className="heading-lg tracking-tighter leading-7 text-black">
             {isLoading ? '...' : ticket.tier.name}
           </p>
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col gap-2">
           <p className="text-secondary">Date Purchased</p>
-          <p className="heading-lg text-black">
+          <p className="heading-lg tracking-tighter leading-7 text-black">
             {isLoading ? '...' : date_time.toDateString()}
           </p>
         </div>
