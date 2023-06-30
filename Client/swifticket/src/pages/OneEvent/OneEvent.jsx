@@ -43,12 +43,27 @@ const OneEvent = () => {
   }
 
   const handleAddToCart = () => {
-    if (shoppingCartValidations()) {
-      toast.success("Items added to your cart!", { duration: 2500 })
-      setTierCounts(initialTierCounts)
-      updateEvent()
-    }
+    if (!shoppingCartValidations())
+      return
+
+    setShoppingCart(prev => {
+      console.log(prev);
+      let updatedCart = prev.map(item => {
+        if (item.id === currentEvent.id) return currentEvent 
+        else return item
+      });
+
+      if (!updatedCart.some(item => item.id === currentEvent.id))
+        updatedCart.push(currentEvent);
+      
+      return updatedCart;
+    });
+
+    toast.success("Items added to your cart!", { duration: 2500 })
+    setTierCounts(initialTierCounts)
+    updateEvent()
   }
+
 
   const updateEvent = () => {
     setCurrentEvent(prev => ({
@@ -64,11 +79,17 @@ const OneEvent = () => {
   useEffect(() => {
     const fetchEvent = async () => {
       const response = await getEventById(eventId);
+
+      if (response.status == 404)
+        navigate("/event")
+
       const tiers = response.data.tiers;
+
       const restructuredTiers = tiers.map(tier => ({ ...tier, count: 0 }));
 
       const restructuredEvent = { ...response.data, tiers: restructuredTiers };
       setCurrentEvent(restructuredEvent);
+
 
       restructuredTiers.forEach(tier => {
         initialTierCounts[tier.id] = 0;
@@ -81,12 +102,8 @@ const OneEvent = () => {
 
   }, []);
 
-
-  if (!currentEvent)
-    return <Landing />;
-
   return (
-    <section className={`min-h-[calc(100vh-52px-3.5rem)] max-h-[calc(100vh-52px-4rem)] overflow-x-hidden overflow-y-auto`}>
+    currentEvent ? <section className={`min-h-[calc(100vh-52px-3.5rem)] max-h-[calc(100vh-52px-4rem)] overflow-x-hidden overflow-y-auto`}>
       <Toaster position="top-right" />
       <div className="">
         <div className="min-h-[calc(40vh-52px-2rem)] relative bg-cover bg-center" style={{ backgroundImage: `url(${currentEvent.image})` }}>
@@ -100,7 +117,7 @@ const OneEvent = () => {
 
 
       <div className="flex md:flex-row flex-col items-center justify-evenly min-h-[calc(30vh-52px-2rem)] md:px-default-2xl px-default-lg pt-default">
-        <button onClick={() => { console.log({ Event: currentEvent }); }}> LOG </button>
+        <button className="bg-emerald-400 px-5 py-2 rounded text-fuchsia-600 text-3xl tracking-tighter font-bold animate-bounce" onClick={() => { console.log({ Event: currentEvent, ShoppingCarta: shoppingCart }); }}> LOG </button>
         <div className="flex flex-row justify-evenly items-center gap-12">
           <DateInfo event={currentEvent} />
           <EventInfo event={currentEvent} />
@@ -163,7 +180,10 @@ const OneEvent = () => {
         <button onClick={handleAddToCart} className='action-button'> Add To Cart </button>
       </div>
 
-    </section>
+    </section> :
+      <div className="flex min-h-[calc(100vh-52px-3.5rem)] w-screen justify-center items-center">
+        Loading...
+      </div>
   );
 };
 
@@ -225,13 +245,5 @@ function checkAvailability(tierCounts, tiers) {
   }
   return true;
 };
-
-function addItemsToCart(count, event) {
-  let updatedEventTiers = event.tiers;
-
-  for (let i = 0; i < event.tiers.length; i++) {
-
-  }
-}
 
 export default OneEvent;
