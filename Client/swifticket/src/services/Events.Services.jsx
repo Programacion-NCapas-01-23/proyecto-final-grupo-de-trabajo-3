@@ -194,6 +194,7 @@ export const getEventById = async (eventId) => {
       response = data;
     }
   } catch (error) {
+    response = error.response
     console.log(error);
   } finally {
     return response;

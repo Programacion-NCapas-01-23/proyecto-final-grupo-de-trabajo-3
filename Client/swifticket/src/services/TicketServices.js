@@ -21,10 +21,11 @@ export async function getTicketByID(token, ticketID){
     }
 }
 
-export async function getTicketByUser(token, userID){
+export async function getTicketByUser(token, page = 1){
+    page -= 1;
     try {
         const response = await axios.get(
-            `${BASE}/${endpoint}/${userID}`,
+            `${BASE}/${endpoint}/user?page=${page}`,
             {headers: getHeader(token)}
         )
         return response
@@ -40,6 +41,73 @@ export async function createTicket(token, _tierId) {
         `${BASE}/${endpoint}`,
         `${uriDataConstructor({
             tierId: _tierId
+        })}`,
+        { headers: {...postHeaderEncoded , ...getHeader(token)} }
+        );
+        return response;
+    }
+    catch (error) {
+        console.log(error);
+        return error.response;
+    }
+}
+
+export async function generateTicketCode(token, _tokenId) {
+    try {
+        const response = await axios.post(
+        `${BASE}/${endpoint}/generate-code`,
+        `${uriDataConstructor({
+            ticketId: _tokenId
+        })}`,
+        { headers: {...postHeaderEncoded , ...getHeader(token)} }
+        );
+        return response;
+    }
+    catch (error) {
+        console.log(error);
+        return error.response;
+    }
+}
+
+export async function validateTicket(token, _code) {
+    try {
+        const response = await axios.patch(
+        `${BASE}/${endpoint}/validate-ticket`,
+        `${uriDataConstructor({
+            verificationToken: _code
+        })}`,
+        { headers: {...postHeaderEncoded , ...getHeader(token)} }
+        );
+        return response;
+    }
+    catch (error) {
+        console.log(error);
+        return error.response;
+    }
+}
+
+export async function startTransferTicket(token) {
+    try {
+        const response = await axios.post(
+        `${BASE}/${endpoint}/transfer`,
+        null,
+        { headers: {...postHeaderEncoded , ...getHeader(token)} }
+        );
+        return response;
+    }
+    catch (error) {
+        console.log(error);
+        return error.response;
+    }
+}
+
+export async function acceptTransferTicket(token, _ticketId, _transferId) {
+    try {
+        const response = await axios.put(
+        `${BASE}/${endpoint}/transfer`,
+        `${uriDataConstructor({
+            ticketId: _ticketId,
+            transferId: _transferId
         })}`,
         { headers: {...postHeaderEncoded , ...getHeader(token)} }
         );

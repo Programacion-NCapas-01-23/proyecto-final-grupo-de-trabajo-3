@@ -1,13 +1,13 @@
 import React from 'react';
 import { Toaster, toast } from 'react-hot-toast';
-import { MdCameraAlt, MdQrCodeScanner } from 'react-icons/md';
+import { MdQrCodeScanner } from 'react-icons/md';
 import { QrReader } from 'react-qr-reader';
 import { useRecoilValue } from 'recoil';
 import { tokenState } from '../../state/atoms/tokenState';
-import { validateTicket } from '../../services/TicketServices';
+import { acceptTransferTicket } from '../../services/TicketServices';
 import { useState } from 'react';
 
-const ScanQr = () => {
+const SendTicket = () => {
   const token = useRecoilValue(tokenState);
   const [isCode, setIsCode] = useState(true);
 
@@ -16,14 +16,14 @@ const ScanQr = () => {
     return regex.test(uuid);
   }
   
-  const validateUserTicket =  async (code) => {
+  const readTicketTransaction =  async (code) => {
     if (!validateUUID(code)) {
       toast.error("Scan the code again");
       return;
     }
 
-    console.log("code", code);
-    let response = await validateTicket(token, code);
+    console.log("transferId", code);
+    let response = await acceptTransferTicket(token, "ticketid", code);
     
     // console.log(response);
 
@@ -36,11 +36,7 @@ const ScanQr = () => {
   const handleResult = (result, error) => {
     if (!!result) {
       setIsCode(true);
-      validateUserTicket(result?.text)
-    }
-
-    if (!!error) {
-      // console.log("err", error);
+      readTicketTransaction(result?.text)
     }
   }
 
@@ -53,7 +49,7 @@ const ScanQr = () => {
       <span className="w-full grid grid-cols-10 px-default-lg pb-default-lg items-center">
         <div className="border h-0 border-primary"></div>
         <h1 className="md:title subtitle text-center md:col-span-3 col-span-7">
-          Validate ticket
+          Send ticket
         </h1>
         <div className="border h-0 border-primary md:col-span-6 col-span-2"></div>
       </span>
@@ -71,7 +67,7 @@ const ScanQr = () => {
             />}
         </div>
       </div>
-      <p className="heading-md">Scan a QR to validate ticket.</p>
+      <p className="heading-md">Scan a QR to begin the transaction.</p>
       <ScannerButtons cancelScan={cancelScan} readyToScan={readyToScan} />
     </div>
   );
@@ -90,4 +86,4 @@ const ScannerButtons = ({cancelScan, readyToScan}) => {
   );
 }
 
-export default ScanQr;
+export default SendTicket;

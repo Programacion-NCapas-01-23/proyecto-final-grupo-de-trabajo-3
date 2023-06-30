@@ -173,7 +173,7 @@ export const getOneUser = async (id) => {
   }
 };
 
-export const updateUser = async (name, avatar) => {
+export const updateUser = async (name, avatar, token) => {
   let response = undefined;
   const uriDataObject = {
     name: name,
@@ -186,6 +186,7 @@ export const updateUser = async (name, avatar) => {
       method: 'PUT',
       baseURL: BASE_URL,
       headers: {
+        Authorization: `Bearer ${token}`,
         'Content-Type': 'application/x-www-form-urlencoded',
       },
       data: `${body}`,
@@ -209,7 +210,7 @@ export const changePass = async (token, pass, newPass) => {
     newPassword: newPass,
   };
   let body = uriDataConstructor(uriDataObject);
-
+  
   try {
     const data = await axios({
       method: 'PATCH',
@@ -221,11 +222,12 @@ export const changePass = async (token, pass, newPass) => {
       },
       data: `${body}`,
     });
-
+    
     if (data) {
       response = data;
     }
   } catch (error) {
+    response = error.response;
     console.log(error);
     response = error.response;
   } finally {
