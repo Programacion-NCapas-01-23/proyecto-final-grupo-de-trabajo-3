@@ -60,6 +60,7 @@ const OneEvent = () => {
     });
 
     toast.success("Items added to your cart!", { duration: 2500 })
+    sessionStorage.setItem('shoppingCart',     JSON.stringify(shoppingCart))
     setTierCounts(initialTierCounts)
     updateEvent()
   }
@@ -75,6 +76,10 @@ const OneEvent = () => {
     }));
   };
 
+  useEffect(() => {
+    sessionStorage.setItem('shoppingCart', JSON.stringify(shoppingCart));
+  }, [shoppingCart])
+  
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -88,6 +93,7 @@ const OneEvent = () => {
       const restructuredTiers = tiers.map(tier => ({ ...tier, count: 0 }));
 
       const restructuredEvent = { ...response.data, tiers: restructuredTiers };
+      
       setCurrentEvent(restructuredEvent);
 
 
