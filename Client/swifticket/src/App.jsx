@@ -69,7 +69,7 @@ function App() {
           <Route path="receive-qr" element={<ReceiveQR />} />
           {/* Este sera para el validador */}
           <Route path="validate-qr" element={<ScanQr />} /> 
-          <Route path="scan-qr" element={<SendTicket />} />
+          <Route path="send-ticket-qr/:ticketId" element={<SendTicket />} />
 
           <Route path="user">
             <Route index element={<User />} />

@@ -4,14 +4,20 @@ import LoadingQRPlaceholder from '../../../assets/LoadingQRPlaceholder.png';
 import QRCode from 'react-qr-code';
 import { useState } from 'react';
 import { generateTicketCode } from '../../../services/TicketServices';
-import { toast } from 'react-hot-toast';
+import { Toaster, toast } from 'react-hot-toast';
 import { useRecoilValue } from 'recoil';
 import { tokenState } from '../../../state/atoms/tokenState';
+import { useNavigate } from 'react-router';
 
 export default function TicketData({ isLoading, ticket }) {
+  const navigate = useNavigate();
   const [code, setCode] = useState("");
   const token = useRecoilValue(tokenState);
   let date_time = new Date(ticket?.createdAt);
+
+  const sendTicket = () => {
+    navigate(`/send-ticket-qr/${ticket.id}`);
+  }
 
   const requestTicketCode = async () => {
       let error_message = "Ocurrio un error, intentalo nuevamente más tarde";
@@ -30,6 +36,7 @@ export default function TicketData({ isLoading, ticket }) {
   
   return (
     <div className="flex flex-col sm:flex-row justify-center items-center w-11/12 sm:w-3/5 h-5/6 sm:h-4/6 bg-white rounded-[2rem] pb-4 sm:pb-0">
+      <div><Toaster /></div>
       {isLoading ? (
         <span className="w-full sm:w-1/3 h-[30%] sm:h-full bg-neutral-400 sm:rounded-tl-[2rem] sm:rounded-bl-[2rem] sm:rounded-br-none sm:rounded-tr-none rounded-tl-[2rem] rounded-bl-none rounded-br-none rounded-tr-[2rem]" />
       ) : (
@@ -45,7 +52,7 @@ export default function TicketData({ isLoading, ticket }) {
       >
         { (code == "") ?
           <div className='text-white -mt-5 sm:m-0  sm:flex-col sm:gap-8 sm:p-default-lg flex w-full justify-evenly pb-default'>
-            <button className='bg-secondary shadow-xl px-4 py-2 rounded-2xl heading-sm mx-[1vw]'>{isLoading ? '...' :'Enviar ticket'}</button>
+            <button onClick={sendTicket} className='bg-secondary shadow-xl px-4 py-2 rounded-2xl heading-sm mx-[1vw]'>{isLoading ? '...' :'Enviar ticket'}</button>
             <button onClick={requestTicketCode} className='bg-secondary shadow-xl px-4 py-2 rounded-2xl heading-sm mx-[1vw]'>{isLoading ? '...' :'Generar QR'}</button>
           </div>
           :

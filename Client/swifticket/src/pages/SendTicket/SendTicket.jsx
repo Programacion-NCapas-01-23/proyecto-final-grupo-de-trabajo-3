@@ -1,4 +1,4 @@
-import React from 'react';
+import React  from 'react';
 import { Toaster, toast } from 'react-hot-toast';
 import { MdQrCodeScanner } from 'react-icons/md';
 import { QrReader } from 'react-qr-reader';
@@ -6,8 +6,10 @@ import { useRecoilValue } from 'recoil';
 import { tokenState } from '../../state/atoms/tokenState';
 import { acceptTransferTicket } from '../../services/TicketServices';
 import { useState } from 'react';
+import { useParams } from 'react-router';
 
 const SendTicket = () => {
+  const { ticketId } = useParams();
   const token = useRecoilValue(tokenState);
   const [isCode, setIsCode] = useState(true);
 
@@ -17,13 +19,18 @@ const SendTicket = () => {
   }
   
   const readTicketTransaction =  async (code) => {
+    if (!validateUUID(ticketId)) {
+      toast.error("No ticket was selected");
+      return;
+    }
     if (!validateUUID(code)) {
       toast.error("Scan the code again");
       return;
     }
 
-    console.log("transferId", code);
-    let response = await acceptTransferTicket(token, "ticketid", code);
+    console.log("Ticket to send: ", ticketId);
+    console.log("transferId: ", code);
+    let response = await acceptTransferTicket(token, ticketId, code);
     
     // console.log(response);
 
