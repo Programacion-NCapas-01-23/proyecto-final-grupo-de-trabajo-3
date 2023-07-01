@@ -8,18 +8,11 @@ import CollabActions from './components/CollabActions';
 import { MdAccountCircle, MdClose, MdLogout, MdPerson } from 'react-icons/md';
 import { useSetRecoilState } from 'recoil';
 import { tokenState } from '../../state/atoms/tokenState';
-import { roleState } from '../../state/atoms/roleState';
 
 export default function SideBar(props) {
-  const isGuest = false;
-  const isAdmin = false;
-  const isMod = false;
-  const isCollab = false;
-  const isUser = false;
-  const user_name = 'Pedro Esnifapiedra';
   const navigate = useNavigate();
   const setToken = useSetRecoilState(tokenState);
-  const setRole = useSetRecoilState(roleState);
+  const isGuest = false
 
   const handleLogOut = () => {
     setToken(null);
@@ -81,7 +74,7 @@ export default function SideBar(props) {
                           <MdAccountCircle size={'12rem'} />
                           <p className="heading-lg">
                             {' '}
-                            {isGuest ? 'Guest' : user_name}{' '}
+                            {isGuest ? 'Guest' : 'user'}{' '}
                           </p>
                         </div>
                       </Dialog.Title>
@@ -95,19 +88,20 @@ export default function SideBar(props) {
                             onClick={redirectUser}
                           >
                             <span className="mr-default-xs">
-                              {' '}
-                              <MdPerson size={'2rem'} />{' '}
+                              <MdPerson size={'2rem'} />
                             </span>
                             {isGuest ? 'Log In' : 'My Profile'}
                           </a>
                         </li>
 
-                        {/* HERE GOES MAPPING OF ROLE's ACTIONS */}
+                        {/* {
 
+                        }
+                        
                         {!isUser && <UserActions />}
                         {!isCollab && <CollabActions />}
                         {!isMod && <ModActions />}
-                        {!isAdmin && <AdminActions />}
+                        {!isAdmin && <AdminActions />} */}
                       </ul>
                     </div>
 
