@@ -56,13 +56,15 @@ function DisplayQR({code}) {
       { (code == null || code == "") ?
         <MdQrCode style={{ fontSize: '20vh' }} />
         :
-        <QRCode
+        <div className='bg-white p-[2vh] h-auto w-auto'>
+          <QRCode
           title="code"
           value={code}
           bgColor="#FFFFFF"
           fgcolor="#000000"
           size={220}
-          />}
+          />
+        </div>}
     </div>
   )
 }
