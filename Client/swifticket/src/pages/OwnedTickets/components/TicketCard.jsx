@@ -14,11 +14,19 @@ export default function TicketCard({ticket}) {
     <a className="cursor-pointer" onClick={redirectUser}>
       <div className="flex mx-default-xs max-h-48 max-w-[32rem] md:min-w-[32rem] bg-secondary bg-opacity-30 m-default-xs shadow-md shadow-black rounded-2xl transition-all hover:shadow-neutral-800 hover:scale-105">
         <div className="relative md:w-[16rem] w-40">
-          <img
-            className="h-full w-full object-cover rounded-l-2xl"
-            src={ticket?.event?.image ?? "https://res.cloudinary.com/dypsbiypw/image/upload/v1688016265/file_advaly.jpg"}
-            alt="event_img"
-          />
+          <div className='h-full w-full relative'>
+            <img
+              className="block h-full w-full object-cover rounded-l-2xl"
+              src={ticket?.event?.image ?? "https://res.cloudinary.com/dypsbiypw/image/upload/v1688016265/file_advaly.jpg"}
+              alt="event_img"
+            />
+            { ticket.used ? 
+            <div className='absolute flex justify-center items-center top-0 h-full w-full bg-black bg-opacity-60'>
+              <p className="text-xl font-black">USED</p>
+            </div>
+            : ""}
+          </div>
+          
           <span className="absolute bottom-0 bg-secondary text-center px-3 py-2 rounded-bl-2xl shadow-md shadow-black">
             <p className="text-4xl"> {date_time.getDate()} </p>
             <p className="uppercase -mt-2">{date_time.toLocaleString('en-US', { month: 'short' })}</p>

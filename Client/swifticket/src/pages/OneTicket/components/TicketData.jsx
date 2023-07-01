@@ -16,6 +16,10 @@ export default function TicketData({ isLoading, ticket }) {
   let date_time = new Date(ticket?.createdAt);
 
   const sendTicket = () => {
+    if (ticket?.used) {
+      toast.error("ticket already used");
+      return;
+    }
     navigate(`/send-ticket-qr/${ticket.id}`);
   }
 
