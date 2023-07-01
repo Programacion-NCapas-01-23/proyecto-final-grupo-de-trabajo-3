@@ -60,7 +60,7 @@ const OneEvent = () => {
     });
 
     toast.success("Items added to your cart!", { duration: 2500 })
-    sessionStorage.setItem('shoppingCart',     JSON.stringify(shoppingCart))
+    sessionStorage.setItem('shoppingCart', JSON.stringify(shoppingCart))
     setTierCounts(initialTierCounts)
     updateEvent()
   }

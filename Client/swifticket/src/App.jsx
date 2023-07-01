@@ -100,7 +100,7 @@ function App() {
         </Route>
         <Route path="development" element={<Admin />} />
         <Route path="error" element={<Landing />} />
-        <Route path="*" element={<Home />} />
+        <Route path="*" element={<Landing />} />
       </>
     )
   );
