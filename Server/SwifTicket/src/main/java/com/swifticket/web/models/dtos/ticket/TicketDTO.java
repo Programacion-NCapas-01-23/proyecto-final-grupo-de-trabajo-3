@@ -16,11 +16,13 @@ public class TicketDTO {
 	private Tier tier;
 	private Date createdAt;
 	private EventDTO event;
+	private boolean used;
 
-	public TicketDTO(Ticket ticket, EventDTO event) {
+	public TicketDTO(Ticket ticket, boolean ticketUsed, EventDTO event) {
 		this.id = ticket.getId();
 		this.tier = ticket.getTier();
 		this.createdAt = ticket.getCreatedAt();
 		this.event = event;
+		this.used = ticketUsed;
 	}
 }

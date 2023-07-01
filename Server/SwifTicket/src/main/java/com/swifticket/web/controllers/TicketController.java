@@ -62,7 +62,7 @@ public class TicketController {
 		// Return formatted ticket
 		Event event = ticket.getTier().getEvent();
 		EventDTO _event = new EventDTO(event, true);
-		TicketDTO _ticket = new TicketDTO(ticket, _event);
+		TicketDTO _ticket = new TicketDTO(ticket, ticketServices.isTicketUsed(ticket), _event);
 
 		return new ResponseEntity<>(_ticket, HttpStatus.OK);
 	}
@@ -81,7 +81,7 @@ public class TicketController {
 		List<TicketDTO> _tickets = tickets.getContent().stream().map(ticket -> {
 			Event event = ticket.getTier().getEvent();
 			EventDTO _event = new EventDTO(event, true);
-			return new TicketDTO(ticket, _event);
+			return new TicketDTO(ticket, ticketServices.isTicketUsed(ticket), _event);
 		}).toList();
 
 		PageDTO<TicketDTO> response = new PageDTO<>(
