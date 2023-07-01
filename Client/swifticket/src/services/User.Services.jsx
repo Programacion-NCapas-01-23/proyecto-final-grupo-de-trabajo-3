@@ -132,13 +132,13 @@ export const assignRole = async (token, id, role) => {
 
 // USER
 
-export const getAllUsers = async (token) => {
+export const getAllUsers = async (token, page) => {
   let response = undefined;
 
   try {
     const data = await axios({
       method: 'GET',
-      baseURL: BASE_URL,
+      baseURL: `${BASE_URL}?page=${page}`,
       headers: { Authorization: `Bearer ${token}` },
     });
 
@@ -210,7 +210,7 @@ export const changePass = async (token, pass, newPass) => {
     newPassword: newPass,
   };
   let body = uriDataConstructor(uriDataObject);
-  
+
   try {
     const data = await axios({
       method: 'PATCH',
@@ -222,7 +222,7 @@ export const changePass = async (token, pass, newPass) => {
       },
       data: `${body}`,
     });
-    
+
     if (data) {
       response = data;
     }

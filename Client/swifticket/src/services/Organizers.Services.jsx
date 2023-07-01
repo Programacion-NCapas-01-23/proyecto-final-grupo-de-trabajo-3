@@ -6,19 +6,20 @@ const BASE_URL = `${BASE}/organizers`;
 
 // ORGANIZERS
 
-export const getOrganizers = async () => {
+export const getOrganizers = async (page) => {
   let response = undefined;
 
   try {
     const data = await axios({
-      method: 'POST',
-      baseURL: BASE_URL,
+      method: 'GET',
+      baseURL: `${BASE_URL}?page=${page}&size=5`,
     });
 
     if (data) {
       response = data;
     }
   } catch (error) {
+    response = error.response;
     console.log(error);
   } finally {
     return response;
@@ -46,6 +47,7 @@ export const createOrganizer = async (organizerName) => {
       response = data;
     }
   } catch (error) {
+    response = error.response;
     console.log(error);
   } finally {
     return response;
@@ -74,6 +76,7 @@ export const updateOrganizer = async (organizerId, organizerName) => {
       response = data;
     }
   } catch (error) {
+    response = error.response;
     console.log(error);
   } finally {
     return response;
@@ -94,6 +97,7 @@ export const deleteOrganizer = async (organizerId) => {
       response = data;
     }
   } catch (error) {
+    response = error.response;
     console.log(error);
   } finally {
     return response;

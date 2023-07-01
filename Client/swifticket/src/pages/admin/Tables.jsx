@@ -8,17 +8,22 @@ import {
   removeRole,
   toggleStatus,
 } from '../../services/User.Services';
+import { Pagination } from '../../components/Pagination';
 
 const Tables = () => {
   const token = useRecoilValue(tokenState);
   const [registers, setRegisters] = useState([]);
+  const [limit, setLimit] = useState(999);
+  const [page, setPage] = useState(0);
   const isFull = registers.length == 10;
 
   const handleUsers = async () => {
-    const response = await getAllUsers(token);
+    const response = await getAllUsers(token, page);
+    console.log(response);
 
     if (response.status === 200) {
       setRegisters(response.data.content);
+      setLimit(response.data.totalPages);
     }
   };
 
@@ -49,7 +54,7 @@ const Tables = () => {
   useEffect(() => {
     handleUsers();
     console.log(registers);
-  }, []);
+  }, [page]);
 
   return (
     <div className="flex flex-col h-screen w-screen sm:w-[80vw]">
@@ -199,7 +204,9 @@ const Tables = () => {
           </table>
         </div>
       </div>
-      <div className="flex pt-4 pb-8 sm:pt-0 sm:pb-0 h-[25vh] w-full justify-center items-center">
+
+      <div className="flex flex-col pt-4 pb-8 sm:pt-0 sm:pb-0 h-[25vh] w-full gap-4 justify-center items-center">
+        <Pagination page={page} setPage={setPage} limit={limit} />
         <button className="bg-primary px-4 py-2 rounded-md">
           Generate Report
         </button>
