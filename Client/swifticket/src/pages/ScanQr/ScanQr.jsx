@@ -27,10 +27,13 @@ const ScanQr = () => {
     
     // console.log(response);
 
+    let error_message = "An error occurred, please try again later";
     if (response.status == 200)
       toast.success(response.data.message, { duration: 4000 });
+    else if (response.status == 404 || response.status == 409)
+      toast.error(response?.data?.message ?? error_message)
     else
-      toast.error(response.data.message);
+      toast.error(error_message);
   }
 
   const handleResult = (result, error) => {

@@ -17,7 +17,7 @@ export default function ReceiveQR() {
     if (response.status == 200)
       setCode(response.data.code)
     else
-      toast.error("Try again...");
+      toast.error("An error occurred, please try again later");
   }
 
   return (
