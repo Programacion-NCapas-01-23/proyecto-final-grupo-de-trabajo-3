@@ -34,10 +34,13 @@ const SendTicket = () => {
     
     // console.log(response);
 
+    let error_message = "Ocurrio un error, intentalo nuevamente más tarde";
     if (response.status == 200)
       toast.success(response.data.message, { duration: 4000 });
+    else if (response.status == 401 || response.status == 404 || response.status == 409)
+      toast.error(response?.data?.message ?? error_message)
     else
-      toast.error(response.data.message);
+      toast.error(error_message);
   }
 
   const handleResult = (result, error) => {
