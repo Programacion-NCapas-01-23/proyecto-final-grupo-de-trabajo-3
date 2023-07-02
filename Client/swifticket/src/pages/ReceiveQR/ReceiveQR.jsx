@@ -12,7 +12,6 @@ export default function ReceiveQR() {
   const token = useRecoilValue(tokenState);
 
   const receiveTicket = async () => {
-    console.log("Token: ", token);
     let response = await startTransferTicket(token);
     if (response.status == 200)
       setCode(response.data.code)

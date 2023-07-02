@@ -25,8 +25,6 @@ const ScanQr = () => {
     console.log("code", code);
     let response = await validateTicket(token, code);
     
-    // console.log(response);
-
     let error_message = "An error occurred, please try again later";
     if (response.status == 200)
       toast.success(response.data.message, { duration: 4000 });
@@ -40,10 +38,6 @@ const ScanQr = () => {
     if (!!result) {
       setIsCode(true);
       validateUserTicket(result?.text)
-    }
-
-    if (!!error) {
-      // console.log("err", error);
     }
   }
 

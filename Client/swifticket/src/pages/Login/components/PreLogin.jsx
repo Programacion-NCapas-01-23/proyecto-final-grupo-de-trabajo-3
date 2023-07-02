@@ -45,7 +45,7 @@ const PreLogin = ({ setIsLoginViews }) => {
           <div className=""></div>
         </button> */}
       </div>
-      <button className="btn-guest">Continue as guest</button>
+      <button onClick={() => {localStorage.setItem('auth_token', JSON.stringify("choco-dugul"))}} className="btn-guest">Continue as guest</button>
     </div>
   );
 };

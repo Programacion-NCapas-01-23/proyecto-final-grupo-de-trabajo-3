@@ -3,7 +3,6 @@ import { signIn } from '../../../services/Auth.Services';
 import { useSetRecoilState } from 'recoil';
 import { tokenState } from '../../../state/atoms/tokenState';
 import { useNavigate } from 'react-router-dom';
-import LoginAlert from '../../../components/Alerts/LoginAlert';
 import { roleState } from '../../../state/atoms/roleState';
 
 const MainLogin = ({ setIsLoginViews }) => {
@@ -41,8 +40,6 @@ const MainLogin = ({ setIsLoginViews }) => {
 
   return (
     <div className="container-login flex flex-col justify-between items-center w-full h-full">
-      <LoginAlert hasErrors={hasErrors} setHasErrors={setHasErrors} />
-      <div></div>
       <div className="flex flex-col justify-center sm:justify-evenly items-center gap-y-6 sm:gap-y-0 h-full sm:h-3/5 w-full">
         <div className="flex flex-col justify-evenly items-center w-full h-1/2">
           <input

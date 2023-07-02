@@ -75,20 +75,20 @@ export default function TicketData({ isLoading, ticket }) {
           {isLoading ? '...' : ticket?.id.split("-")[0]}
         </p>
       </div>
-      <div className="flex flex-col justify-evenly items-start w-full pb-4 sm:w-1/3 h-2/5 sm:h-full ml-16 sm:ml-0">
-        <div className="flex flex-col gap-2">
+      <div className="flex flex-col sm:gap-8 gap-4 sm:p-4 pb-4 justify-evenly items-start w-full sm:w-1/3 h-2/5 sm:h-full ml-16 sm:ml-0">
+        <div className="flex flex-col">
           <p className="text-secondary">Event</p>
           <p className="heading-lg tracking-tighter leading-7 text-black">
             {isLoading ? '...' : ticket.event.title}
           </p>
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col">
           <p className="text-secondary">Tier</p>
           <p className="heading-lg tracking-tighter leading-7 text-black">
             {isLoading ? '...' : ticket.tier.name}
           </p>
         </div>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col">
           <p className="text-secondary">Date Purchased</p>
           <p className="heading-lg tracking-tighter leading-7 text-black">
             {isLoading ? '...' : date_time.toDateString()}

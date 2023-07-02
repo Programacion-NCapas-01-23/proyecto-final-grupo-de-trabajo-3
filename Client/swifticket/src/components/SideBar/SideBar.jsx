@@ -36,7 +36,7 @@ export default function SideBar(props) {
   }, []);
 
   const redirectUser = () => {
-    // Implementa la redirección del usuario
+    navigate(isGuest ? "/login" : "user")
   };
 
   return (
@@ -109,10 +109,10 @@ export default function SideBar(props) {
                         </li>
 
                         {/* Renderización condicional de los componentes */}
-                        {userRoles.some((role) => role.id == 1 ) && <AdminActions />}
                         {userRoles.some((role) => role.id === 2) && <UserActions />}
-                        {userRoles.some((role) => role.id === 3) && <ModActions />}
                         {userRoles.some((role) => role.id === 4) && <CollabActions />}
+                        {userRoles.some((role) => role.id === 3) && <ModActions />}
+                        {userRoles.some((role) => role.id == 1 ) && <AdminActions />}
 
                       </ul>
                     </div>
