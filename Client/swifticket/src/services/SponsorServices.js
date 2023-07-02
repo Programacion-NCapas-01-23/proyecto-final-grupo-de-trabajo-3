@@ -44,16 +44,11 @@ export async function getSponsorByName(sponsorName, token) {
   }
 }
 
-export async function createSponsor(token, _name, _image) {
+export async function createSponsor(token, _formdata) {
   try {
-    const response = await axios.postForm(
-      `${BASE}/${endpoint}`,
-      {
-        name: _name,
-        image: _image,
-      },
-      { headers: { ...postHeaderForm, ...getHeader(token) } }
-    );
+    const response = await axios.postForm(`${BASE}/${endpoint}`, _formdata, {
+      headers: { ...postHeaderForm, ...getHeader(token) },
+    });
     return response;
   } catch (error) {
     console.log(error);

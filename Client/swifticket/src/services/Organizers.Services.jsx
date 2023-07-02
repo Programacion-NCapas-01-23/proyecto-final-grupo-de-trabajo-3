@@ -26,7 +26,7 @@ export const getOrganizers = async (page) => {
   }
 };
 
-export const createOrganizer = async (organizerName) => {
+export const createOrganizer = async (token, organizerName) => {
   let response = undefined;
   const uriDataObject = {
     name: organizerName,
@@ -39,6 +39,7 @@ export const createOrganizer = async (organizerName) => {
       baseURL: BASE_URL,
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: `Bearer ${token}`,
       },
       data: `${body}`,
     });
