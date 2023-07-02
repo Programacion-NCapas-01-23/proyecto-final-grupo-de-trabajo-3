@@ -88,7 +88,7 @@ const OneEvent = () => {
     });
 
     // Show success toast
-    toast.success("Items added to your cart!", { duration: 2500 });
+    toast.success("Items added to your cart!");
 
     // Save the shopping cart to session storage
     sessionStorage.setItem('shoppingCart', JSON.stringify(shoppingCart));

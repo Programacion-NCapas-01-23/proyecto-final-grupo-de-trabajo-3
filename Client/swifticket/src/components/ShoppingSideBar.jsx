@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, useEffect } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { MdClose } from "react-icons/md";
 import EventCardSh from "./EventCards/Shoping/EventCardSh";
@@ -8,6 +8,7 @@ import { useRecoilValue } from "recoil";
 
 export default function ShoppingSideBar(props) {
   const shoppingCart = useRecoilValue(shoppingCartState);
+  
 
   return (
     <Transition.Root show={props.open} as={Fragment}>
