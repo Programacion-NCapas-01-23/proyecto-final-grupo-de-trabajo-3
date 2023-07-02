@@ -13,9 +13,9 @@ export default function UserActions() {
   };
 
   return (
-    <li className="py-default text-xl cursor-pointer">
-      <a
-        className="flex items-center md:my-default-xs my-2 cursor-pointer"
+    <li className="py-default text-xl">
+      <button
+        className="flex items-center md:my-default-xs"
         onClick={redirectToOwnedTickets}
       >
         <span className="mr-default-xs">
@@ -23,9 +23,9 @@ export default function UserActions() {
           <MdConfirmationNumber size={'2rem'} />{' '}
         </span>
         My Tickets
-      </a>
-      <a
-        className="flex items-center md:my-default-xs my-2 cursor-pointer"
+      </button>
+      <button
+        className="flex items-center md:my-default-xs"
         onClick={redirectToReceiveQR}
       >
         <span className="mr-default-xs">
@@ -33,7 +33,7 @@ export default function UserActions() {
           <MdCallReceived size={'2rem'} />{' '}
         </span>
         Receive a QR
-      </a>
+      </button>
     </li>
   );
 }

@@ -10,8 +10,8 @@ export default function AdminActions() {
 
   return (
     <li className="py-default text-xl">
-      <a
-        className="flex items-center md:my-default-xs my-2 cursor-pointer"
+      <button
+        className="flex items-center md:my-default-xs"
         onClick={() => {
           redirectUser('admin');
         }}
@@ -21,7 +21,7 @@ export default function AdminActions() {
           <MdAdminPanelSettings size={'2rem'} />{' '}
         </span>
         Go Admin
-      </a>
+      </button>
     </li>
   );
 }

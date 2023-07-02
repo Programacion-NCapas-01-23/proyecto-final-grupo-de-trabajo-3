@@ -10,8 +10,8 @@ export default function CollabActions() {
 
   return (
     <li className="py-default text-xl">
-      <a
-        className="flex items-center md:my-default-xs my-2 cursor-pointer"
+      <button
+        className="flex items-center md:my-default-xs"
         onClick={redirectToScanQR}
       >
         <span className="mr-default-xs">
@@ -19,7 +19,7 @@ export default function CollabActions() {
           <MdQrCodeScanner size={'2rem'} />{' '}
         </span>
         Scan QR
-      </a>
+      </button>
     </li>
   );
 }

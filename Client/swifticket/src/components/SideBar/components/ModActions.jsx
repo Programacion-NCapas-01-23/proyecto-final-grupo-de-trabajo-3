@@ -10,8 +10,8 @@ export default function ModActions() {
 
   return (
     <li className="py-default text-xl">
-      <a
-        className="flex items-center md:my-default-xs my-2 cursor-pointer"
+      <button
+        className="flex items-center md:my-default-xs"
         onClick={redirectToManageUsers}
       >
         <span className="mr-default-xs">
@@ -19,7 +19,7 @@ export default function ModActions() {
           <MdGroups3 size={'2rem'} />{' '}
         </span>
         Manage Users
-      </a>
+      </button>
     </li>
   );
 }
