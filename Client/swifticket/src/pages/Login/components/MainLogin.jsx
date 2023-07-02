@@ -7,7 +7,6 @@ import { roleState } from '../../../state/atoms/roleState';
 
 const MainLogin = ({ setIsLoginViews }) => {
   const [userName, setUserName] = useState('');
-  let [hasErrors, setHasErrors] = useState(false);
   const [pass, setPass] = useState('');
   const navigateTo = useNavigate();
 
@@ -17,9 +16,6 @@ const MainLogin = ({ setIsLoginViews }) => {
   const loginHandler = async (userName, pass) => {
     const response = await signIn(userName, pass);
 
-    if (response === undefined || response.status !== 200) {
-      setHasErrors(true);
-    }
 
     if (response.status === 200) {
       let roles = response.data.roles;

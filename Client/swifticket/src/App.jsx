@@ -54,9 +54,11 @@ import Avatars from './pages/user/UserProfile/Fragments/Avatars';
 import ChangePassword from './pages/user/UserProfile/Fragments/ChangePassword';
 import { Ticket } from './pages/OneTicket/Ticket';
 import SendTicket from './pages/SendTicket/SendTicket';
+import { guestState } from './state/atoms/guestState';
 
 function App() {
   const token = useRecoilValue(tokenState);
+  const isGuest = useRecoilValue(guestState);
 
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -123,7 +125,7 @@ function App() {
           </div>
         }
       >
-        {token ? (
+        {token || isGuest ? (
           <RouterProvider router={router} />
         ) : (
           <RouterProvider router={routerLogin} />

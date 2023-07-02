@@ -5,13 +5,15 @@ import { useEffect, useState } from "react";
 import { MdAddBox, MdIndeterminateCheckBox } from "react-icons/md"
 import { getEventById } from "../../services/Events.Services";
 import { shoppingCartState } from "../../state/atoms/shoppingCartState";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { guestState } from "../../state/atoms/guestState";
 
 const OneEvent = () => {
   const [shoppingCart, setShoppingCart] = useRecoilState(shoppingCartState);
 
   const { eventId } = useParams();
   const navigate = useNavigate();
+  const isGuest = useRecoilValue(guestState)
 
   // Set up state variables
   const [currentEvent, setCurrentEvent] = useState(null);
@@ -23,6 +25,11 @@ const OneEvent = () => {
 
   // Shopping cart validations function
   const shoppingCartValidations = () => {
+    if (isGuest){
+      toast.error("You have to log in!", { id: 'shcart' });
+      return false;
+    }
+
     if (!oneSelected(tierCounts) || !oneSelected(tierCountsDisplay)) {
       setTierCounts(initialTierCounts); currentEvent.tiers.forEach(tier => { initialTierCounts[tier.id] = 0; }); setTierCountsDisplay(initialTierCounts);
 
@@ -37,8 +44,8 @@ const OneEvent = () => {
       return false;
     }
 
-    
-    setReducedEvent(prev => ({ ...prev, tiers: prev.tiers.map( tier => ( { ...tier, count: (tier.count || 0) + (tierCounts[tier.id] || 0) } ) ) }));
+
+    setReducedEvent(prev => ({ ...prev, tiers: prev.tiers.map(tier => ({ ...tier, count: (tier.count || 0) + (tierCounts[tier.id] || 0) })) }));
     currentEvent.tiers.forEach(tier => { initialTierCounts[tier.id] = 0; }); setTierCountsDisplay(initialTierCounts);
 
     return true;
@@ -105,7 +112,7 @@ const OneEvent = () => {
         navigate("/event");
 
       const { available, category, duration, organizer, place, sponsors, state, ...restructuredEvent } = response.data;
-      
+
       let modifiedTiers
       if (!shoppingCart.find(ev => ev.id === restructuredEvent.id)) {
         modifiedTiers = response.data.tiers.map(({ available, ...tier }) => ({ ...tier, count: 0 }));
@@ -117,7 +124,7 @@ const OneEvent = () => {
           return { ...tier, count: count };
         });
       }
-      
+
 
       setReducedEvent({ ...restructuredEvent, tiers: modifiedTiers });
       setCurrentEvent(response.data);
@@ -147,7 +154,6 @@ const OneEvent = () => {
       <TitileWithLines title={currentEvent.title}></TitileWithLines>
 
       <div className="flex md:flex-row flex-col items-center justify-evenly min-h-[calc(30vh-52px-2rem)] md:px-default-2xl px-default-lg pt-default">
-        <button className="bg-emerald-400 px-5 py-2 rounded text-fuchsia-600 text-3xl tracking-tighter font-bold animate-bounce" onClick={() => { console.log({ 'Tickets Selected': tierCounts, Event: reducedEvent, ShoppingCarta: shoppingCart }); }}> LOG </button>
         <div className="flex flex-row justify-evenly items-center gap-12">
           <DateInfo event={currentEvent} />
           <EventInfo event={currentEvent} />

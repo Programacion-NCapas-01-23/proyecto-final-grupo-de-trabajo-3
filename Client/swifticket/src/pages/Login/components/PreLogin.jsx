@@ -1,22 +1,31 @@
 import React, { useRef, useState } from 'react';
 import GoogleLogin from './GoogleLogin';
 import { googleSignIn } from '../../../services/Auth.Services';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilState, useSetRecoilState } from 'recoil';
 import { tokenState } from '../../../state/atoms/tokenState';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
+import { guestState } from '../../../state/atoms/guestState';
 
 const PreLogin = ({ setIsLoginViews }) => {
+
   const loginRef = useRef(null);
+  const [isGuest, setIsGuest] = useRecoilState(guestState)
   const [buttonWidth, setButtonWidth] = useState(0);
   const setToken = useSetRecoilState(tokenState);
   const [isAdmin, setIsAdmin] = useState(false);
   const navigateTo = useNavigate();
 
+  const handleGuest = () => {
+    setIsGuest(true);
+    sessionStorage.setItem('guest', true);
+    navigateTo('/');
+  }
+
   const onGoogleSignIn = async (res) => {
     const { credential } = res;
     const singInResponse = await googleSignIn(credential)
-    if (singInResponse == undefined){
+    if (singInResponse == undefined) {
       toast.error("Sorry, try again later...")
       return
     }
@@ -45,7 +54,7 @@ const PreLogin = ({ setIsLoginViews }) => {
           <div className=""></div>
         </button> */}
       </div>
-      <button onClick={() => {localStorage.setItem('auth_token', JSON.stringify("choco-dugul"))}} className="btn-guest">Continue as guest</button>
+      <button onClick={handleGuest} className="btn-guest sm:h-0 h-1/2">Continue as guest</button>
     </div>
   );
 };

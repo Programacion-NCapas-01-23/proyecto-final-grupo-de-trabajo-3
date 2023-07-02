@@ -7,17 +7,17 @@ import UserActions from './components/UserActions';
 import ModActions from './components/ModActions';
 import CollabActions from './components/CollabActions';
 import { MdAccountCircle, MdClose, MdLogout, MdPerson } from 'react-icons/md';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState } from 'recoil';
 import { tokenState } from '../../state/atoms/tokenState';
 import { validateToken } from '../../services/Auth.Services';
+import { guestState } from '../../state/atoms/guestState';
 
 export default function SideBar(props) {
   const navigate = useNavigate();
-  const setToken = useSetRecoilState(tokenState);
   const [user, setUser] = useState(Roles.nullUser);
   const [userRoles, setUserRoles] = useState([{}]);
-  const token = useRecoilValue(tokenState);
-  const [isGuest, setIsGuest] = useState(false);
+  const [token, setToken] = useRecoilState(tokenState);
+  const [isGuest, setIsGuest] = useRecoilState(guestState);
 
   const handleLogOut = () => {
     setToken(null);
@@ -30,13 +30,18 @@ export default function SideBar(props) {
       if (response != undefined) {
         setUser(response.data);
         setUserRoles(response.data.roles);
-      } else setIsGuest(true);
+      }
     };
     fetchUser(token);
   }, []);
 
   const redirectUser = () => {
-    navigate(isGuest ? "/login" : "user")
+    if (!isGuest) 
+      navigate("/user")
+    else{
+      setIsGuest(false)
+      navigate("/")
+    }
   };
 
   return (
@@ -112,7 +117,7 @@ export default function SideBar(props) {
                         {userRoles.some((role) => role.id === 2) && <UserActions />}
                         {userRoles.some((role) => role.id === 4) && <CollabActions />}
                         {userRoles.some((role) => role.id === 3) && <ModActions />}
-                        {userRoles.some((role) => role.id == 1 ) && <AdminActions />}
+                        {userRoles.some((role) => role.id == 1) && <AdminActions />}
 
                       </ul>
                     </div>

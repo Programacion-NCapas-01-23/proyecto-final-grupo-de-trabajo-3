@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Login.css';
 import swifticketLogo from '../../assets/swifticketLogo.png';
 import loginFooter from '../../assets/loginFooter.svg';
@@ -9,6 +9,13 @@ import RecoveryCode from './components/RecoveryCode';
 
 const Login = () => {
   const [isLoginViews, setIsLoginViews] = useState([true, false, false, false]);
+
+  useEffect(() => {
+    localStorage.removeItem('auth_token')
+    sessionStorage.removeItem('guest')
+    sessionStorage.removeItem('shoppingCart')
+  }, [])
+  
 
   return (
     <>
