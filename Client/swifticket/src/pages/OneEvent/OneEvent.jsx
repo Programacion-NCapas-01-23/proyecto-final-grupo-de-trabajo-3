@@ -5,10 +5,13 @@ import { useEffect, useState } from "react";
 import { MdAddBox, MdIndeterminateCheckBox } from "react-icons/md"
 import { getEventById } from "../../services/Events.Services";
 import { shoppingCartState } from "../../state/atoms/shoppingCartState";
+import { cartState } from "../../state/atoms/cartState";
 import { useRecoilState } from "recoil";
 
 const OneEvent = () => {
   const [shoppingCart, setShoppingCart] = useRecoilState(shoppingCartState);
+  // AÑADI ESTO
+  const [cart, setCartState] = useRecoilState(cartState);
 
   const { eventId } = useParams();
   const navigate = useNavigate();
@@ -42,6 +45,29 @@ const OneEvent = () => {
     return true
   }
 
+  // AÑADI ESTO
+  function updateTierCount(array, event, tiersAndVals) {
+    const updatedArray = array.map(obj => {
+      if (obj.event === event) {
+        const updatedTiers = obj.tiers.map(t => {
+          const tierValue = tiersAndVals[t.tier] || 0;
+          return {
+            ...t,
+            count: t.count + tierValue
+          };
+        });
+        
+        return {
+          ...obj,
+          tiers: updatedTiers
+        };
+      }
+      return obj;
+    });
+  
+    return updatedArray;
+  }
+
   const handleAddToCart = () => {
     if (!shoppingCartValidations())
       return
@@ -58,6 +84,10 @@ const OneEvent = () => {
       
       return updatedCart;
     });
+
+    // Añadi esto
+    console.log(tierCounts);
+    setCartState(updateTierCount(cart, "test", tierCounts));
 
     toast.success("Items added to your cart!", { duration: 2500 })
     sessionStorage.setItem('shoppingCart', JSON.stringify(shoppingCart))
@@ -79,8 +109,31 @@ const OneEvent = () => {
   useEffect(() => {
     sessionStorage.setItem('shoppingCart', JSON.stringify(shoppingCart));
   }, [shoppingCart])
-  
 
+  // Añadi esto
+  useEffect(() => {
+    setCartState([
+      {
+        event: "test",
+        img: "src",
+        tiers: [
+          {
+            tier: "7cb8f4b2-a776-4c94-a1ea-99f135469c80",
+            count: 0
+          },
+          {
+            tier: "b4d3d82f-b10f-4e3a-9084-2af30f100fa8",
+            count: 0
+          },
+          {
+            tier: "d42a233a-17fa-4428-9a65-a1ef9087c9ee",
+            count: 0
+          }
+        ]
+      }
+    ])
+  }, [])
+  
   useEffect(() => {
     const fetchEvent = async () => {
       const response = await getEventById(eventId);

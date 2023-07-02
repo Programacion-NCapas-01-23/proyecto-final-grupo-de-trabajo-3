@@ -3,10 +3,15 @@ import { Dialog, Transition } from "@headlessui/react";
 import { MdClose } from "react-icons/md";
 import EventCardSh from "./EventCards/Shoping/EventCardSh";
 import { shoppingCartState } from "../state/atoms/shoppingCartState";
+import { cartState } from "../state/atoms/cartState";
 import { useRecoilValue } from "recoil";
 
 export default function ShoppingSideBar(props) {
   const shoppingCart = useRecoilValue(shoppingCartState);
+
+  // Añadi esto
+  const cart = useRecoilValue(cartState);
+  console.log(cart);
 
   return (
     <Transition.Root show={props.open} as={Fragment}>
