@@ -5,160 +5,132 @@ import { useEffect, useState } from "react";
 import { MdAddBox, MdIndeterminateCheckBox } from "react-icons/md"
 import { getEventById } from "../../services/Events.Services";
 import { shoppingCartState } from "../../state/atoms/shoppingCartState";
-import { cartState } from "../../state/atoms/cartState";
 import { useRecoilState } from "recoil";
 
 const OneEvent = () => {
   const [shoppingCart, setShoppingCart] = useRecoilState(shoppingCartState);
-  // AÑADI ESTO
-  const [cart, setCartState] = useRecoilState(cartState);
 
   const { eventId } = useParams();
   const navigate = useNavigate();
+
+  // Set up state variables
   const [currentEvent, setCurrentEvent] = useState(null);
+  const [reducedEvent, setReducedEvent] = useState(null);
   const initialTierCounts = {};
 
   const [tierCounts, setTierCounts] = useState({});
   const [tierCountsDisplay, setTierCountsDisplay] = useState({});
 
-
+  // Shopping cart validations function
   const shoppingCartValidations = () => {
-    // RESET VISUALS SELECTED
-    currentEvent.tiers.forEach(tier => {
-      initialTierCounts[tier.id] = 0;
-    });
-    setTierCountsDisplay(initialTierCounts)
-
-    // IF NONE SELECTED
     if (!oneSelected(tierCounts) || !oneSelected(tierCountsDisplay)) {
-      setTierCounts(initialTierCounts)
-      updateEvent()
-      toast.error("You have to select at least one!", { id: 'shcart' })
-      return false
+      setTierCounts(initialTierCounts); currentEvent.tiers.forEach(tier => { initialTierCounts[tier.id] = 0; }); setTierCountsDisplay(initialTierCounts);
+
+      toast.error("You have to select at least one!", { id: 'shcart' });
+      return false;
     }
 
-    if (!checkAvailability(tierCounts, currentEvent.tiers)) {
-      setTierCounts(initialTierCounts)
-      toast.error("Not enough capacity!", { id: 'shcart' })
-      return false
-    }
-    return true
-  }
+    if (!checkAvailability(tierCounts, reducedEvent.tiers)) {
+      setTierCounts(initialTierCounts); currentEvent.tiers.forEach(tier => { initialTierCounts[tier.id] = 0; }); setTierCountsDisplay(initialTierCounts);
 
-  // AÑADI ESTO
-  function updateTierCount(array, event, tiersAndVals) {
-    const updatedArray = array.map(obj => {
-      if (obj.event === event) {
-        const updatedTiers = obj.tiers.map(t => {
-          const tierValue = tiersAndVals[t.tier] || 0;
-          return {
-            ...t,
-            count: t.count + tierValue
-          };
-        });
-        
-        return {
-          ...obj,
-          tiers: updatedTiers
-        };
-      }
-      return obj;
-    });
-  
-    return updatedArray;
-  }
+      toast.error("Not enough capacity!", { id: 'shcart' });
+      return false;
+    }
+
+    
+    setReducedEvent(prev => ({ ...prev, tiers: prev.tiers.map( tier => ( { ...tier, count: (tier.count || 0) + (tierCounts[tier.id] || 0) } ) ) }));
+    currentEvent.tiers.forEach(tier => { initialTierCounts[tier.id] = 0; }); setTierCountsDisplay(initialTierCounts);
+
+    return true;
+  };
 
   const handleAddToCart = () => {
-    if (!shoppingCartValidations())
-      return
+    // Validate the shopping cart
+    if (!shoppingCartValidations()) return;
 
     setShoppingCart(prev => {
-      console.log(prev);
-      let updatedCart = prev.map(item => {
-        if (item.id === currentEvent.id) return currentEvent 
-        else return item
+      // Update the cart items
+      const updatedCart = prev.map(item => {
+        // Check if the item is the current event
+        const isCurrentEvent = item.id === currentEvent.id;
+
+        // Update the tiers for the current event
+        const updatedTiers = isCurrentEvent ? item.tiers.map(tier => ({ ...tier, count: (tier.count || 0) + (tierCounts[tier.id] || 0) })) : item.tiers;
+
+        // Return the updated item
+        return isCurrentEvent ? {
+          ...item,
+          tiers: updatedTiers
+        } : item;
       });
 
-      if (!updatedCart.some(item => item.id === currentEvent.id))
-        updatedCart.push(currentEvent);
-      
+      // Check if the current event exists in the cart
+      const eventExistsInCart = updatedCart.some(item => item.id === currentEvent.id);
+
+      // If the current event is not in the cart, add it with updated tiers
+      if (!eventExistsInCart) {
+        const updatedEventTiers = currentEvent.tiers.map(tier => ({ ...tier, count: (tier.count || 0) + (tierCounts[tier.id] || 0) }));
+
+        updatedCart.push({
+          ...reducedEvent,
+          tiers: updatedEventTiers
+        });
+      }
+
       return updatedCart;
     });
 
-    // Añadi esto
-    console.log(tierCounts);
-    setCartState(updateTierCount(cart, "test", tierCounts));
+    // Show success toast
+    toast.success("Items added to your cart!", { duration: 2500 });
 
-    toast.success("Items added to your cart!", { duration: 2500 })
-    sessionStorage.setItem('shoppingCart', JSON.stringify(shoppingCart))
-    setTierCounts(initialTierCounts)
-    updateEvent()
-  }
+    // Save the shopping cart to session storage
+    sessionStorage.setItem('shoppingCart', JSON.stringify(shoppingCart));
 
-
-  const updateEvent = () => {
-    setCurrentEvent(prev => ({
-      ...prev,
-      tiers: prev.tiers.map(tier => ({
-        ...tier,
-        count: (tier.count || 0) + (tierCounts[tier.id] || 0)
-      }))
-    }));
+    // Reset tier counts
+    setTierCounts(initialTierCounts);
   };
 
+
+  // Save the shoppingCart to sessionStorage whenever it changes
   useEffect(() => {
     sessionStorage.setItem('shoppingCart', JSON.stringify(shoppingCart));
-  }, [shoppingCart])
+  }, [shoppingCart]);
 
-  // Añadi esto
-  useEffect(() => {
-    setCartState([
-      {
-        event: "test",
-        img: "src",
-        tiers: [
-          {
-            tier: "7cb8f4b2-a776-4c94-a1ea-99f135469c80",
-            count: 0
-          },
-          {
-            tier: "b4d3d82f-b10f-4e3a-9084-2af30f100fa8",
-            count: 0
-          },
-          {
-            tier: "d42a233a-17fa-4428-9a65-a1ef9087c9ee",
-            count: 0
-          }
-        ]
-      }
-    ])
-  }, [])
-  
+  // Fetch the event data from the server based on the eventId
   useEffect(() => {
     const fetchEvent = async () => {
       const response = await getEventById(eventId);
 
       if (response.status == 404)
-        navigate("/event")
+        navigate("/event");
 
-      const tiers = response.data.tiers;
-
-      const restructuredTiers = tiers.map(tier => ({ ...tier, count: 0 }));
-
-      const restructuredEvent = { ...response.data, tiers: restructuredTiers };
+      const { available, category, duration, organizer, place, sponsors, state, ...restructuredEvent } = response.data;
       
-      setCurrentEvent(restructuredEvent);
+      let modifiedTiers
+      if (!shoppingCart.find(ev => ev.id === restructuredEvent.id)) {
+        modifiedTiers = response.data.tiers.map(({ available, ...tier }) => ({ ...tier, count: 0 }));
+      } else {
+        modifiedTiers = response.data.tiers.map(({ available, ...tier }) => {
+          const cartItem = shoppingCart.find(ev => ev.id === restructuredEvent.id);
+          const tierFromCart = cartItem.tiers.find(t => t.id === tier.id);
+          const count = tierFromCart ? tierFromCart.count : 0;
+          return { ...tier, count: count };
+        });
+      }
+      
 
+      setReducedEvent({ ...restructuredEvent, tiers: modifiedTiers });
+      setCurrentEvent(response.data);
 
-      restructuredTiers.forEach(tier => {
+      response.data.tiers.forEach(tier => {
         initialTierCounts[tier.id] = 0;
       });
+
       setTierCounts(initialTierCounts);
-      setTierCountsDisplay(initialTierCounts)
+      setTierCountsDisplay(initialTierCounts);
     };
 
     fetchEvent();
-
   }, []);
 
   return (
@@ -174,9 +146,8 @@ const OneEvent = () => {
 
       <TitileWithLines title={currentEvent.title}></TitileWithLines>
 
-
       <div className="flex md:flex-row flex-col items-center justify-evenly min-h-[calc(30vh-52px-2rem)] md:px-default-2xl px-default-lg pt-default">
-        <button className="bg-emerald-400 px-5 py-2 rounded text-fuchsia-600 text-3xl tracking-tighter font-bold animate-bounce" onClick={() => { console.log({ Event: currentEvent, ShoppingCarta: shoppingCart }); }}> LOG </button>
+        <button className="bg-emerald-400 px-5 py-2 rounded text-fuchsia-600 text-3xl tracking-tighter font-bold animate-bounce" onClick={() => { console.log({ 'Tickets Selected': tierCounts, Event: reducedEvent, ShoppingCarta: shoppingCart }); }}> LOG </button>
         <div className="flex flex-row justify-evenly items-center gap-12">
           <DateInfo event={currentEvent} />
           <EventInfo event={currentEvent} />
@@ -293,10 +264,10 @@ function oneSelected(tiersSelected) {
     return true
 }
 
-function checkAvailability(tierCounts, tiers) {
+function checkAvailability(tickets, tiers) {
   for (let i = 0; i < tiers.length; i++) {
     const tier = tiers[i];
-    const count = tierCounts[tier.id] + tier.count;
+    const count = tickets[tier.id] + tier.count;
     const remainingCapacity = tier.capacity - tier.ticketsSold;
     if (count > remainingCapacity) {
       return false;

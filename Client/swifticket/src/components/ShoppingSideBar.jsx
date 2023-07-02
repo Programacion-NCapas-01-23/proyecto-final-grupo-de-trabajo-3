@@ -9,10 +9,6 @@ import { useRecoilValue } from "recoil";
 export default function ShoppingSideBar(props) {
   const shoppingCart = useRecoilValue(shoppingCartState);
 
-  // Añadi esto
-  const cart = useRecoilValue(cartState);
-  console.log(cart);
-
   return (
     <Transition.Root show={props.open} as={Fragment}>
       <Dialog as="div" className="relative z-10" onClose={props.setOpen}>
@@ -67,8 +63,7 @@ export default function ShoppingSideBar(props) {
                             <ul role="list">
                               {shoppingCart.map((event, index) => (
                                 <li key={index}>
-                                  <EventCardSh
-                                    count={index + 1}
+                                  <EventCardSh  
                                     event={event}
                                   />
                                 </li>

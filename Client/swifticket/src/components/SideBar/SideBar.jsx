@@ -1,29 +1,47 @@
-import { Fragment } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { Dialog, Transition } from '@headlessui/react';
 import { useNavigate } from 'react-router-dom';
+import * as Roles from './components/Roles'
 import AdminActions from './components/AdminActions';
 import UserActions from './components/UserActions';
 import ModActions from './components/ModActions';
 import CollabActions from './components/CollabActions';
 import { MdAccountCircle, MdClose, MdLogout, MdPerson } from 'react-icons/md';
-import { useSetRecoilState } from 'recoil';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
 import { tokenState } from '../../state/atoms/tokenState';
+import { validateToken } from '../../services/Auth.Services';
 
 export default function SideBar(props) {
   const navigate = useNavigate();
   const setToken = useSetRecoilState(tokenState);
-  const isGuest = false
+  const [user, setUser] = useState(Roles.nullUser)
+  const [userRoles, setUserRoles] = useState([{}])
+  const token = useRecoilValue(tokenState)
+  const [isGuest, setIsGuest] = useState(false)
 
   const handleLogOut = () => {
     setToken(null);
-    setRole(null);
     localStorage.removeItem('auth_token');
-    localStorage.removeItem('roles');
   };
 
+
+  useEffect(() => {
+    const fetchUser = async (token) => {
+      const response = await validateToken(token);
+      if (response != undefined)
+        setUser(response.data)
+      else
+        setIsGuest(true)
+      console.log(user.roles);
+    }
+    fetchUser(token)
+    console.log(user.roles);
+  }, [])
+
+
+
   const redirectUser = () => {
-    if (!isGuest) navigate('/user');
-    else navigate('/login');
+
   };
 
   return (
@@ -74,7 +92,7 @@ export default function SideBar(props) {
                           <MdAccountCircle size={'12rem'} />
                           <p className="heading-lg">
                             {' '}
-                            {isGuest ? 'Guest' : 'user'}{' '}
+                            {isGuest ? 'Guest' : user.name}
                           </p>
                         </div>
                       </Dialog.Title>
@@ -88,20 +106,19 @@ export default function SideBar(props) {
                             onClick={redirectUser}
                           >
                             <span className="mr-default-xs">
-                              <MdPerson size={'2rem'} />
+                              {' '}
+                              <MdPerson size={'2rem'} />{' '}
                             </span>
                             {isGuest ? 'Log In' : 'My Profile'}
                           </a>
                         </li>
-
-                        {/* {
+                        {
 
                         }
-                        
-                        {!isUser && <UserActions />}
-                        {!isCollab && <CollabActions />}
-                        {!isMod && <ModActions />}
-                        {!isAdmin && <AdminActions />} */}
+                        <UserActions />
+                        <CollabActions />
+                        <ModActions />
+                        <AdminActions />
                       </ul>
                     </div>
 
@@ -109,17 +126,9 @@ export default function SideBar(props) {
                       <div className="m-auto px-4 py-6 sm:px-6">
                         <button className="flex items-center">
                           <span>
-                            {' '}
                             <MdLogout size={'2rem'} />{' '}
                           </span>
-                          <a
-                            href="/login"
-                            className="heading-sm px-default"
-                            onClick={() => handleLogOut()}
-                          >
-                            {' '}
-                            Log Out
-                          </a>
+                          <a href="/login" className="heading-sm px-default" onClick={() => handleLogOut()} > Log Out </a>
                         </button>
                       </div>
                     )}
