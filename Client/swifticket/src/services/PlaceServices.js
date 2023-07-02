@@ -10,10 +10,10 @@ const getHeader = (token) => {
   return { Authorization: `Bearer ${token}` };
 };
 
-export async function getPlaces(page) {
+export async function getPlaces(page, size = 10) {
   try {
     const response = await axios.get(
-      `${BASE}/${endpoint}?page=${page}&size=10`
+      `${BASE}/${endpoint}?page=${page}&size=${size}`
     );
     return response;
   } catch (error) {

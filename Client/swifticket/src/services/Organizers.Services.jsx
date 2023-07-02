@@ -6,13 +6,13 @@ const BASE_URL = `${BASE}/organizers`;
 
 // ORGANIZERS
 
-export const getOrganizers = async (page) => {
+export const getOrganizers = async (page, size = 5) => {
   let response = undefined;
 
   try {
     const data = await axios({
       method: 'GET',
-      baseURL: `${BASE_URL}?page=${page}&size=5`,
+      baseURL: `${BASE_URL}?page=${page}&size=${size}`,
     });
 
     if (data) {

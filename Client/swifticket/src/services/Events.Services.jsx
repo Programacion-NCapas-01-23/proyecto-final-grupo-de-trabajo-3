@@ -167,7 +167,7 @@ export const getAllEvents = async () => {
   try {
     const data = await axios({
       method: 'GET',
-      url: "http://ec2-3-223-145-52.compute-1.amazonaws.com/events",
+      url: 'http://ec2-3-223-145-52.compute-1.amazonaws.com/events',
     });
 
     if (data) {
@@ -194,7 +194,7 @@ export const getEventById = async (eventId) => {
       response = data;
     }
   } catch (error) {
-    response = error.response
+    response = error.response;
     console.log(error);
   } finally {
     return response;
@@ -241,42 +241,27 @@ export const getEventByStatus = async (status) => {
   }
 };
 
-export const createEvent = async (
-  title,
-  duration,
-  dateTime,
-  image,
-  placeId,
-  categoryId,
-  organizerId
-) => {
+export const createEvent = async (token, _formData) => {
   let response = undefined;
-  const uriDataObject = {
-    title: title,
-    duration: duration,
-    dateTime: dateTime,
-    image: image,
-    placeId: placeId,
-    categoryId: categoryId,
-    organizerId: organizerId,
+
+  let body = _formData;
+
+  let config = {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+      Authorization: `Bearer ${token}`,
+    },
   };
-  let body = uriDataConstructor(uriDataObject);
 
   try {
-    const data = await axios({
-      method: 'POST',
-      baseURL: BASE_URL,
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      data: `${body}`,
-    });
+    const data = await axios.postForm(BASE_URL, body, config);
 
     if (data) {
       response = data;
     }
   } catch (error) {
     console.log(error);
+    response = error.response;
   } finally {
     return response;
   }
