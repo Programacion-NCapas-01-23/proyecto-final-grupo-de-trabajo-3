@@ -2,13 +2,11 @@ import React, { useState } from 'react';
 import { signIn } from '../../../services/Auth.Services';
 import { useSetRecoilState } from 'recoil';
 import { tokenState } from '../../../state/atoms/tokenState';
-import { useNavigate } from 'react-router-dom';
 import { roleState } from '../../../state/atoms/roleState';
 
 const MainLogin = ({ setIsLoginViews }) => {
   const [userName, setUserName] = useState('');
   const [pass, setPass] = useState('');
-  const navigateTo = useNavigate();
 
   const setToken = useSetRecoilState(tokenState);
   const setRoles = useSetRecoilState(roleState);
@@ -16,21 +14,13 @@ const MainLogin = ({ setIsLoginViews }) => {
   const loginHandler = async (userName, pass) => {
     const response = await signIn(userName, pass);
 
-
     if (response.status === 200) {
       let roles = response.data.roles;
-      let isAdmin = false;
-      localStorage.setItem('auth_token', JSON.stringify(response.data.token));
-      setToken(response.data.token);
+
       localStorage.setItem('roles', JSON.stringify(roles));
       setRoles(roles);
-      for (let i = 0; i < roles.length; i++) {
-        if (roles[i].id == 1) {
-          isAdmin = true;
-        }
-      }
-
-      isAdmin ? navigateTo('/admin') : navigateTo('/');
+      localStorage.setItem('auth_token', JSON.stringify(response.data.token));
+      setToken(response.data.token);
     }
   };
 

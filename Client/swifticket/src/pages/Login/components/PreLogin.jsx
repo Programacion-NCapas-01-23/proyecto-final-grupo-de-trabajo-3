@@ -6,15 +6,16 @@ import { tokenState } from '../../../state/atoms/tokenState';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
 import { guestState } from '../../../state/atoms/guestState';
+import { roleState } from '../../../state/atoms/roleState';
 
 const PreLogin = ({ setIsLoginViews }) => {
 
   const loginRef = useRef(null);
-  const [isGuest, setIsGuest] = useRecoilState(guestState)
+  const navigateTo = useNavigate();
+  const [isGuest, setIsGuest] = useRecoilState(guestState);
   const [buttonWidth, setButtonWidth] = useState(0);
   const setToken = useSetRecoilState(tokenState);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const navigateTo = useNavigate();
+  const setRoles = useSetRecoilState(roleState);
 
   const handleGuest = () => {
     setIsGuest(true);
@@ -24,16 +25,21 @@ const PreLogin = ({ setIsLoginViews }) => {
 
   const onGoogleSignIn = async (res) => {
     const { credential } = res;
-    const singInResponse = await googleSignIn(credential)
+    const singInResponse = await googleSignIn(credential);
     if (singInResponse == undefined) {
-      toast.error("Sorry, try again later...")
-      return
+      toast.error("Sorry, try again later...");
+      return;
     }
+
     console.log(singInResponse.data.token);
-    setToken(singInResponse.data.token);
+
+    let roles = singInResponse.data.roles;
+    localStorage.setItem('roles', JSON.stringify(roles));
+    setRoles(roles);
+
     localStorage.setItem('auth_token', JSON.stringify(singInResponse.data.token));
-    isAdmin ? navigateTo('/admin') : navigateTo('/');
-  };
+    setToken(singInResponse.data.token);
+  }
 
   console.log(buttonWidth);
   return (

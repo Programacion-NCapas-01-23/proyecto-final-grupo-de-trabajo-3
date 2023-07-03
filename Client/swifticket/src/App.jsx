@@ -59,10 +59,13 @@ import SendTicket from './pages/SendTicket/SendTicket';
 import { guestState } from './state/atoms/guestState';
 import PaymentError from './pages/Checkout/Failure/PaymentError';
 import Mod from './pages/Mod/Mod';
+import LoginRedirct from './components/LoginRedirct';
 
 function App() {
   const token = useRecoilValue(tokenState);
   const isGuest = useRecoilValue(guestState);
+
+  // console.log((token || isGuest) ? "Main router" : "Login router");
 
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -109,6 +112,8 @@ function App() {
           <Route path="create-event" element={<CreateEvent />} />
           <Route path="all-events" element={<AllEvents />} />
         </Route>
+        {/* redirects user when token or isGuest is set */}
+        <Route path="login" element={<LoginRedirct />} />
         <Route path="*" element={<Landing />} />
       </>
     )
