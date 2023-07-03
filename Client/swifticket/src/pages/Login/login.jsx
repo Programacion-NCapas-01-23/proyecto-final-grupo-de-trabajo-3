@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import './Login.css';
-import swifticketLogo from '../../assets/swifticketLogo.png';
-import loginFooter from '../../assets/loginFooter.svg';
+import swifticketLogo from '/assets/swifticketLogo.png';
+import loginFooter from '/assets/loginFooter.svg';
 import PreLogin from './components/PreLogin';
 import MainLogin from './components/MainLogin';
 import ForgotPass from './components/ForgotPass';

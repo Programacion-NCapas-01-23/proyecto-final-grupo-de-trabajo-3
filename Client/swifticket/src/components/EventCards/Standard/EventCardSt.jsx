@@ -24,7 +24,7 @@ export default function EventCardSt({event}) {
           {imageError ? (
             <img
               className="h-full w-full object-cover rounded-l-2xl"
-              src={`/src/assets/robot.jpg`} 
+              src={`/assets/robot.jpg`} 
               alt="event_img"
             />
             ) : (

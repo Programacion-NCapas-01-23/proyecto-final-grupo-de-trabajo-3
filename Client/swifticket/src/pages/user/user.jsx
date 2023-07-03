@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import loginFooter from '../../assets/loginFooter.svg';
+import loginFooter from '/assets/loginFooter.svg';
 import UserProfile from './UserProfile/UserProfile';
 import { validateToken } from '../../services/Auth.Services';
 import { useRecoilValue } from 'recoil';
@@ -41,7 +41,7 @@ const User = () => {
 	}, [])
 
 
-	const avatar = "/src/assets/" + user.avatar.image.split(".")[0] + ".png";
+	const avatar = "assets/" + user.avatar.image.split(".")[0] + ".png";
 
 	return (
 		<>

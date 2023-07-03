@@ -1,6 +1,3 @@
-import Placeholder from '../../../assets/Placeholder.png';
-import QRPlaceholder from '../../../assets/QRPlaceholder.png';
-import LoadingQRPlaceholder from '../../../assets/LoadingQRPlaceholder.png';
 import QRCode from 'react-qr-code';
 import { useState } from 'react';
 import { generateTicketCode } from '../../../services/TicketServices';

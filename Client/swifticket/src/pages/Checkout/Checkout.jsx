@@ -58,7 +58,7 @@ export default function Checkout() {
       <TitileWithLines title={isPaying ? "Payment" : "Checkout"} />
       {shoppingCart.length === 0 ? (
         <div className="flex flex-col h-full w-full gap-3 items-center align-middle">
-          <img className="sm:w-40 w-1/2 " src="/src/assets/sad.png" alt="" />
+          <img className="sm:w-40 w-1/2 " src="/assets/sad.png" alt="" />
           <p className="text-3xl tracking-wide leading-7 font-bold">Oh no...</p>
           <p className="p-default">
             It looks like your cart is empty. Go and check out the events, so you can buy some tickets!

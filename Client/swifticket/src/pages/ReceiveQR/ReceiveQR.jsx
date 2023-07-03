@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react'
-import QRPlaceholder from '../../assets/QRPlaceholder.png';
+import React, { useState } from 'react'
 import { useRecoilValue } from 'recoil';
 import { tokenState } from '../../state/atoms/tokenState';
 import { startTransferTicket } from '../../services/TicketServices';
