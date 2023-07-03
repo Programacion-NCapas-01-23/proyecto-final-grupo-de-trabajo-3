@@ -167,7 +167,7 @@ export const getAllEvents = async () => {
   try {
     const data = await axios({
       method: 'GET',
-      url: 'http://ec2-3-223-145-52.compute-1.amazonaws.com/events',
+      url: `${BASE}/events`,
     });
 
     if (data) {
