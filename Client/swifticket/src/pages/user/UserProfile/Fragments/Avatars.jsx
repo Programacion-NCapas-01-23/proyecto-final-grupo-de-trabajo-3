@@ -50,7 +50,7 @@ export default function Avatars() {
                     <img onClick={() => {handleUser(5)}} className='hover:scale-110 transition-all cursor-pointer hover:shadow-md hover:shadow-white rounded-full' src={`/assets/avatar5.png`} alt="avatar" />
                 </div>
             </div>
-            <img src="/src/assets/loginFooter.svg" alt="Footer" className="footer-login" />
+            <img src="/assets/loginFooter.svg" alt="Footer" className="footer-login" />
             <Toaster position='top-right' />
         </div>
     )

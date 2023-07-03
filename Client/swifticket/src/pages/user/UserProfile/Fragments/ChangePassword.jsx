@@ -81,7 +81,7 @@ export default function ChangePassword() {
                 </div>
 
             </div>
-            <img src="/src/assets/loginFooter.svg" alt="Footer" className="footer-login" />
+            <img src="/assets/loginFooter.svg" alt="Footer" className="footer-login" />
         </div>
     )
 }
