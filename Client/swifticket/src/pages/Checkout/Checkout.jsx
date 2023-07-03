@@ -38,7 +38,7 @@ export default function Checkout() {
             if (response.status == 201) {
               setShoppingCart([]);
               sessionStorage.setItem('shoppingCart', JSON.stringify([]))
-              navigate("/checkout/successful")
+              navigate("/checkout/error")
             }
             else{
               navigate("/checkout/error")
