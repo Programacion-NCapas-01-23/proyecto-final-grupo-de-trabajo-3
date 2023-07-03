@@ -5,7 +5,6 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilState } from 'recoil';
 import { shoppingCartState } from '../../state/atoms/shoppingCartState';
 import { createTicket } from '../../services/TicketServices';
-import { toast } from 'react-hot-toast';
 
 export default function Checkout() {
   const [isPaying, setIsPaying] = useState(false);

@@ -5,7 +5,7 @@ export default function ModActions() {
   const navigate = useNavigate();
 
   const redirectToManageUsers = () => {
-    navigate('/admin/tables');
+    navigate('/moderator');
   };
 
   return (

@@ -4,7 +4,7 @@ import {useNavigate} from "react-router-dom"
 export default function TicketCard({ticket}) {
 
   const navigate = useNavigate();
-  const date_time = new Date(ticket.createdAt)
+  const date_time = new Date(ticket.event.dateTime)
 
   const redirectUser = () => {
     navigate(`/user/tickets/${ticket.id}`);

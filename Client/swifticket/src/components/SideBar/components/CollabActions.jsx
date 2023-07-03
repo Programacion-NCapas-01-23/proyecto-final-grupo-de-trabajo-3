@@ -5,7 +5,7 @@ export default function CollabActions() {
   const navigate = useNavigate();
 
   const redirectToScanQR = () => {
-    navigate('/scan-qr');
+    navigate('/validate-qr');
   };
 
   return (
