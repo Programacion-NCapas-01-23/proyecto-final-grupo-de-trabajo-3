@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { MdShoppingCart, MdMenu, MdHome, MdSearch } from "react-icons/md";
 import ShoppingSideBar from "./ShoppingSideBar";
 import SideBar from "./SideBar/SideBar";
 
-export const NavBar = () => {
+const NavBar = () => {
   const [shoppingCart, setShoppingCart] = useState(false);
   const [sidebar, setSidebar] = useState(false);
 
@@ -42,14 +42,29 @@ export const NavBar = () => {
 
 const Search = () => {
   const searchTarget = useRef(null);
-  const [searchClicked, setSearchClicked] = useState(false);
-  const [searchFocused, setSearchFocused] = useState(false);
+  const navigate = useNavigate();
+  const [searchValue, setSearchValue] = useState("");
   const [showSearchInput, setShowSearchInput] = useState(false);
 
   const handleOutsideClick = (event) => {
-    if (searchTarget.current && !searchTarget.current.contains(event.target)) {
+    if (
+      searchTarget.current &&
+      !searchTarget.current.contains(event.target) &&
+      event.target.tagName !== "BUTTON"
+    ) {
       setShowSearchInput(false);
+      setSearchValue("");
     }
+  };
+
+  const handleSearchEnter = (event) => {
+    if (event.key === "Enter") navigate(`/search?title=${searchValue}`);
+  };
+
+  const handleSearch = () => {
+    navigate(`/search?title=${searchValue}`);
+    setShowSearchInput(false);
+    setSearchValue("");
   };
 
   useEffect(() => {
@@ -76,16 +91,25 @@ const Search = () => {
       {showSearchInput && (
         <input
           ref={searchTarget}
+          value={searchValue}
+          onChange={(e) => {
+            setSearchValue(e.target.value);
+          }}
+          onKeyDown={handleSearchEnter}
           className="text-black absolute top-0 translate-y-1/3 left-0 focus:w-full xs:w-1 transition-all rounded-sm p-default-xs appearance-none"
           type="text"
-          onFocus={() => {
-            setSearchFocused(true);
-          }}
-          onBlur={() => {
-            setSearchFocused(false);
-          }}
         />
+      )}
+      {showSearchInput && (
+        <button
+          className="absolute -right-16 top-1/2 -translate-y-1/2 z-30 bg-primary rounded-sm px-2 py-1"
+          onClick={handleSearch}
+        >
+          Search
+        </button>
       )}
     </div>
   );
 };
+
+export default NavBar;

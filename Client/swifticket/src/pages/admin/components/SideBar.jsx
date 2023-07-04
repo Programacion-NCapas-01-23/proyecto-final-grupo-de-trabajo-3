@@ -1,14 +1,22 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import userPlaceholder from '../../../assets/userPlaceholder.png';
 import { MdComputer, MdTableRows, MdLogout } from 'react-icons/md';
+import { useSetRecoilState } from 'recoil';
+import { tokenState } from '../../../state/atoms/tokenState';
 
 const SideBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const setToken = useSetRecoilState(tokenState);
 
   const redirectUser = (path) => {
     navigate(`/${path}`);
+  };
+
+  const handleLogOut = () => {
+    setToken(null);
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('roles');
   };
 
   const isCurrentPath = (path) => {
@@ -19,16 +27,17 @@ const SideBar = () => {
     <div className="hidden sm:flex flex-col h-screen w-[20vw] bg-[#212549]">
       <div className="flex flex-col h-1/4 w-full">
         <div className="flex justify-center items-center h-1/2 w-full">
-          <img src={userPlaceholder} alt="User" className="h-1/2" />
-          <p className="p-default">AdminGod</p>
+          {/* <img src={userPlaceholder} alt="User" className="h-1/2" /> */}
+          <p className="p-default">Admin View</p>
         </div>
         <div className="flex flex-col justify-evenly items-center h-1/2 w-full">
           <p className="heading-lg">STATS</p>
           <div className="flex w-full">
             <button
-              onClick={() => redirectUser("admin")}
-              className={`flex items-center pl-16 gap-4 w-11/12 p-2 transition-all rounded-r-3xl ${isCurrentPath("admin") ? "bg-primary" : "bg-[#00052E]"
-                }`}
+              onClick={() => redirectUser('admin')}
+              className={`flex items-center pl-16 gap-4 w-11/12 p-2 transition-all rounded-r-3xl ${
+                isCurrentPath('admin') ? 'bg-primary' : 'bg-[#00052E]'
+              }`}
             >
               <MdComputer size={25} />
               Dashboard
@@ -41,9 +50,12 @@ const SideBar = () => {
           <p className="heading-lg">STATS</p>
           <div className="flex w-full">
             <button
-              onClick={() => redirectUser("admin/create-event")}
-              className={`flex items-center pl-16 gap-4 w-11/12 p-2 transition-all rounded-r-3xl ${isCurrentPath("admin/create-event") ? "bg-primary" : "bg-[#00052E]"
-            }`}
+              onClick={() => redirectUser('admin/create-event')}
+              className={`flex items-center pl-16 gap-4 w-11/12 p-2 transition-all rounded-r-3xl ${
+                isCurrentPath('admin/create-event')
+                  ? 'bg-primary'
+                  : 'bg-[#00052E]'
+              }`}
             >
               <MdTableRows size={25} />
               Create event
@@ -51,9 +63,12 @@ const SideBar = () => {
           </div>
           <div className="flex w-full">
             <button
-              onClick={() => redirectUser("admin/all-events")}
-              className={`flex items-center pl-16 gap-4 w-11/12 p-2 transition-all rounded-r-3xl ${isCurrentPath("admin/all-events") ? "bg-primary" : "bg-[#00052E]"
-                }`}
+              onClick={() => redirectUser('admin/all-events')}
+              className={`flex items-center pl-16 gap-4 w-11/12 p-2 transition-all rounded-r-3xl ${
+                isCurrentPath('admin/all-events')
+                  ? 'bg-primary'
+                  : 'bg-[#00052E]'
+              }`}
             >
               <MdTableRows size={25} />
               All events
@@ -64,9 +79,10 @@ const SideBar = () => {
           <p className="heading-lg">TABLES</p>
           <div className="flex w-full">
             <button
-              onClick={() => redirectUser("admin/tables")}
-              className={`flex items-center pl-16 gap-4 w-11/12 p-2 transition-all rounded-r-3xl ${isCurrentPath("admin/tables") ? "bg-primary" : "bg-[#00052E]"
-                }`}
+              onClick={() => redirectUser('admin/tables')}
+              className={`flex items-center pl-16 gap-4 w-11/12 p-2 transition-all rounded-r-3xl ${
+                isCurrentPath('admin/tables') ? 'bg-primary' : 'bg-[#00052E]'
+              }`}
             >
               <MdTableRows size={25} />
               Users
@@ -74,9 +90,10 @@ const SideBar = () => {
           </div>
           <div className="flex w-full">
             <button
-              onClick={() => redirectUser("admin/catalogs")}
-              className={`flex items-center pl-16 gap-4 w-11/12 p-2 transition-all rounded-r-3xl ${isCurrentPath("admin/catalogs") ? "bg-primary" : "bg-[#00052E]"
-                }`}
+              onClick={() => redirectUser('admin/catalogs')}
+              className={`flex items-center pl-16 gap-4 w-11/12 p-2 transition-all rounded-r-3xl ${
+                isCurrentPath('admin/catalogs') ? 'bg-primary' : 'bg-[#00052E]'
+              }`}
             >
               <MdTableRows size={25} />
               Catalogs
@@ -84,9 +101,12 @@ const SideBar = () => {
           </div>
           <div className="flex w-full">
             <button
-              onClick={() => redirectUser("admin/modify-catalogs")}
-              className={`flex items-center pl-16 gap-4 w-11/12 p-2 transition-all rounded-r-3xl ${isCurrentPath("admin/modify-catalogs") ? "bg-primary" : "bg-[#00052E]"
-                }`}
+              onClick={() => redirectUser('admin/modify-catalogs')}
+              className={`flex items-center pl-16 gap-4 w-11/12 p-2 transition-all rounded-r-3xl ${
+                isCurrentPath('admin/modify-catalogs')
+                  ? 'bg-primary'
+                  : 'bg-[#00052E]'
+              }`}
             >
               <MdTableRows size={25} />
               Modify Catalogs
@@ -97,14 +117,18 @@ const SideBar = () => {
           <p className="heading-lg">ACTIONS</p>
           <div className="flex w-full">
             <button
-              onClick={() => redirectUser("")}
-              className="flex items-center pl-16 gap-4 bg-[#00052E] w-11/12 p-2 rounded-r-3xl">
+              onClick={() => redirectUser('')}
+              className="flex items-center pl-16 gap-4 bg-[#00052E] w-11/12 p-2 rounded-r-3xl"
+            >
               <MdLogout size={25} />
               User Mode
             </button>
           </div>
           <div className="flex w-full">
-            <button className="flex items-center pl-16 gap-4 bg-[#00052E] w-11/12 p-2 rounded-r-3xl">
+            <button
+              onClick={() => handleLogOut()}
+              className="flex items-center pl-16 gap-4 bg-[#00052E] w-11/12 p-2 rounded-r-3xl"
+            >
               <MdLogout size={25} />
               Log Out
             </button>

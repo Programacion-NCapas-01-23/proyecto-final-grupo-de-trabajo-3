@@ -1,14 +1,37 @@
-import React from 'react'
-import QRPlaceholder from '../../assets/QRPlaceholder.png';
+import React, { useState } from 'react'
+import { useRecoilValue } from 'recoil';
+import { tokenState } from '../../state/atoms/tokenState';
+import { startTransferTicket } from '../../services/TicketServices';
+import { Toaster, toast } from 'react-hot-toast';
+import QRCode from 'react-qr-code';
+import { MdQrCode } from 'react-icons/md';
 
 export default function ReceiveQR() {
+  const [code, setCode] = useState("");
+  const token = useRecoilValue(tokenState);
+
+  const receiveTicket = async () => {
+    let response = await startTransferTicket(token);
+    if (response.status == 200)
+      setCode(response.data.code)
+    else
+      toast.error("An error occurred, please try again later");
+  }
+
   return (
     <div className='min-h-[calc(100vh-52px-3.5rem)]'>
+      <div><Toaster /></div>
       <TitileWithLines title={"Receive ticket"} />
 
       <main className='flex flex-col justify-center items-center h-[72vh]'>
-        <DisplayQR />
+        <DisplayQR code={code} />
         <Description />
+
+        <div className='w-full flex content-center justify-center h-auto mt-[4vh]'>
+          <button className="border-[#144580] border-2 px-8 py-2 rounded-3xl heading-md mx-[1vw]" onClick={receiveTicket}>
+            Generate code
+          </button>
+        </div>
       </main>
     </div>
   )
@@ -24,15 +47,29 @@ function TitileWithLines({ title }) {
   )
 }
 
-function DisplayQR() {
+function DisplayQR({code}) {
   return (
-    <img className='v-[35vw] h-[35vh] object-contain' src={QRPlaceholder}></img>
+    <div>
+      {/* <img className='v-[35vw] h-[35vh] object-contain' src={QRPlaceholder}></img> */}
+      { (code == null || code == "") ?
+        <MdQrCode style={{ fontSize: '20vh' }} />
+        :
+        <div className='bg-white p-[2vh] h-auto w-auto'>
+          <QRCode
+          title="code"
+          value={code}
+          bgColor="#FFFFFF"
+          fgcolor="#000000"
+          size={220}
+          />
+        </div>}
+    </div>
   )
 }
 
 function Description() {
   return (
-    <div className='w-[90vw] sm:w-[20vw] mt-[3vh]'>
+    <div className='w-[90vw] sm:w-[20vw] mt-[4vh]'>
       <p className='heading-md'>Tell the owner of the ticket to scan this QR to begin the transaction</p>
     </div>
   )

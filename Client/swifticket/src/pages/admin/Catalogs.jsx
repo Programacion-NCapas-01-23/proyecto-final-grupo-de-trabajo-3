@@ -1,32 +1,61 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { getOrganizers } from '../../services/Organizers.Services';
+import { useRecoilValue } from 'recoil';
+import { tokenState } from '../../state/atoms/tokenState';
+import { getAllSponsors } from '../../services/SponsorServices';
+import { getPlaces } from '../../services/PlaceServices';
+import { Pagination } from '../../components/Pagination';
 
 const Catalogs = () => {
-  const data1 = [
-    { id: 1, value: 'Cantante generico' },
-    { id: 2, value: 'Cantante generico' },
-    { id: 3, value: 'Cantante generico' },
-    { id: 4, value: 'Cantante generico' },
-    { id: 5, value: 'Cantante generico' },
-  ];
-  const data2 = [
-    { id: 1, value: 'Cantante generico' },
-    { id: 2, value: 'Cantante generico' },
-    { id: 3, value: 'Cantante generico' },
-    { id: 4, value: 'Cantante generico' },
-    { id: 5, value: 'Cantante generico' },
-  ];
-  const data3 = [
-    { id: 1, place: 'Text', address: 'Text' },
-    { id: 2, place: 'Text', address: 'Text' },
-    { id: 3, place: 'Text', address: 'Text' },
-    { id: 4, place: 'Text', address: 'Text' },
-    { id: 5, place: 'Text', address: 'Text' },
-    { id: 1, place: 'Text', address: 'Text' },
-    { id: 2, place: 'Text', address: 'Text' },
-    { id: 3, place: 'Text', address: 'Text' },
-    { id: 4, place: 'Text', address: 'Text' },
-    { id: 5, place: 'Text', address: 'Text' },
-  ];
+  const token = useRecoilValue(tokenState);
+  const [organizers, setOrganizers] = useState([]);
+  const [sponsors, setSponsors] = useState([]);
+  const [places, setPlaces] = useState([]);
+  const [limitOrganizers, setLimitOrganizers] = useState(999);
+  const [pageOrganizers, setPageOrgalizers] = useState(0);
+  const [limitSponsors, setLimitSponsors] = useState(999);
+  const [pageSponsors, setPageSponsors] = useState(0);
+  const [limitPlaces, setLimitPlaces] = useState(999);
+  const [pagePlaces, setPagePlaces] = useState(0);
+
+  const handleOrganizers = async () => {
+    const response = await getOrganizers(pageOrganizers);
+
+    if (response.status === 200) {
+      setOrganizers(response.data.content);
+      setLimitOrganizers(response.data.totalPages);
+    }
+  };
+
+  const handleSponsors = async () => {
+    const response = await getAllSponsors(pageSponsors);
+
+    if (response.status === 200) {
+      setSponsors(response.data.content);
+      setLimitSponsors(response.data.totalPages);
+    }
+  };
+
+  const handlePlaces = async () => {
+    const response = await getPlaces(pagePlaces);
+
+    if (response.status === 200) {
+      setPlaces(response.data.content);
+      setLimitPlaces(response.data.totalPages);
+    }
+  };
+
+  useEffect(() => {
+    handleOrganizers();
+  }, [pageOrganizers]);
+
+  useEffect(() => {
+    handleSponsors();
+  }, [pageSponsors]);
+
+  useEffect(() => {
+    handlePlaces();
+  }, [pagePlaces]);
 
   return (
     <div className="flex flex-col h-screen w-screen sm:w-[80vw]">
@@ -45,24 +74,31 @@ const Catalogs = () => {
               </tr>
             </thead>
             <tbody className="bg-[#212549]">
-              {data1.map((data) => {
-                const { id, value } = data;
+              {organizers.map((data) => {
+                const { id, name } = data;
 
                 return (
                   <tr key={id} className="border-b-2 border-primary h-[20%]">
-                    <td className="text-center">{value}</td>
+                    <td className="text-center">{name}</td>
                   </tr>
                 );
               })}
-              {data1.length == 5 ? (
-                ''
-              ) : (
+              {organizers.length == 5 ? (
                 <tr>
+                  <td style={{ whiteSpace: 'pre-wrap' }}></td>
+                </tr>
+              ) : (
+                <tr key={0}>
                   <td className="text-center"></td>
                 </tr>
               )}
             </tbody>
           </table>
+          <Pagination
+            page={pageOrganizers}
+            setPage={setPageOrgalizers}
+            limit={limitOrganizers}
+          />
           <table className="w-[90%] h-2/5">
             <thead className="bg-secondary">
               <tr>
@@ -70,26 +106,33 @@ const Catalogs = () => {
               </tr>
             </thead>
             <tbody className="bg-[#212549]">
-              {data2.map((data) => {
-                const { id, value } = data;
+              {sponsors.map((data) => {
+                const { id, name } = data;
 
                 return (
                   <tr key={id} className="border-b-2 border-primary h-[20%]">
-                    <td className="text-center">{value}</td>
+                    <td className="text-center">{name}</td>
                   </tr>
                 );
               })}
-              {data2.length == 5 ? (
-                ''
-              ) : (
+              {sponsors.length == 5 ? (
                 <tr>
+                  <td style={{ whiteSpace: 'pre-wrap' }}></td>
+                </tr>
+              ) : (
+                <tr key={0}>
                   <td className="text-center"></td>
                 </tr>
               )}
             </tbody>
           </table>
+          <Pagination
+            page={pageSponsors}
+            setPage={setPageSponsors}
+            limit={limitSponsors}
+          />
         </div>
-        <div className="flex w-2/3 h-full justify-center items-center">
+        <div className="flex flex-col gap-4 w-2/3 h-full justify-center items-center">
           <table className="w-[90%] h-full">
             <thead className="bg-secondary">
               <tr>
@@ -98,26 +141,34 @@ const Catalogs = () => {
               </tr>
             </thead>
             <tbody className="bg-[#212549]">
-              {data3.map((data) => {
-                const { id, place, address } = data;
+              {places.map((data) => {
+                const { id, name, address } = data;
 
                 return (
                   <tr key={id} className="border-b-2 border-primary h-[10%]">
-                    <td className="text-center">{place}</td>
+                    <td className="text-center">{name}</td>
                     <td className="text-center">{address}</td>
                   </tr>
                 );
               })}
-              {data3.length == 10 ? (
-                ''
-              ) : (
+              {places.length == 10 ? (
                 <tr>
+                  <td style={{ whiteSpace: 'pre-wrap' }}></td>
+                  <td style={{ whiteSpace: 'pre-wrap' }}></td>
+                </tr>
+              ) : (
+                <tr key={0}>
                   <td className="text-center"></td>
                   <td className="text-center"></td>
                 </tr>
               )}
             </tbody>
           </table>
+          <Pagination
+            page={pagePlaces}
+            setPage={setPagePlaces}
+            limit={limitPlaces}
+          />
         </div>
       </div>
       <div className="flex pt-4 pb-8 sm:pt-0 sm:pb-0 h-[25vh] w-full justify-center items-center">

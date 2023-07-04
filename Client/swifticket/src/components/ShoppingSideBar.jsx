@@ -1,24 +1,14 @@
+import { useNavigate } from "react-router-dom";
 import { Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { MdClose } from "react-icons/md";
 import EventCardSh from "./EventCards/Shoping/EventCardSh";
-
-const devEvents = [
-  {
-    img: "https://cdn.hobbyconsolas.com/sites/navi.axelspringer.es/public/styles/hc_1440x810/public/media/image/2023/02/mandalorian-2964862.jpg?itok=ZMtIO9yv",
-    title: "Mando Cosplays",
-    place: "Richard Vermont Plaza",
-    date_time: new Date("2023-06-16T13:00:00"),
-  },
-  {
-    img: "https://blogthinkbig.com/wp-content/uploads/sites/4/2020/07/Android-Basics-Kotlin.jpg?fit=1500%2C1000",
-    title: "Kotlin Dev Convention",
-    place: "UCA",
-    date_time: new Date("2023-08-23T09:00:00"),
-  },
-];
+import { shoppingCartState } from "../state/atoms/shoppingCartState";
+import { useRecoilValue } from "recoil";
 
 export default function ShoppingSideBar(props) {
+  const shoppingCart = useRecoilValue(shoppingCartState);
+  const navigate = useNavigate();
 
   return (
     <Transition.Root show={props.open} as={Fragment}>
@@ -67,44 +57,63 @@ export default function ShoppingSideBar(props) {
                           </button>
                         </div>
                       </div>
-                      
+
                       <div className="mt-8">
-                        <div className="flow-root">
-                          <ul role="list">
-                            {devEvents.map((event, index) => (
-                              <li key={index}>
-                                <EventCardSh count={index + 1} event={event} />
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
+                        {shoppingCart && shoppingCart.length > 0 ? (
+                          <div className="flow-root">
+                            <ul role="list">
+                              {shoppingCart.map((event, index) => (
+                                <li key={index}>
+                                  <EventCardSh  
+                                    event={event}
+                                  />
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+                        ) : (
+                          <EmptyShoppingCart />
+                        )}
                       </div>
-                      
                     </div>
 
-                    <div className="px-4 py-6 sm:px-6">
-                      <div className="mt-6">
-                        <a
-                          href="/checkout"
-                          className="flex items-center justify-center rounded-md bg-primary px-6 py-3 text-3xl hover:bg-primary-700"
-                        >
-                          Checkout
-                        </a>
-                      </div>
-                      <div>
-                        <p className="mt-6 w-full text-sm flex justify-center text-gray-500">
-                          or
-                          <button
-                            type="button"
-                            className="font-medium text-primary mx-default-xs hover:text-primary-100"
-                            onClick={() => props.setOpen(false)}
+                    {shoppingCart && shoppingCart.length > 0 ? (
+                      <div className="px-4 py-6 sm:px-6">
+                        <div className="mt-6">
+                          <a
+                            onClick={() => {navigate('/checkout')}}
+                            className="flex items-center justify-center rounded-md bg-primary px-6 py-3 text-3xl hover:bg-primary-700"
                           >
-                            Continue Shopping
-                            <span aria-hidden="true"> &rarr;</span>
-                          </button>
-                        </p>
+                            Checkout
+                          </a>
+                        </div>
+                        <div>
+                          <p className="mt-6 w-full text-sm flex justify-center text-gray-500">
+                            or
+                            <button
+                              type="button"
+                              className="font-medium text-primary mx-default-xs hover:text-primary-100"
+                              onClick={() => props.setOpen(false)}
+                            >
+                              Continue Shopping
+                              <span aria-hidden="true"> &rarr;</span>
+                            </button>
+                          </p>
+                        </div>
                       </div>
-                    </div>
+                    ) : (
+                      <div className="px-4 py-6 sm:px-6">
+
+                        <div className="mt-6">
+                          <a
+                            href="/"
+                            className="flex items-center justify-center rounded-md bg-primary px-6 py-3 text-3xl hover:bg-primary-700"
+                          >
+                            Buy some tickets!
+                          </a>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </Dialog.Panel>
               </Transition.Child>
@@ -113,5 +122,18 @@ export default function ShoppingSideBar(props) {
         </div>
       </Dialog>
     </Transition.Root>
+  );
+}
+
+function EmptyShoppingCart() {
+  return (
+    <div className="flex flex-col h-full w-full gap-3 items-center align-middle">
+      <img className="w-1/2" src="/assets/sad.png" alt="" />
+      <p className="text-3xl tracking-wide leading-7 font-bold">Oh no...</p>
+      <p className="p-default">
+        It looks like your cart it's empty. Tickets you add to your shoping cart
+        will show up here!{" "}
+      </p>
+    </div>
   );
 }
