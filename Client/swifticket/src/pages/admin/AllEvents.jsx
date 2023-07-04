@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { devEvents } from '../Cards';
-import EventCardSt from '../../components/EventCards/Standard/EventCardSt';
+import EventCardSt from './EventStats/Standard/EventCardStAdmin';
 import { useRecoilValue } from 'recoil';
 import { tokenState } from '../../state/atoms/tokenState';
 import { getAllEvents } from '../../services/Events.Services';
@@ -18,7 +18,6 @@ export default function AllEvents() {
     if (response.status === 200) {
       setMaxPage(response.data.totalPages);
       setEvents(response.data.content);
-      console.log(response.data);
     }
   };
 

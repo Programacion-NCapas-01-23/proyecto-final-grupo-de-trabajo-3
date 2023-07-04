@@ -61,6 +61,7 @@ import PaymentError from './pages/Checkout/Failure/PaymentError';
 import Mod from './pages/Mod/Mod';
 import LoginRedirct from './components/LoginRedirct';
 import Search from './pages/Search/Search';
+import OneEventStats from './pages/admin/EventStats/OneEventStats';
 
 function App() {
   const token = useRecoilValue(tokenState);
@@ -103,12 +104,13 @@ function App() {
             </Route>
           </Route>
         </Route>
-        
+
         <Route path="moderator" element={<Mod />} />
 
         <Route path="admin" element={<Admin />}>
           <Route index element={<Charts />} />
           <Route path="catalogs" element={<Catalogs />} />
+          <Route path="event/:eventId" element={<OneEventStats />} />
           <Route path="modify-catalogs" element={<ModifyCatalogs />} />
           <Route path="tables" element={<Tables />} />
           <Route path="create-event" element={<CreateEvent />} />
