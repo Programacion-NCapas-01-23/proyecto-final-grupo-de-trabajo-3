@@ -9,7 +9,7 @@ const BarChart = ({ dataSet, titles }) => {
     labels: titles,
     datasets: [
       {
-        label: 'Dataset 1',
+        label: 'Tickets Sold',
         data: dataSet,
         backgroundColor: 'rgba(53, 162, 235, 0.5)',
       },

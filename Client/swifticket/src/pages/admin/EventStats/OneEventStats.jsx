@@ -17,6 +17,10 @@ export default function OneEventStats() {
         ticketsSoldByTiers: [],
         tiers: [],
     });
+    const [lineGraphValues, SetLineGraphValues] = useState({
+        attendanceValues: [],
+        attendanceHours: [],
+    });
     const [event, setEvent] = useState(null)
     const { eventId } = useParams();
 
@@ -36,7 +40,7 @@ export default function OneEventStats() {
             setWidgets([
                 { id: 1, label: 'Attendants', value: response.data.attendants, isNumber: false },
                 { id: 4, label: 'Tickets Sold', value: response.data.ticketsSold, isNumber: false },
-                { id: 2, label: 'Attendants (%)', value: `${response.data.attendantsVsTicketsSold}%`, isNumber: false },
+                { id: 2, label: 'Attendants (%)', value: `${response.data.attendantsVsTicketsSold.toFixed(2)}%`, isNumber: false },
                 { id: 5, label: 'Tickets Available', value: `${response.data.soldVsAvailable.toFixed(2)}%`, isNumber: false },
                 { id: 3, label: 'Capacity', value: response.data.capacity, isNumber: false },
                 { id: 6, label: 'Group Vs Single', value: response.data.attendanceSingleVsGroup, isNumber: true },
@@ -44,6 +48,10 @@ export default function OneEventStats() {
             SetBarsGraphValues({
                 ticketsSoldByTiers: response.data.ticketsSoldByTier,
                 tiers: response.data.tiers
+            })
+            SetLineGraphValues({
+                attendanceValues: response.data.attendanceValues,
+                attendanceHours: response.data.attendanceHours
             })
         } else {
             setWidgets([]);
@@ -79,7 +87,7 @@ export default function OneEventStats() {
                     <BarChart dataSet={barsGraphValues.ticketsSoldByTiers} titles={barsGraphValues.tiers}  />
                 </div>
                 <div className="flex justify-center items-center h-[30vh] w-4/5 sm:w-[35vw] bg-white">
-                    <LineChart />
+                    <LineChart dataSet={lineGraphValues.attendanceValues} titles={lineGraphValues.attendanceHours} />
                 </div>
             </div>
 
