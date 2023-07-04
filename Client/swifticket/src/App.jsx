@@ -46,6 +46,7 @@ const ModifyCatalogs = lazy(() =>
 );
 // import ModifyCatalogs from './pages/admin/ModifyCatalogs/ModifyCatalogs';
 const ScanQr = lazy(() => import('./pages/ScanQr/ScanQr'));
+const ColabStats = lazy(() => import('./pages/ColabStats/ColabStats'));
 // import ScanQr from './pages/ScanQr/ScanQr';
 const PaymentSucces = lazy(() => import('./pages/Checkout/Succes/PaymentSucces'))
 
@@ -98,6 +99,7 @@ function App() {
 
           <Route path="event">
             <Route index element={<Landing />} />
+            <Route path="colab-stats/:eventId" element={<ColabStats />} />
             <Route path=":eventId">
               <Route index element={<OneEvent />} />
               <Route path="send-qr" element={<SendQR />} />
