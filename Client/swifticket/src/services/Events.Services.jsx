@@ -181,12 +181,13 @@ export const deleteEventTier = async (tierId, token) => {
 
 // EVENTS
 
-export const getAllEvents = async (page = 0, title = '') => {
+export const getAllEvents = async (page = 1, title = '') => {
+  page -= 1;
   let response = undefined;
   try {
     const data = await axios({
       method: 'GET',
-      url: `${BASE}/events?title=${title}`,
+      url: `${BASE}/events?page=${page}&title=${title}&size=6`,
     });
 
     if (data) {
