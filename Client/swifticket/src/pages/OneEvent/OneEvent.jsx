@@ -15,6 +15,7 @@ const OneEvent = () => {
   const [shoppingCart, setShoppingCart] = useRecoilState(shoppingCartState);
   const [isEdit, setIsEdit] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isColab, setIsColab] = useState(false);
 
   const { eventId } = useParams();
   const navigate = useNavigate();
@@ -31,9 +32,14 @@ const OneEvent = () => {
 
       if (response.status === 200) {
         if (
-          response.data.roles.find((role) => role.id === 5 || role.id === 4)
+          response.data.roles.find((role) => role.id === 5 || role.id === 1)
         ) {
           setIsAdmin(true);
+        }
+        if (
+          response.data.roles.find((role) => role.id === 4)
+        ) {
+          setIsColab(true);
         }
       }
     };
@@ -377,6 +383,17 @@ const OneEvent = () => {
               className="subaction-button"
             >
               Edit
+            </button>
+          ) : (
+            ''
+          )}
+
+          {isColab ? (
+            <button
+              onClick={() => navigate(`/event/colab-stats/${eventId}`) }
+              className="subaction-button"
+            >
+              Stats
             </button>
           ) : (
             ''
