@@ -36,7 +36,7 @@ export default function SideBar(props) {
   }, []);
 
   const redirectUser = () => {
-    navigate(isGuest ? "/login" : "user")
+    navigate(isGuest ? '/login' : 'user');
   };
 
   return (
@@ -109,11 +109,26 @@ export default function SideBar(props) {
                         </li>
 
                         {/* Renderización condicional de los componentes */}
-                        {userRoles.some((role) => role.id === 2) && <UserActions />}
-                        {userRoles.some((role) => role.id === 4) && <CollabActions />}
-                        {userRoles.some((role) => role.id === 3) && <ModActions />}
-                        {userRoles.some((role) => role.id == 1 ) && <AdminActions />}
-
+                        {userRoles.some((role) => role.id === 2) && (
+                          <UserActions />
+                        )}
+                        {userRoles.some((role) => role.id === 4) && (
+                          <CollabActions />
+                        )}
+                        {userRoles.some((role) => role.id === 3) && (
+                          <ModActions />
+                        )}
+                        {userRoles.some((role) => role.id == 1) && (
+                          <AdminActions />
+                        )}
+                        {userRoles.some((role) => role.id === 5) && (
+                          <>
+                            <UserActions />
+                            <CollabActions />
+                            <ModActions />
+                            <AdminActions />
+                          </>
+                        )}
                       </ul>
                     </div>
 
@@ -121,7 +136,14 @@ export default function SideBar(props) {
                       <div className="m-auto px-4 py-6 sm:px-6">
                         <button className="flex items-center">
                           <MdLogout size={'2rem'} />
-                          <a href="/login" className="heading-sm px-default" onClick={() => handleLogOut()} > Log Out </a>
+                          <a
+                            href="/login"
+                            className="heading-sm px-default"
+                            onClick={() => handleLogOut()}
+                          >
+                            {' '}
+                            Log Out{' '}
+                          </a>
                         </button>
                       </div>
                     )}

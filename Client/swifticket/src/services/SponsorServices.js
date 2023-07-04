@@ -10,9 +10,11 @@ const getHeader = (token) => {
   return { Authorization: `Bearer ${token}` };
 };
 
-export async function getAllSponsors(page) {
+export async function getAllSponsors(page, size = 5) {
   try {
-    const response = await axios.get(`${BASE}/${endpoint}?page=${page}&size=5`);
+    const response = await axios.get(
+      `${BASE}/${endpoint}?page=${page}&size=${size}`
+    );
     return response;
   } catch (error) {
     console.log(error);

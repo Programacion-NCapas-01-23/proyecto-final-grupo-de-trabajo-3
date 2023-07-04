@@ -6,7 +6,7 @@ const BASE_URL = `${BASE}/events`;
 
 // SPONSORS
 
-export const assignSponsor = async (eventId, sponsorName) => {
+export const assignSponsor = async (eventId, sponsorName, token) => {
   let response = undefined;
   const uriDataObject = {
     eventId: eventId,
@@ -19,7 +19,10 @@ export const assignSponsor = async (eventId, sponsorName) => {
       method: 'POST',
       baseURL: BASE_URL,
       url: '/sponsors',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: `Bearer ${token}`,
+      },
       data: `${body}`,
     });
 
@@ -33,7 +36,7 @@ export const assignSponsor = async (eventId, sponsorName) => {
   }
 };
 
-export const removeSponsor = async (eventId, sponsorId) => {
+export const removeSponsor = async (eventId, sponsorId, token) => {
   let response = undefined;
   const uriDataObject = {
     eventId: eventId,
@@ -46,7 +49,10 @@ export const removeSponsor = async (eventId, sponsorId) => {
       method: 'DELETE',
       baseURL: BASE_URL,
       url: '/sponsors',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: `Bearer ${token}`,
+      },
       data: `${body}`,
     });
 
@@ -161,13 +167,13 @@ export const deleteEventTier = async (tierId) => {
 
 // EVENTS
 
-export const getAllEvents = async () => {
+export const getAllEvents = async (page = 0) => {
   let response = undefined;
 
   try {
     const data = await axios({
       method: 'GET',
-      url: 'http://ec2-3-223-145-52.compute-1.amazonaws.com/events',
+      url: `http://ec2-3-223-145-52.compute-1.amazonaws.com/events?page=${page}`,
     });
 
     if (data) {
@@ -175,6 +181,7 @@ export const getAllEvents = async () => {
     }
   } catch (error) {
     console.log(error);
+    response = error.response;
   } finally {
     return response;
   }

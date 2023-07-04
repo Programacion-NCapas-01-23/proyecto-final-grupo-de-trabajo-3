@@ -152,7 +152,7 @@ export const getAllUsers = async (token, page) => {
   }
 };
 
-export const getOneUser = async (id) => {
+export const getOneUser = async (token, id) => {
   let response = undefined;
 
   try {
@@ -160,6 +160,9 @@ export const getOneUser = async (id) => {
       method: 'GET',
       baseURL: BASE_URL,
       url: `/${id}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     if (data) {

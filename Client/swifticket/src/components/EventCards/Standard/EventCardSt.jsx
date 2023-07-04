@@ -1,10 +1,9 @@
-import EventInfo from "./components/EventInfo";
-import {useNavigate} from "react-router-dom" 
+import EventInfo from './components/EventInfo';
+import { useNavigate } from 'react-router-dom';
 
-export default function EventCardSt({event}) {
-
+export default function EventCardSt({ event }) {
   const navigate = useNavigate();
-  const date_time = new Date(event.dateTime)
+  const date_time = new Date(event.dateTime);
 
   const redirectUser = () => {
     navigate(`/event/${event.id}`);
@@ -21,7 +20,9 @@ export default function EventCardSt({event}) {
           />
           <span className="absolute bottom-0 bg-secondary text-center px-3 py-2 rounded-bl-2xl shadow-md shadow-black">
             <p className="text-4xl"> {date_time.getDate()} </p>
-            <p className="uppercase -mt-2">{date_time.toLocaleString('en-US', { month: 'short' })}</p>
+            <p className="uppercase -mt-2">
+              {date_time.toLocaleString('en-US', { month: 'short' })}
+            </p>
           </span>
         </div>
         <EventInfo event={event} date={date_time}></EventInfo>
