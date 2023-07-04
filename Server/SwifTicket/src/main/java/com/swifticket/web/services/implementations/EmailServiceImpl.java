@@ -29,7 +29,7 @@ public class EmailServiceImpl implements EmailServices {
     @Override
     public void sendVerificationAccountCode(String email, String confirmationCode) {
         String subject = "Swifticket - Verifica tu cuenta";
-        String body = "Para verificar tu cuenta, haz clic en el siguiente enlace:  " +  BASE + "/auth/validate-account/" + confirmationCode;
+        String body = "Para verificar tu cuenta, haz clic en el siguiente enlace:  " +  BASE + "/validate-account/" + confirmationCode;
 
         sendEmail(email, subject, body);
     }
@@ -38,7 +38,7 @@ public class EmailServiceImpl implements EmailServices {
     public void sendVerificationAccountCode(String email, String confirmationCode, String password) {
         String subject = "Swifticket - Verifica tu cuenta";
         String body = "Tu contraseña temporal es: " + password + "\n\n"
-                + "Para verificar tu cuenta, haz clic en el siguiente enlace:  " +  BASE + "/auth/validate-account/" + confirmationCode;
+                + "Para verificar tu cuenta, haz clic en el siguiente enlace:  " +  BASE + "/validate-account/" + confirmationCode;
 
         sendEmail(email, subject, body);
     }
@@ -46,7 +46,7 @@ public class EmailServiceImpl implements EmailServices {
     @Override
     public void sendVerificationTransactionCode(String email, String confirmationCode) {
         String subject = "Swifticket - Transferencia de tickets";
-        String body = "Para confirmar la transacción, haz clic en el siguiente enlace:  " +  BASE + "/tickets/transfer/validate-transfer/" + confirmationCode;
+        String body = "Para confirmar la transacción, haz clic en el siguiente enlace:  " +  BASE + "/validate-transfer/" + confirmationCode;
 
         sendEmail(email, subject, body);
     }

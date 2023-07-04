@@ -85,6 +85,9 @@ public class WebSecurityConfiguration {
         http.authorizeHttpRequests(auth ->
                 auth
                         //.requestMatchers("/**").permitAll() // RULE TO ALLOW ALL
+                        .requestMatchers(HttpMethod.GET,"/").permitAll()   // ALLOW HOME
+                        .requestMatchers(HttpMethod.GET,"/validate-account/**").permitAll() // ALLOW TO VERIFY ACCOUNT
+                        .requestMatchers(HttpMethod.GET,"/validate-transfer/**").permitAll() // ALLOW TO VERIFY TRANSFER
                         .requestMatchers(HttpMethod.GET,"/auth/validate-token").authenticated()
                         .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/email/**").permitAll()

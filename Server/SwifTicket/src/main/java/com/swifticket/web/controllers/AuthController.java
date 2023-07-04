@@ -137,19 +137,8 @@ private final AuthServices authServices;
 	
 	@GetMapping("/validate-account/{code}")
 	public ResponseEntity<?> validateAccount(@PathVariable String code) {
-		try {
-			User user = authServices.validateAccount(code);
-			if (user == null)
-				return new ResponseEntity<>(new MessageDTO("invalid validation code"), HttpStatus.NOT_FOUND);
-
-			// Update user state to Active
-			UserState state = userStateServices.findById(UserStateCatalog.ACTIVE);
-			userServices.toggleStatus(user, state);
-
-				return new ResponseEntity<>(new MessageDTO("account validated"), HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		// DEPRECATED
+		return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 	}
 
 	@PostMapping("/validate-account")

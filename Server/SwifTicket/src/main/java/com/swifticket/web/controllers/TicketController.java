@@ -266,28 +266,7 @@ public class TicketController {
 	
 	@GetMapping("/transfer/validate-transfer/{code}")
 	public ResponseEntity<?> finishTransferTicket(@PathVariable String code) {
-		Transaction transaction = ticketServices.findTransactionById(code);
-		if (transaction == null)
-			return new ResponseEntity<>(new MessageDTO("transaction not found"), HttpStatus.NOT_FOUND);
-		if (transaction.getFinishedAt() != null)
-			return new ResponseEntity<>(new MessageDTO("transaction already confirmed"), HttpStatus.CONFLICT);
-
-		Ticket ticket = transaction.getTicket();
-		if (ticket == null)
-			return new ResponseEntity<>(new MessageDTO("this transaction has not been accepted"), HttpStatus.NOT_FOUND);
-		if (ticketServices.isTicketUsed(transaction.getTicket()))
-			return new ResponseEntity<>(new MessageDTO("ticket has already been used"), HttpStatus.CONFLICT);
-
-		// Validate that acceptExpiresAt hasn't happened
-		Date currentDate = new Date();
-		if (transaction.getAcceptExpiresAt().compareTo(currentDate) < 0)
-			return new ResponseEntity<>(new MessageDTO("transaction code is expired"), HttpStatus.CONFLICT);
-
-		try {
-			ticketServices.validateTransfer(transaction);
-			return new ResponseEntity<>(new MessageDTO("transaction confirmed"), HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+		// DEPRECATED
+		return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 	}
 }
