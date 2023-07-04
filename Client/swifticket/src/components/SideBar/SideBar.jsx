@@ -24,6 +24,7 @@ export default function SideBar(props) {
     setToken(null);
     localStorage.removeItem('auth_token');
     localStorage.removeItem('roles');
+    navigate('/login');
   };
 
   useEffect(() => {
@@ -144,7 +145,6 @@ export default function SideBar(props) {
                         <button className="flex items-center">
                           <MdLogout size={'2rem'} />
                           <a
-                            href="/login"
                             className="heading-sm px-default"
                             onClick={() => handleLogOut()}
                           >

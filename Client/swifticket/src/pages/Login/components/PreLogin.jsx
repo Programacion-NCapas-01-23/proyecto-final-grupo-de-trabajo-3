@@ -31,7 +31,7 @@ const PreLogin = ({ setIsLoginViews }) => {
       return;
     }
 
-    console.log(singInResponse.data.token);
+    // console.log(singInResponse.data.token);
 
     let roles = singInResponse.data.roles;
     localStorage.setItem('roles', JSON.stringify(roles));
