@@ -58,7 +58,7 @@ const Search = () => {
   };
 
   const handleSearchEnter = (event) => {
-    if (event.key === "Enter") navigate(`/search?eventName=${searchValue}`);
+    if (event.key === "Enter") navigate(`/search?title=${searchValue}`);
   };
 
   const handleSearch = () => {
