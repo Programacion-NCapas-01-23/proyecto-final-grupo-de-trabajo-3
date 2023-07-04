@@ -1,11 +1,10 @@
 import React from 'react';
 
-const Widget = ({ label, value }) => {
-  const isNumber = typeof value == 'number';
+const Widget = ({ label, value, isNumber }) => {
 
   return (
     <>
-      {isNumber ? (
+      {!isNumber ? (
         <div className="flex flex-col justify-center items-center my-2 sm:my-0 h-[16vh] sm:h-5/6 min-w-[40%] sm:min-w-[12%] max-w-[50%] sm:max-w-[25%] bg-[#212549] rounded-md">
           <p>{label}</p>
           <p className="subtitle">{value}</p>
