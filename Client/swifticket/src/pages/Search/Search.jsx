@@ -11,7 +11,7 @@ export default function Search() {
 
     useEffect(() => {
         const fetchEvents = async () => {
-            const response = await getAllEvents(0, searchParams.get('title'));
+            const response = await getAllEvents(1, searchParams.get('title'));
             setEvents(response.data)
         }
         fetchEvents()
