@@ -1,7 +1,6 @@
 import React from 'react';
 
 const Widget = ({ label, value, isNumber }) => {
-
   return (
     <>
       {!isNumber ? (
@@ -14,7 +13,9 @@ const Widget = ({ label, value, isNumber }) => {
           <p>{label}</p>
           <div className="flex justify-evenly w-full">
             <div className="flex flex-col">
-              <p className="subtitle">{value[0]}%</p>
+              <p className="subtitle">
+                {typeof value[0] == 'number' ? value[0].toFixed(1) : value[0]}%
+              </p>
               <p>Groups</p>
             </div>
             <div className="flex flex-col">
@@ -22,7 +23,9 @@ const Widget = ({ label, value, isNumber }) => {
               <p></p>
             </div>
             <div className="flex flex-col">
-              <p className="subtitle">{value[1]}%</p>
+              <p className="subtitle">
+                {typeof value[0] == 'number' ? value[1].toFixed(1) : value[1]}%
+              </p>
               <p>Individuals</p>
             </div>
           </div>

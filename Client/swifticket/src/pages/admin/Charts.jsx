@@ -35,6 +35,7 @@ const Charts = () => {
           id: 4,
           label: 'Event attendance percentage',
           value: response.data.attendanceSingleVsGroup,
+          isNumber: true,
         },
       ]);
     } else {
@@ -46,6 +47,7 @@ const Charts = () => {
           id: 4,
           label: 'Event attendance percentage',
           value: [0, 0],
+          isNumber: true,
         },
       ]);
     }
@@ -70,19 +72,18 @@ const Charts = () => {
       <div className="flex flex-wrap sm:flex-nowrap h-[40vh] sm:h-[20vh] w-full justify-evenly items-center">
         {widgets
           ? widgets.map((widget) => {
-              const { id, label, value } = widget;
+              const { id, label, value, isNumber } = widget;
 
-              return <Widget key={id} label={label} value={value} />;
+              return (
+                <Widget
+                  key={id}
+                  label={label}
+                  value={value}
+                  isNumber={isNumber}
+                />
+              );
             })
           : ''}
-      </div>
-      <div className="flex flex-col sm:flex-row gap-4 py-4 sm:gap-0 h-[65vh] sm:h-[35vh] w-full justify-evenly items-center">
-        <div className="flex justify-center items-center h-[30vh] sm:h-[30vh] w-4/5 sm:w-[35vw] bg-white">
-          <BarChart />
-        </div>
-        <div className="flex justify-center items-center h-[30vh] w-4/5 sm:w-[35vw] bg-white">
-          <LineChart />
-        </div>
       </div>
       <div className="flex pt-4 pb-8 sm:pt-0 sm:pb-0 sm:h-[25vh] w-full justify-center items-center">
         <button className="bg-primary px-4 py-2 rounded-md">
