@@ -3,12 +3,19 @@ package com.swifticket.web.services.implementations;
 import com.swifticket.web.models.dtos.user.ChangePasswordDTO;
 import com.swifticket.web.models.dtos.user.UpdateUserDTO;
 import com.swifticket.web.models.entities.*;
+import com.swifticket.web.repositories.AuthTokenRepository;
 import com.swifticket.web.repositories.EventxValidatorRepository;
 import com.swifticket.web.repositories.RolexUserRepository;
 import com.swifticket.web.repositories.UserRepository;
 import com.swifticket.web.services.UserServices;
+import com.swifticket.web.utils.JWTTools;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -21,19 +28,29 @@ public class UserServicesImpl implements UserServices {
     private final UserRepository userRepository;
     private final RolexUserRepository rolexUserRepository;
     private final EventxValidatorRepository eventxValidatorRepository;
+    private final JWTTools jwtTools;
+    private final AuthTokenRepository authTokenRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServicesImpl(UserRepository userRepository, RolexUserRepository rolexUserRepository, EventxValidatorRepository eventxValidatorRepository, PasswordEncoder passwordEncoder) {
+    public UserServicesImpl(UserRepository userRepository, RolexUserRepository rolexUserRepository, EventxValidatorRepository eventxValidatorRepository, JWTTools jwtTools, AuthTokenRepository authTokenRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.rolexUserRepository = rolexUserRepository;
         this.eventxValidatorRepository = eventxValidatorRepository;
+        this.jwtTools = jwtTools;
+        this.authTokenRepository = authTokenRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Override
     public List<User> findAll() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public Page<User> findAll(String name, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+        return userRepository.findByNameContains(name, pageable);
     }
 
     @Override
@@ -87,6 +104,20 @@ public class UserServicesImpl implements UserServices {
     }
 
     @Override
+    public Boolean hasRole(User user, int roleId) {
+        if (user == null) return false;
+        List<RolexUser> roles = user.getRolexUsers();
+        return roles.stream().anyMatch(role -> role.getRole().getId() == roleId);
+    }
+
+    @Override
+    public List<Role> getUserRoles(User user) {
+        if (user == null) return null;
+        List<RolexUser> relations = user.getRolexUsers();
+        return relations.stream().map(RolexUser::getRole).toList();
+    }
+
+    @Override
     public RolexUser findByRoleAndUser(User user, Role role) {
         return rolexUserRepository.findOneByRoleAndUser(role, user);
     }
@@ -128,6 +159,59 @@ public class UserServicesImpl implements UserServices {
             throw new Exception("Relation not found");
 
         eventxValidatorRepository.deleteById(relation.getId());
+    }
+
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public AuthToken registerToken(User user) throws Exception {
+        cleanTokens(user);
+
+        String tokenString = jwtTools.generateToken(user);
+        AuthToken authToken = new AuthToken(tokenString, user);
+
+        authTokenRepository.save(authToken);
+
+        return authToken;
+    }
+
+    @Override
+    public Boolean isTokenValid(User user, String token) {
+        try {
+            cleanTokens(user);
+            List<AuthToken> authTokens = authTokenRepository.findByUserAndActive(user, true);
+
+            authTokens.stream()
+                    .filter(tk -> tk.getContent().equals(token))
+                    .findAny()
+                    .orElseThrow(Exception::new);
+
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    @Transactional(rollbackOn = Exception.class)
+    public void cleanTokens(User user) throws Exception {
+        List<AuthToken> authTokens = authTokenRepository.findByUserAndActive(user, true);
+
+        authTokens.forEach(token -> {
+            if(!jwtTools.verifyToken(token.getContent())) {
+                token.setActive(false);
+                authTokenRepository.save(token);
+            }
+        });
+    }
+
+    @Override
+    public User findUserAuthenticated() {
+        String username = SecurityContextHolder
+                .getContext()
+                .getAuthentication()
+                .getName();
+
+        return userRepository.findOneByEmail(username);
     }
 }
 

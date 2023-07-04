@@ -1,12 +1,17 @@
 package com.swifticket.web.controllers;
 
+import com.swifticket.web.models.dtos.page.PageDTO;
 import com.swifticket.web.models.dtos.response.MessageDTO;
 import com.swifticket.web.models.dtos.user.*;
 import com.swifticket.web.models.entities.*;
 import com.swifticket.web.services.*;
 import com.swifticket.web.utils.ErrorHandler;
+import com.swifticket.web.utils.RoleCatalog;
+import com.swifticket.web.utils.RoleVerifier;
+import com.swifticket.web.utils.UserStateCatalog;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -16,7 +21,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/users")
-@CrossOrigin("*")
 public class UserController {
 
 	private final UserServices userService;
@@ -25,21 +29,44 @@ public class UserController {
 	private final UserStateServices userStateServices;
 	private final EventServices eventServices;
 	private final ErrorHandler errorHandler;
+	private final UserServices userServices;
 
 	@Autowired
-	public UserController(UserServices userService, AvatarServices avatarServices, RoleServices roleServices, UserStateServices userStateServices, EventServices eventServices, ErrorHandler errorHandler) {
+	public UserController(UserServices userService, AvatarServices avatarServices, RoleServices roleServices, UserStateServices userStateServices, EventServices eventServices, ErrorHandler errorHandler, UserServices userServices) {
 		this.userService = userService;
 		this.avatarServices = avatarServices;
 		this.roleServices = roleServices;
 		this.userStateServices = userStateServices;
 		this.eventServices = eventServices;
 		this.errorHandler = errorHandler;
+		this.userServices = userServices;
 	}
 
 	@GetMapping("")
-	public ResponseEntity<?>getUsers() {
-		List<User> users = userService.findAll();
-		return new ResponseEntity<>(users, HttpStatus.OK);
+	public ResponseEntity<?>getUsers(
+			@RequestParam(defaultValue = "") String name,
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size) {
+		User authUser = userService.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, MODERATOR, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.MODERATOR, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userService.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
+		// List<User> users = userService.findAll();
+		Page<User> users = userService.findAll(name, page, size);
+		List<UserDTO> _users = users.stream().map(user -> new UserDTO(user, userService.getUserRoles(user))).toList();
+
+		PageDTO<UserDTO> response = new PageDTO<>(
+				_users,
+				users.getNumber(),
+				users.getSize(),
+				users.getTotalElements(),
+				users.getTotalPages(),
+				users.isEmpty()
+		);
+
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}")
@@ -48,21 +75,18 @@ public class UserController {
 		User user = userService.findOneByEmail(id);
 		if (user == null)
 			return new ResponseEntity<>(new MessageDTO("user not found"), HttpStatus.NOT_FOUND);
-		return new ResponseEntity<>(user, HttpStatus.OK);
+
+		UserDTO _user = new UserDTO(user, userService.getUserRoles(user));
+		return new ResponseEntity<>(_user, HttpStatus.OK);
 	}
 
-	@PutMapping("/{id}")
-	public ResponseEntity<?> updateUser(
-			@PathVariable String id, @ModelAttribute @Valid UpdateUserDTO data, BindingResult bindingResult) {
+	@PutMapping("")
+	public ResponseEntity<?> updateUser(@ModelAttribute @Valid UpdateUserDTO data, BindingResult bindingResult) {
+		User authUser = userServices.findUserAuthenticated();
 		if (bindingResult.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
-
-		// Check if user exists
-		User user = userService.findOneByEmail(id);
-		if (user == null)
-			return new ResponseEntity<>(new MessageDTO("user not found"), HttpStatus.NOT_FOUND);
 
 		// Cast to int to avoid null pointer exception
 		Avatar avatar;
@@ -77,7 +101,7 @@ public class UserController {
 			return new ResponseEntity<>(new MessageDTO("avatar not found"), HttpStatus.NOT_FOUND);
 
 		try {
-			userService.update(user, data, avatar);
+			userService.update(authUser, data, avatar);
 			return new ResponseEntity<>(new MessageDTO("User updated"), HttpStatus.OK);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -87,19 +111,15 @@ public class UserController {
 	@PatchMapping("/change-password")
 	public ResponseEntity<?> changePassword(
 			@ModelAttribute @Valid ChangePasswordDTO data, BindingResult bindingResult) {
+		User authUser = userServices.findUserAuthenticated();
 		if (bindingResult.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
 		}
 
-		// Check if user exists
-		User user = userService.findOneByEmail(data.getEmail());
-		if (user == null)
-			return new ResponseEntity<>(new MessageDTO("invalid credentials! - email unregistered"), HttpStatus.UNAUTHORIZED);
-
 		try {
 			// Check if password is correct
-			Boolean response = userService.changePassword(user, data);
+			Boolean response = userService.changePassword(authUser, data);
 			if (!response)
 				return new ResponseEntity<>(new MessageDTO("invalid credentials! - password incorrect"), HttpStatus.UNAUTHORIZED);
 			return new ResponseEntity<>(new MessageDTO("password changed successfully"), HttpStatus.OK);
@@ -111,6 +131,12 @@ public class UserController {
 	@PatchMapping("/toggle-status")
 	public ResponseEntity<?> toggleStatus(
 			@ModelAttribute @Valid ToggleStatusDTO data, BindingResult validations) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> MODERATOR
+		int[] validRoles = {RoleCatalog.MODERATOR, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
@@ -137,6 +163,12 @@ public class UserController {
 	@PostMapping("/role")
 	public ResponseEntity<?> assignRole(
 			@ModelAttribute @Valid AssignRoleDTO data, BindingResult validations) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
@@ -168,6 +200,12 @@ public class UserController {
 	@DeleteMapping("/role")
 	public ResponseEntity<?> removeRole(
 			@ModelAttribute @Valid RemoveRoleDTO data, BindingResult validations) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
@@ -199,6 +237,12 @@ public class UserController {
 	@PostMapping("/assign-to-event")
 	public ResponseEntity<?> assignToEvent(
 			@ModelAttribute @Valid AssignUserToEventDTO data, BindingResult validations) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
@@ -210,13 +254,11 @@ public class UserController {
 			return new ResponseEntity<>(new MessageDTO("user not found"), HttpStatus.NOT_FOUND);
 
 		// Check if user has the 'collaborator' role
-		List<RolexUser> roles = user.getRolexUsers();
-		boolean isCollaborator = roles.stream().anyMatch(role -> role.getRole().getId() == 4);
-		if(!isCollaborator)
-			return new ResponseEntity<>(new MessageDTO("user doesn't have the 'collaborator' role"), HttpStatus.BAD_REQUEST);
+		if(userService.hasRole(user, RoleCatalog.COLLABORATOR))
+			return new ResponseEntity<>(new MessageDTO("user doesn't have the 'collaborator' role"), HttpStatus.CONFLICT);
 
 		// Check if user is active
-		if(user.getState().getId() != 1)
+		if(user.getState().getId() != UserStateCatalog.ACTIVE)
 			return new ResponseEntity<>(new MessageDTO("user is not active"), HttpStatus.BAD_REQUEST);
 
 		// Check if event exists
@@ -240,6 +282,12 @@ public class UserController {
 	@DeleteMapping("/remove-from-event")
 	public ResponseEntity<?> removeFromEvent(
 			@ModelAttribute @Valid RemoveUserFromEventDTO data, BindingResult validations) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);

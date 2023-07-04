@@ -7,9 +7,15 @@ import com.swifticket.web.models.entities.*;
 import com.swifticket.web.repositories.*;
 import com.swifticket.web.services.EventServices;
 
+import com.swifticket.web.utils.DateFormats;
+import com.swifticket.web.utils.ImageUpload;
 import jakarta.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
@@ -24,8 +30,6 @@ public class EventServicesImpl implements EventServices {
     private final SponsorRepository sponsorRepository;
     private final EventxSponsorRepository eventxSponsorRepository;
 
-
-
     @Autowired
     public EventServicesImpl(EventRepository eventRepository, EventStateRepository eventStateRepository, TierRepository tierRepository, SponsorRepository sponsorRepository, EventxSponsorRepository eventxSponsorRepository) {
         this.eventRepository = eventRepository;
@@ -39,6 +43,11 @@ public class EventServicesImpl implements EventServices {
     public List<Event> findAll() { return eventRepository.findAll(); }
 
     @Override
+    public Page<Event> findAll(String title, int page, int size) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by("dateTime"));
+        return eventRepository.findByTitleContains(title, pageable);
+    }
+    @Override
     public Event findById(String id) {
         try {
             UUID eventId = UUID.fromString(id);
@@ -48,6 +57,19 @@ public class EventServicesImpl implements EventServices {
         }
     }
 
+    @Override
+    public boolean isAvailable(Event event) {
+        boolean available = false;
+        List<Tier> tiers = event.getTiers();
+        for (Tier tier : tiers){
+            if (tier.getCapacity() > tier.getTickets().size()) {
+                available = true;
+                break;
+            }
+        }
+
+        return  available;
+    }
 
     @Override
     @Transactional(rollbackOn = Exception.class)
@@ -57,15 +79,14 @@ public class EventServicesImpl implements EventServices {
                 organizer,
                 eventInfo.getTitle(),
                 Double.parseDouble(eventInfo.getDuration()),
-                // TODO: must define a date format for the app
-                new SimpleDateFormat("dd/MM/yyyy").parse(eventInfo.getDateTime()),
-                eventInfo.getImage(),
+                // TODO: add time to format??
+                new SimpleDateFormat(DateFormats.EVENT_DATE_TIME).parse(eventInfo.getDateTime()),
+                eventInfo.getSrc(),
                 place,
                 state
         );
         eventRepository.save(event);
     }
-
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void update(String id, SaveEventDTO eventInfo, Category category, Organizer organizer, Place place) throws Exception {
@@ -77,14 +98,13 @@ public class EventServicesImpl implements EventServices {
             event.setOrganizer(organizer);
             event.setTitle(eventInfo.getTitle());
             event.setDuration(Double.parseDouble(eventInfo.getDuration()));
-            event.setDateTime(new SimpleDateFormat("dd/MM/yyyy").parse(eventInfo.getDateTime()));
-            event.setImage(eventInfo.getImage());
+            event.setDateTime(new SimpleDateFormat(DateFormats.EVENT_DATE_TIME).parse(eventInfo.getDateTime()));
+            event.setImage(eventInfo.getSrc());
             event.setPlace(place);
 
             eventRepository.save(event);
         }
     }
-
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void changeStatus(Event event, EventState state) throws Exception {
@@ -94,19 +114,16 @@ public class EventServicesImpl implements EventServices {
         event.setState(state);
         eventRepository.save(event);
     }
-
     @Override
     public EventxSponsor findByEventAndSponsor(Event event, Sponsor sponsor) {
         return eventxSponsorRepository.findOneByEventAndSponsor(event, sponsor);
     }
-
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void assignSponsor(Event event, Sponsor sponsor) throws Exception {
         EventxSponsor relation = new EventxSponsor(event, sponsor);
         eventxSponsorRepository.save(relation);
     }
-
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void removeSponsor(Event event, Sponsor sponsor) throws Exception {
@@ -116,7 +133,6 @@ public class EventServicesImpl implements EventServices {
 
         eventxSponsorRepository.deleteById(relation.getId());
     }
-
     @Override
     public List<Tier> findEventTiers(String eventId)  {
         try {
@@ -129,7 +145,6 @@ public class EventServicesImpl implements EventServices {
             return null;
         }
     }
-
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void createTier(SaveTierDTO tierData) throws Exception {
@@ -141,7 +156,6 @@ public class EventServicesImpl implements EventServices {
         Tier newTier = new Tier(event, tierData.getName(), tierData.getCapacity(), tierData.getPrice());
         tierRepository.save(newTier);
     }
-
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void updateTier(String tierId, UpdateTierDTO tierData) throws Exception {
@@ -157,7 +171,6 @@ public class EventServicesImpl implements EventServices {
 
         tierRepository.save(tier);
     }
-
     @Override
     @Transactional(rollbackOn = Exception.class)
     public void deleteTier(String tierId) throws Exception {

@@ -5,10 +5,13 @@ import com.swifticket.web.models.dtos.event.SaveEventDTO;
 import com.swifticket.web.models.dtos.tier.SaveTierDTO;
 import com.swifticket.web.models.dtos.tier.UpdateTierDTO;
 import com.swifticket.web.models.entities.*;
+import org.springframework.data.domain.Page;
 
 public interface EventServices {
 	List<Event> findAll();
+	Page<Event> findAll(String title, int page, int size);
 	Event findById(String id);
+	boolean isAvailable(Event event);
 	void save(SaveEventDTO eventInfo, Category category, Organizer organizer, Place place, EventState state) throws Exception;
 	void update(String id, SaveEventDTO eventInfo, Category category, Organizer organizer, Place place) throws Exception;
 	void changeStatus(Event event, EventState state) throws Exception;

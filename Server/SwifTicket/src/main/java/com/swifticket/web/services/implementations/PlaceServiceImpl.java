@@ -3,6 +3,10 @@ package com.swifticket.web.services.implementations;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import com.swifticket.web.models.dtos.place.SavePlaceDTO;
@@ -24,6 +28,12 @@ public class PlaceServiceImpl implements PlaceServices {
 	@Override
 	public List<Place> findAll() {
 		return repository.findAll();
+	}
+
+	@Override
+	public Page<Place> findAll(String name, int page, int size) {
+		Pageable pageable = PageRequest.of(page, size, Sort.by("name"));
+		return repository.findByNameContains(name, pageable);
 	}
 
 	@Override

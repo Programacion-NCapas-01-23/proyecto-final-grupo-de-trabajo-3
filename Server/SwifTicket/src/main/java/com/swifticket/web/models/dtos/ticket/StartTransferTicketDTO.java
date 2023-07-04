@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+// This DTO will not be used
 @Data
 @AllArgsConstructor
 public class StartTransferTicketDTO {

@@ -1,20 +1,16 @@
 package com.swifticket.web.controllers;
 
-import java.util.List;
-
+import com.swifticket.web.models.dtos.page.PageDTO;
+import com.swifticket.web.models.entities.User;
+import com.swifticket.web.services.UserServices;
+import com.swifticket.web.utils.RoleCatalog;
+import com.swifticket.web.utils.RoleVerifier;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.swifticket.web.models.dtos.organizer.SaveOrganizerDTO;
 import com.swifticket.web.models.dtos.response.MessageDTO;
@@ -26,26 +22,43 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/organizers")
-@CrossOrigin("*")
 public class OrganizerController {
 	private final OrganizerServices organizerServices;
 	private final ErrorHandler errorHandler;
+	private final UserServices userServices;
 	@Autowired
-	public OrganizerController(OrganizerServices organizerServices, ErrorHandler errorHandler) {
+	public OrganizerController(OrganizerServices organizerServices, ErrorHandler errorHandler, UserServices userServices) {
 		this.organizerServices = organizerServices;
 		this.errorHandler = errorHandler;
+		this.userServices = userServices;
 	}
 
 	@GetMapping("")
-	public ResponseEntity<?> getOrganizers() {
-		List<Organizer> organizers = organizerServices.findAll();
-		return new ResponseEntity<>(organizers, HttpStatus.OK);
+	public ResponseEntity<?> getOrganizers(@RequestParam(defaultValue = "") String name,
+										   @RequestParam(defaultValue = "0") int page,
+										   @RequestParam(defaultValue = "10") int size){
+		// List<Organizer> organizers = organizerServices.findAll();
+		Page<Organizer> organizers = organizerServices.findAll(name, page, size);
+		PageDTO<Organizer> response = new PageDTO<>(
+				organizers.getContent(),
+				organizers.getNumber(),
+				organizers.getSize(),
+				organizers.getTotalElements(),
+				organizers.getTotalPages(),
+				organizers.isEmpty()
+		);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
 	@PostMapping("")
 	public ResponseEntity<?> createOrganizer(
 			@ModelAttribute @Valid SaveOrganizerDTO data, 
 			BindingResult validations) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
 		
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(
@@ -68,6 +81,11 @@ public class OrganizerController {
 			@PathVariable int id, 
 			@ModelAttribute @Valid SaveOrganizerDTO data, 
 			BindingResult validations) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
 		
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(
@@ -87,6 +105,12 @@ public class OrganizerController {
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteOrganizer(@PathVariable int id) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		Organizer organizer = organizerServices.findById(id);
 		if (organizer == null)
 			return new ResponseEntity<>(new MessageDTO("organizer not found"), HttpStatus.NOT_FOUND);

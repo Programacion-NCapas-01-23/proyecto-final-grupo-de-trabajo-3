@@ -3,34 +3,27 @@ package com.swifticket.web.controllers;
 import java.util.List;
 
 import com.swifticket.web.models.dtos.event.*;
+import com.swifticket.web.models.dtos.page.PageDTO;
 import com.swifticket.web.models.dtos.response.MessageAndSoldTicketsDTO;
 import com.swifticket.web.models.dtos.response.MessageDTO;
 import com.swifticket.web.models.dtos.tier.SaveTierDTO;
+import com.swifticket.web.models.dtos.tier.TierDTO;
 import com.swifticket.web.models.dtos.tier.UpdateTierDTO;
 import com.swifticket.web.models.entities.*;
 import com.swifticket.web.services.*;
-import com.swifticket.web.utils.DateValidator;
-import com.swifticket.web.utils.ErrorHandler;
+import com.swifticket.web.utils.*;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @RestController
 @RequestMapping("/events")
-@CrossOrigin("*")
 public class EventController {
 
 	private final EventServices eventServices;
@@ -42,10 +35,16 @@ public class EventController {
 	private final SponsorServices sponsorServices;
 	private final TierServices tierServices;
 	private final DateValidator dateValidator;
+	private final UserServices userServices;
 	private final int PROGRAMMED = 1;
+	private final ImageUpload imageUpload;
 
 	@Autowired
-	public EventController(EventServices eventServices, CategoryServices categoryServices, PlaceServices placeService, OrganizerServices organizerService, EventStateServices eventStateService, ErrorHandler errorHandler, SponsorServices sponsorServices, TierServices tierServices, DateValidator dateValidator) {
+	public EventController(EventServices eventServices, CategoryServices categoryServices,
+						   PlaceServices placeService, OrganizerServices organizerService,
+						   EventStateServices eventStateService, ErrorHandler errorHandler,
+						   SponsorServices sponsorServices, TierServices tierServices,
+						   DateValidator dateValidator, UserServices userServices, ImageUpload imageUpload) {
 		this.eventServices = eventServices;
 		this.categoryServices = categoryServices;
 		this.placeService = placeService;
@@ -55,12 +54,26 @@ public class EventController {
 		this.sponsorServices = sponsorServices;
 		this.tierServices = tierServices;
 		this.dateValidator = dateValidator;
+		this.userServices = userServices;
+		this.imageUpload = imageUpload;
 	}
 
 	@GetMapping("")
-	public ResponseEntity<?> getEvents() {
-		List<Event> events = eventServices.findAll();
-		return new ResponseEntity<>(events, HttpStatus.OK);
+	public ResponseEntity<?> getEvents(@RequestParam(defaultValue = "") String title,
+									   @RequestParam(defaultValue = "0") int page,
+									   @RequestParam(defaultValue = "10") int size) {
+		Page<Event> events = eventServices.findAll(title, page, size);
+		List<EventDTO> _events = events.getContent().stream().map(event -> new EventDTO(event, eventServices.isAvailable(event))).toList();
+
+		PageDTO<EventDTO> response = new PageDTO<>(
+				_events,
+				events.getNumber(),
+				events.getSize(),
+				events.getTotalElements(),
+				events.getTotalPages(),
+				events.isEmpty()
+		);
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	@GetMapping("/{id}")
@@ -69,10 +82,15 @@ public class EventController {
 		if (event == null)
 			return new ResponseEntity<>(new MessageDTO("Event not found"), HttpStatus.NOT_FOUND);
 
+		// Get event sponsors
 		List<EventxSponsor> relations = event.getEventSponsors();
 		List<Sponsor> sponsors = relations.stream().map(EventxSponsor::getSponsor).toList();
+		// Get event tiers
+		List<TierDTO> tiers = event.getTiers().stream().map(TierDTO::new).toList();
+		// check if available
+		boolean isAvailable = eventServices.isAvailable(event);
 
-		EventWithSponsorsDTO _event = new EventWithSponsorsDTO(event, sponsors);
+		EventWithSponsorsDTO _event = new EventWithSponsorsDTO(event, tiers, sponsors, isAvailable);
 		return new ResponseEntity<>(_event, HttpStatus.OK);
 	}
 
@@ -99,7 +117,15 @@ public class EventController {
 	}
 
 	@PostMapping("")
-	public ResponseEntity<?> createEvent(@ModelAttribute @Valid SaveEventDTO data, BindingResult bindingResult) {
+	public ResponseEntity<?> createEvent(@ModelAttribute @Valid SaveEventDTO data,
+										 @RequestParam("image") MultipartFile image,
+										 BindingResult bindingResult) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		if (bindingResult.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
@@ -126,16 +152,30 @@ public class EventController {
 			return new ResponseEntity<>(new MessageDTO("Cannot add events on past dates"), HttpStatus.CONFLICT);
 
 		try {
+			String src = imageUpload.uploadImage(image);
+			if (src == null)
+				return new ResponseEntity<>(new MessageDTO(
+						"The uploaded file is not an image. Allowed formats: JPEG, PNG, GIF, WEBP, WEBP2, SVG."),
+						HttpStatus.BAD_REQUEST);
+			data.setSrc(src);
 			eventServices.save(data, category, organizer, place, state);
 			return new ResponseEntity<>(new MessageDTO("event created"), HttpStatus.CREATED);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<?> updateEvent(@PathVariable String id, @ModelAttribute @Valid SaveEventDTO data, BindingResult bindingResult) {
+	public ResponseEntity<?> updateEvent(@PathVariable String id,
+										 @ModelAttribute @Valid SaveEventDTO data,
+										 @RequestParam(value = "image", required = false) MultipartFile image,
+										 BindingResult bindingResult) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		if (bindingResult.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
@@ -166,6 +206,12 @@ public class EventController {
 			return new ResponseEntity<>(new MessageDTO("Cannot add events on past dates"), HttpStatus.CONFLICT);
 
 		try {
+			String src = imageUpload.uploadImage(image);
+			if (src == null)
+				return new ResponseEntity<>(new MessageDTO(
+						"The uploaded file is not an image. Allowed formats: JPEG, PNG, GIF, WEBP, WEBP2, SVG."),
+						HttpStatus.BAD_REQUEST);
+			data.setSrc(src);
 			eventServices.update(id, data, category, organizer, place);
 			return new ResponseEntity<>(new MessageDTO("event updated"), HttpStatus.OK);
 		} catch (Exception e) {
@@ -174,8 +220,14 @@ public class EventController {
 	}
 
 	@PatchMapping("/change-status")
-	public ResponseEntity<?> changeEventStatus(
-			@ModelAttribute @Valid ChangeEventStatusDTO data, BindingResult validations) {
+	public ResponseEntity<?> changeEventStatus(@ModelAttribute @Valid ChangeEventStatusDTO data,
+											   BindingResult validations) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(validations.getFieldErrors()), HttpStatus.BAD_REQUEST);
@@ -198,7 +250,14 @@ public class EventController {
 	}
 
 	@PostMapping("/sponsors")
-	public ResponseEntity<?> assignSponsor(@ModelAttribute @Valid AssignSponsorToEventDTO data, BindingResult bindingResult) {
+	public ResponseEntity<?> assignSponsor(@ModelAttribute @Valid AssignSponsorToEventDTO data,
+										   BindingResult bindingResult) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		if (bindingResult.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
@@ -225,7 +284,14 @@ public class EventController {
 	}
 
 	@DeleteMapping("/sponsors")
-	public ResponseEntity<?> removeSponsor(@ModelAttribute @Valid RemoveSponsorFromEventDTO data, BindingResult bindingResult) {
+	public ResponseEntity<?> removeSponsor(@ModelAttribute @Valid RemoveSponsorFromEventDTO data,
+										   BindingResult bindingResult) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		if (bindingResult.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
@@ -263,6 +329,12 @@ public class EventController {
 
 	@PostMapping("/tiers")
 	public ResponseEntity<?> createEventTier(@ModelAttribute @Valid SaveTierDTO data, BindingResult bindingResult) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		if (bindingResult.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
@@ -281,7 +353,15 @@ public class EventController {
 	}
 
 	@PutMapping("/tiers/{tierId}")
-	public ResponseEntity<?> updateEventTier(@PathVariable String tierId, @ModelAttribute @Valid UpdateTierDTO data, BindingResult bindingResult) {
+	public ResponseEntity<?> updateEventTier(@PathVariable String tierId,
+											 @ModelAttribute @Valid UpdateTierDTO data,
+											 BindingResult bindingResult) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		if (bindingResult.hasErrors()) {
 			return new ResponseEntity<>(
 					errorHandler.mapErrors(bindingResult.getFieldErrors()), HttpStatus.BAD_REQUEST);
@@ -308,6 +388,12 @@ public class EventController {
 
 	@DeleteMapping("/tiers/{tierId}")
 	public ResponseEntity<?> deleteEventTier(@PathVariable String tierId) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		Tier tier = tierServices.findById(tierId);
 		if (tier == null) {
 			return new ResponseEntity<>(new MessageDTO("Tier not found"), HttpStatus.NOT_FOUND);

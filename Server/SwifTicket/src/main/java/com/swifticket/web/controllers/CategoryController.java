@@ -2,6 +2,10 @@ package com.swifticket.web.controllers;
 
 import java.util.List;
 
+import com.swifticket.web.models.entities.User;
+import com.swifticket.web.services.UserServices;
+import com.swifticket.web.utils.RoleCatalog;
+import com.swifticket.web.utils.RoleVerifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,15 +30,16 @@ import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/categories")
-@CrossOrigin("*")
 public class CategoryController {
 	
 	private final CategoryServices categoryService;
 	private final ErrorHandler errorHandler;
+	private final UserServices userServices;
 	@Autowired
-	public CategoryController(CategoryServices categoryService, ErrorHandler errorHandler) {
+	public CategoryController(CategoryServices categoryService, ErrorHandler errorHandler, UserServices userServices) {
 		this.categoryService = categoryService;
 		this.errorHandler = errorHandler;
+		this.userServices = userServices;
 	}
 
 	@GetMapping("")
@@ -47,6 +52,11 @@ public class CategoryController {
 	public ResponseEntity<?> createCategory(
 			@ModelAttribute @Valid SaveCategoryDTO data,
 			BindingResult validations) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
 
 		// check if category already exists
 		Category category = categoryService.findByName(data.getName());
@@ -67,10 +77,14 @@ public class CategoryController {
 	}
 	
 	@PutMapping("/{id}")
-	public ResponseEntity<?> updateCategory(
-			@PathVariable int id, 
-			@ModelAttribute @Valid SaveCategoryDTO data,
-			BindingResult validations) {
+	public ResponseEntity<?> updateCategory(@PathVariable int id,
+											@ModelAttribute @Valid SaveCategoryDTO data,
+											BindingResult validations) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
 		
 		if (validations.hasErrors()) {
 			return new ResponseEntity<>(
@@ -94,6 +108,12 @@ public class CategoryController {
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<?> deleteCategory(@PathVariable int id) {
+		User authUser = userServices.findUserAuthenticated();
+		// Grant access by user's role -> ADMIN, SUPER_ADMIN
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
+			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
+
 		Category category = categoryService.findById(id);
 		if (category == null)
 			return new ResponseEntity<>(new MessageDTO("Category not found"), HttpStatus.NOT_FOUND);

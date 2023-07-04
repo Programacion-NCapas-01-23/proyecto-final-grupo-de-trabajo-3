@@ -4,10 +4,11 @@ import java.util.Date;
 import java.util.List;
 
 import com.swifticket.web.models.entities.*;
+import org.springframework.data.domain.Page;
 
 public interface TicketServices {
 	Ticket findOneById(String ticketId);
-	List<Ticket> findAllByUser(User user);
+	Page<Ticket> findAllByUser(User user, int page, int size);
 	void create(User user, Tier tier) throws Exception;
 
 	Boolean isTicketUsed(Ticket ticket);
@@ -18,7 +19,7 @@ public interface TicketServices {
 	
 	String startTransferTicket(User receiver) throws Exception;
 	Transaction findTransactionById(String transactionId);
-	void acceptTransferTicket(Transaction transaction, User sender, Ticket ticket) throws Exception;
+	String acceptTransferTicket(Transaction transaction, User sender, Ticket ticket) throws Exception;
 	void validateTransfer(Transaction transaction) throws Exception;
 
 	int getEventCapacity(List<Tier> tiers);

@@ -1,14 +1,28 @@
 package com.swifticket.web.models.dtos.ticket;
 
-import lombok.AllArgsConstructor;
+import com.swifticket.web.models.dtos.event.EventDTO;
+import com.swifticket.web.models.entities.Ticket;
+import com.swifticket.web.models.entities.Tier;
+import com.swifticket.web.models.entities.User;
 import lombok.Data;
 
+import java.util.Date;
+import java.util.UUID;
+
 @Data
-@AllArgsConstructor
 // DTO just to get Ticket data and not to set it
 public class TicketDTO {
-	private String id;
-	private String user;
-	private String tier;
-	private String createdAt;
+	private UUID id;
+	private Tier tier;
+	private Date createdAt;
+	private EventDTO event;
+	private boolean used;
+
+	public TicketDTO(Ticket ticket, boolean ticketUsed, EventDTO event) {
+		this.id = ticket.getId();
+		this.tier = ticket.getTier();
+		this.createdAt = ticket.getCreatedAt();
+		this.event = event;
+		this.used = ticketUsed;
+	}
 }

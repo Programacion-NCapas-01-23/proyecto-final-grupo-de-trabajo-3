@@ -170,8 +170,20 @@ CREATE TABLE system_state (
 
 CREATE TABLE bill (
   id uuid NOT NULL DEFAULT gen_random_uuid(),
-  ticket_id INT NOT NULL,
-  user_id INT NOT NULL,
+  ticket_id uuid NOT NULL,
+  user_id uuid NOT NULL,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  total INT NOT NULL
+  total DECIMAL(6,2) NOT NULL
+);
+
+-- Tablas de autenticacion
+
+CREATE TABLE auth_tokens (
+	code uuid NOT NULL DEFAULT gen_random_uuid(),
+	"content" varchar NOT NULL,
+	active boolean NOT NULL DEFAULT true,
+	"timestamp" timestamp without time zone NULL DEFAULT CURRENT_TIMESTAMP,
+	user_code uuid NULL,
+	CONSTRAINT auth_token_pk PRIMARY KEY (code),
+	CONSTRAINT auth_token_fk FOREIGN KEY (user_code) REFERENCES users (id) ON DELETE CASCADE ON UPDATE CASCADE
 );

@@ -1,5 +1,6 @@
 package com.swifticket.web.models.dtos.event;
 
+import com.swifticket.web.models.dtos.tier.TierDTO;
 import com.swifticket.web.models.entities.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,10 +21,11 @@ public class EventWithSponsorsDTO {
     private Date dateTime;
     private String image;
     private Place place;
-    private List<Tier> tiers;
+    private List<TierDTO> tiers;
     private List<Sponsor> sponsors;
+    private boolean isAvailable;
 
-    public EventWithSponsorsDTO(Event event, List<Sponsor> sponsors) {
+    public EventWithSponsorsDTO(Event event, List<TierDTO> tiers, List<Sponsor> sponsors, boolean isAvailable) {
         this.id = event.getId();
         this.category = event.getCategory();
         this.organizer = event.getOrganizer();
@@ -33,7 +35,8 @@ public class EventWithSponsorsDTO {
         this.dateTime = event.getDateTime();
         this.image = event.getImage();
         this.place = event.getPlace();
-        this.tiers = event.getTiers();
+        this.tiers = tiers;
         this.sponsors = sponsors;
+        this.isAvailable = isAvailable;
     }
 }
