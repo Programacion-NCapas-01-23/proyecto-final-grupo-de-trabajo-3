@@ -60,6 +60,7 @@ import { guestState } from './state/atoms/guestState';
 import PaymentError from './pages/Checkout/Failure/PaymentError';
 import Mod from './pages/Mod/Mod';
 import LoginRedirct from './components/LoginRedirct';
+import Search from './pages/Search/Search';
 
 function App() {
   const token = useRecoilValue(tokenState);
@@ -80,6 +81,7 @@ function App() {
             <Route path="validate-qr" element={<ScanQr />} />
           </Route>
 
+          <Route path="search" element={<Search />} />
           <Route path="receive-qr" element={<ReceiveQR />} />
           <Route path="validate-qr" element={<ScanQr />} />
           <Route path="send-ticket-qr/:ticketId" element={<SendTicket />} />
