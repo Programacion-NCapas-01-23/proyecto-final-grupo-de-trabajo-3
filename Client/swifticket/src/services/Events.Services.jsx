@@ -88,7 +88,13 @@ export const getEventTier = async (eventId) => {
   }
 };
 
-export const createEventTier = async (eventId, tierName, capacity, price) => {
+export const createEventTier = async (
+  eventId,
+  tierName,
+  capacity,
+  price,
+  token
+) => {
   let response = undefined;
   const uriDataObject = {
     eventId: eventId,
@@ -103,7 +109,10 @@ export const createEventTier = async (eventId, tierName, capacity, price) => {
       method: 'POST',
       baseURL: BASE_URL,
       url: '/tiers',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        Authorization: `Bearer ${token}`,
+      },
       data: `${body}`,
     });
 
@@ -112,6 +121,7 @@ export const createEventTier = async (eventId, tierName, capacity, price) => {
     }
   } catch (error) {
     console.log(error);
+    response = error.response;
   } finally {
     return response;
   }
@@ -145,7 +155,7 @@ export const updateEventTier = async (eventId, tierName, capacity, price) => {
   }
 };
 
-export const deleteEventTier = async (tierId) => {
+export const deleteEventTier = async (tierId, token) => {
   let response = undefined;
 
   try {
@@ -153,6 +163,9 @@ export const deleteEventTier = async (tierId) => {
       method: 'DELETE',
       baseURL: BASE_URL,
       url: `/tiers/${tierId}`,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     if (data) {
@@ -160,6 +173,7 @@ export const deleteEventTier = async (tierId) => {
     }
   } catch (error) {
     console.log(error);
+    response = error.response;
   } finally {
     return response;
   }

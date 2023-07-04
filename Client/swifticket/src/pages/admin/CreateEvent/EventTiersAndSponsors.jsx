@@ -1,10 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import TitileWithLines from '../components/TitleWithLines';
 import FormInput from '../components/FormInput';
-import { MdAddBox, MdDelete, MdDeleteSweep } from 'react-icons/md';
+import { MdAddBox, MdDelete } from 'react-icons/md';
 import { getAllSponsors } from '../../../services/SponsorServices';
 import {
   assignSponsor,
+  createEventTier,
+  deleteEventTier,
   getEventById,
   removeSponsor,
 } from '../../../services/Events.Services';
@@ -23,14 +25,6 @@ export default function EventTiersAndSponsors({ setIsEdit, eventId }) {
       setEventSponsors(response.data.content);
     }
   };
-  // const eventSponsors = [
-  //   'Nike',
-  //   'Apple',
-  //   'Coca-Cola',
-  //   'Google',
-  //   'Amazon',
-  //   'Microsoft',
-  // ];
 
   useEffect(() => {
     handleGetSponsor();
@@ -48,7 +42,7 @@ export default function EventTiersAndSponsors({ setIsEdit, eventId }) {
           />
         </section>
         <section className="w-1/2">
-          <Tiers />
+          <Tiers eventId={eventId} token={token} />
         </section>
         <button
           className="action-button"
@@ -63,28 +57,63 @@ export default function EventTiersAndSponsors({ setIsEdit, eventId }) {
   );
 }
 
-function Tiers() {
+function Tiers({ eventId, token }) {
   const [tiers, setTiers] = useState([]);
 
   const [name, setName] = useState('');
   const [capacity, setCapacity] = useState('');
   const [price, setPrice] = useState('');
 
-  const handleAddTier = (tierName, tierCapacity, tierPrice) => {
-    if (tierName !== '' && tierCapacity !== '' && tierPrice !== '') {
-      const newTier = [tierName, tierCapacity, tierPrice];
-      setName('');
-      setCapacity('');
-      setPrice('');
-      setTiers([...tiers, newTier]);
+  const handleGetTier = async () => {
+    const response = await getEventById(eventId);
+
+    console.log(response);
+    if (response.status === 200) {
+      setTiers(response.data.tiers);
     }
   };
 
-  const handleDeleteTier = (index) => {
-    const updatedTiers = [...tiers];
-    updatedTiers.splice(index, 1);
-    setTiers(updatedTiers);
+  const handleAddTier = async (tierName, tierCapacity, tierPrice) => {
+    if (tierName !== '' && tierCapacity !== '' && tierPrice !== '') {
+      const response = await createEventTier(
+        eventId,
+        tierName,
+        tierCapacity,
+        tierPrice,
+        token
+      );
+
+      if (response.status === 201) {
+        const newTier = {
+          name: tierName,
+          capacity: tierCapacity,
+          price: tierPrice,
+        };
+        setName('');
+        setCapacity('');
+        setPrice('');
+        setTiers([...tiers, newTier]);
+      }
+    }
   };
+
+  const handleDeleteTier = async (index) => {
+    // ONLY IF TICKETS SOLD IS 0
+    const response = await deleteEventTier(index, token);
+
+    if (response.status === 200) {
+      const updatedTiers = [...tiers];
+      const removeIndex = updatedTiers.findIndex(
+        (indexRemove) => indexRemove.id == index
+      );
+      updatedTiers.splice(removeIndex, 1);
+      setTiers(updatedTiers);
+    }
+  };
+
+  useEffect(() => {
+    handleGetTier();
+  }, []);
 
   return (
     <>
@@ -117,28 +146,32 @@ function Tiers() {
         </button>
       </div>
       <ul className="max-h-52 overflow-auto">
-        {tiers.map((tier, index) => (
-          <li
-            key={index}
-            className="my-default-xs grid grid-flow-col grid-cols-4 gap-4 text-neutral-300"
-          >
-            <div className="col-span-2 p-default bg-neutral-950 rounded-xl ">
-              {tier[0]}
-            </div>
-            <div className="p-default bg-neutral-950 rounded-xl ">
-              {tier[1]}
-            </div>
-            <div className="p-default bg-neutral-950 rounded-xl ">
-              ${tier[2]}
-            </div>
-            <button
-              onClick={() => handleDeleteTier(index)}
-              className="text-4xl text-red-500"
+        {tiers.map((tier) => {
+          const { id, name, capacity, price } = tier;
+
+          return (
+            <li
+              key={id}
+              className="my-default-xs grid grid-flow-col grid-cols-4 gap-4 text-neutral-300"
             >
-              <MdDelete />
-            </button>
-          </li>
-        ))}
+              <div className="col-span-2 p-default bg-neutral-950 rounded-xl ">
+                {name}
+              </div>
+              <div className="p-default bg-neutral-950 rounded-xl ">
+                {capacity}
+              </div>
+              <div className="p-default bg-neutral-950 rounded-xl ">
+                ${price}
+              </div>
+              <button
+                onClick={() => handleDeleteTier(id)}
+                className="text-4xl text-red-500"
+              >
+                <MdDelete />
+              </button>
+            </li>
+          );
+        })}
       </ul>
     </>
   );
@@ -173,7 +206,10 @@ function Sponsors({ sponsorsList, eventId, token }) {
 
     if (response.status === 200) {
       const updatedSponsors = [...sponsors];
-      updatedSponsors.splice(updatedSponsors.index, 1);
+      const removeIndex = updatedSponsors.findIndex(
+        (indexRemove) => indexRemove.id == index
+      );
+      updatedSponsors.splice(removeIndex, 1);
       setSponsors(updatedSponsors);
     }
   };
@@ -203,7 +239,7 @@ function Sponsors({ sponsorsList, eventId, token }) {
                 const { id, name } = sponsor;
 
                 return (
-                  <option className="text-black" value={id}>
+                  <option className="text-black" key={id} value={id}>
                     {name}
                   </option>
                 );
