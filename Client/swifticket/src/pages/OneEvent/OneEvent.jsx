@@ -25,7 +25,7 @@ const OneEvent = () => {
 
   // Shopping cart validations function
   const shoppingCartValidations = () => {
-    if (isGuest){
+    if (isGuest) {
       toast.error("You have to log in!", { id: 'shcart' });
       return false;
     }
@@ -107,7 +107,7 @@ const OneEvent = () => {
   useEffect(() => {
     const fetchEvent = async () => {
       const response = await getEventById(eventId);
-
+      console.log(response.data);
       if (response.status == 404)
         navigate("/event");
 
@@ -154,6 +154,19 @@ const OneEvent = () => {
       <TitileWithLines title={currentEvent?.title}></TitileWithLines>
 
       <div className="flex md:flex-row flex-col items-center justify-evenly min-h-[calc(30vh-52px-2rem)] md:px-default-2xl px-default-lg pt-default">
+        <div className=" w-full flex flex-col -mt-4 mb-4">
+          <div>
+            <p className="tracking-tight italic col-span-1 font-thin">Organizer</p>
+            <p className="tracking-tighter col-span-2">{currentEvent?.organizer.name}</p>
+          </div>
+          {currentEvent.sponsors && currentEvent.sponsors.length > 0 && (
+            <div>
+              <p className="tracking-tighter col-span-1">Sponsors</p>
+              <p className="tracking-tighter col-span-2">Sponsors</p>
+            </div>
+          )}
+
+        </div>
         <div className="flex flex-row justify-evenly items-center gap-12">
           <DateInfo event={currentEvent} />
           <EventInfo event={currentEvent} />
@@ -163,7 +176,6 @@ const OneEvent = () => {
           <div className="md:w-fit mt-default-sm flex justify-center bg-secondary bg-opacity-30 p-default-sm rounded-lg">
             <div>
               {currentEvent.tiers?.map((tier, index) => {
-
                 const handleDecreaseCount = (tierId) => {
                   if (tierCounts[tierId] > 0) {
                     setTierCounts(prevCounts => ({
@@ -193,15 +205,19 @@ const OneEvent = () => {
                   <div key={index} className="grid grid-flow-col grid-cols-4 sm:gap-8 p-default-xs md:text-2xl">
                     <p className="px-default-sm col-span-2"> {tier.name} </p>
                     <p className="px-default-sm self-center"> ${tier.price} </p>
-                    <div className="flex flex-row items-center">
-                      <button onClick={() => { handleDecreaseCount(tier.id) }}>
-                        <MdIndeterminateCheckBox size="1.5rem" className="text-lg" />
-                      </button>
-                      <p className="px-default-sm"> {tierCount} </p>
-                      <button onClick={() => { handleIncreaseCount(tier.id) }}>
-                        <MdAddBox size="1.5rem" className="text-lg" />
-                      </button>
-                    </div>
+                    {!soldOut(tier) ?
+                      <div className="flex flex-row items-center">
+                        <button onClick={() => { handleDecreaseCount(tier.id) }}>
+                          <MdIndeterminateCheckBox size="1.5rem" className="text-lg" />
+                        </button>
+                        <p className="px-default-sm"> {tierCount} </p>
+                        <button onClick={() => { handleIncreaseCount(tier.id) }}>
+                          <MdAddBox size="1.5rem" className="text-lg" />
+                        </button>
+                      </div>
+                      :
+                      <p className="text-red-600 font-bold leading-6 tracking-tighter w-full sm:text-xl text-center"> SOLD OUT </p>
+                    }
                   </div>
                 );
               })}
@@ -281,5 +297,11 @@ function checkAvailability(tickets, tiers) {
   }
   return true;
 };
+
+function soldOut(tier) {
+  if (tier.capacity == tier.ticketsSold)
+    return true;
+  else return false
+}
 
 export default OneEvent;
