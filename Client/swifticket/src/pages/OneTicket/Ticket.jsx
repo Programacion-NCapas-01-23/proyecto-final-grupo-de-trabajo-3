@@ -13,9 +13,10 @@ export function Ticket() {
 
     const getTicket = async () => {
         let response = await getTicketByID(token, id);
-        setTimeout(() => setIsLoading(false), 600);
         console.log(response);
+
         setTicket(response.data);
+        setTimeout(() => setIsLoading(false), 600);
     }
 
     useEffect(() => {
