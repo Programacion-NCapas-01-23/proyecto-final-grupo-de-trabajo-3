@@ -113,17 +113,17 @@ const OneEvent = () => {
         // Update the tiers for the current event
         const updatedTiers = isCurrentEvent
           ? item.tiers.map((tier) => ({
-              ...tier,
-              count: (tier.count || 0) + (tierCounts[tier.id] || 0),
-            }))
+            ...tier,
+            count: (tier.count || 0) + (tierCounts[tier.id] || 0),
+          }))
           : item.tiers;
 
         // Return the updated item
         return isCurrentEvent
           ? {
-              ...item,
-              tiers: updatedTiers,
-            }
+            ...item,
+            tiers: updatedTiers,
+          }
           : item;
       });
 
@@ -249,16 +249,25 @@ const OneEvent = () => {
 
         <TitileWithLines title={currentEvent?.title}></TitileWithLines>
 
-        <div className="w-full flex -mt-4 mb-4">
-          <div className="py-default sm:px-default-xl px-default">
-            <p className="tracking-tight italic col-span-1 font-thin">
-              Organizer
-            </p>
-            <p className="tracking-tighter col-span-2">
-              {currentEvent?.organizer.name}
-            </p>
+        <div className="w-full flex flex-col -mt-4 mb-4">
+          <div className="flex gap-2 pt-default sm:px-default-xl px-default">
+            <p className="tracking-tight italic col-span-1 font-thin"> Organizer </p>
+            <p className="tracking-tighter col-span-2"> {currentEvent?.organizer.name} </p>
           </div>
-          {/* SPONSORS  */}
+
+          {currentEvent.sponsors && currentEvent.sponsors.length > 0 ? (
+            <div className='flex gap-2 sm:px-default-xl px-default'>
+              <p className="tracking-tight italic col-span-1 font-thin"> Sponsors </p>
+              {
+                currentEvent.sponsors.map((sponsor, index) => (
+                  <p key={index}> {sponsor.name} </p>
+                ))}
+            </div>
+          ) : (
+            <p></p>
+          )}
+
+
         </div>
 
         <div className="flex md:flex-row flex-col items-center justify-evenly min-h-[calc(30vh-52px-2rem)] md:px-default-2xl px-default-lg pt-default">
