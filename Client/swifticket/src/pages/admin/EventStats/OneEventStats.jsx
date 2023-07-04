@@ -53,13 +53,13 @@ export default function OneEventStats() {
         {
           id: 2,
           label: 'Attendants (%)',
-          value: `${response.data.attendantsVsTicketsSold.toFixed(2)}%`,
+          value: `${response.data.attendantsVsTicketsSold}%`,
           isNumber: false,
         },
         {
           id: 5,
           label: 'Tickets Sold (%)',
-          value: `${response.data.soldVsAvailable.toFixed(2)}%`,
+          value: `${response.data.soldVsAvailable}%`,
           isNumber: false,
         },
         {
