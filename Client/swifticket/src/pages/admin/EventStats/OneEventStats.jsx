@@ -41,7 +41,7 @@ export default function OneEventStats() {
                 { id: 1, label: 'Attendants', value: response.data.attendants, isNumber: false },
                 { id: 4, label: 'Tickets Sold', value: response.data.ticketsSold, isNumber: false },
                 { id: 2, label: 'Attendants (%)', value: `${response.data.attendantsVsTicketsSold.toFixed(2)}%`, isNumber: false },
-                { id: 5, label: 'Tickets Available', value: `${response.data.soldVsAvailable.toFixed(2)}%`, isNumber: false },
+                { id: 5, label: 'Tickets Sold (%)', value: `${response.data.soldVsAvailable.toFixed(2)}%`, isNumber: false },
                 { id: 3, label: 'Capacity', value: response.data.capacity, isNumber: false },
                 { id: 6, label: 'Group Vs Single', value: response.data.attendanceSingleVsGroup, isNumber: true },
             ]);
