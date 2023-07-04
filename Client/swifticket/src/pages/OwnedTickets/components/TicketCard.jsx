@@ -4,10 +4,10 @@ import {useNavigate} from "react-router-dom"
 export default function TicketCard({ticket}) {
 
   const navigate = useNavigate();
-  const date_time = new Date(ticket.event.dateTime)
+  const date_time = new Date(ticket?.event?.dateTime)
 
   const redirectUser = () => {
-    navigate(`/user/tickets/${ticket.id}`);
+    navigate(`/user/tickets/${ticket?.id}`);
   };
 
   return (
@@ -20,7 +20,7 @@ export default function TicketCard({ticket}) {
               src={ticket?.event?.image ?? "https://res.cloudinary.com/dypsbiypw/image/upload/v1688016265/file_advaly.jpg"}
               alt="event_img"
             />
-            { ticket.used ? 
+            { ticket?.used ? 
             <div className='absolute flex justify-center items-center top-0 h-full w-full bg-black bg-opacity-60'>
               <p className="text-xl font-black">USED</p>
             </div>

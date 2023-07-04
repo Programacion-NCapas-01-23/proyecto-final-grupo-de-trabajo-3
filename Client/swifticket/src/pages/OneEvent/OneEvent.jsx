@@ -144,14 +144,14 @@ const OneEvent = () => {
     currentEvent ? <section className={`min-h-[calc(100vh-52px-3.5rem)] max-h-[calc(100vh-52px-4rem)] overflow-x-hidden overflow-y-auto`}>
       <Toaster position="top-right" />
       <div className="">
-        <div className="min-h-[calc(40vh-52px-2rem)] relative bg-cover bg-center" style={{ backgroundImage: `url(${currentEvent.image})` }}>
+        <div className="min-h-[calc(40vh-52px-2rem)] relative bg-cover bg-center" style={{ backgroundImage: `url(${currentEvent?.image})` }}>
           <div className="min-h-[calc(40vh-52px-2rem)] invisible lg:visible absolute backdrop-blur-lg backdrop-brightness-50 w-full" />
           <img className="max-h-[calc(40vh-52px-2rem)] invisible lg:visible shadow-2xl absolute top-0 left-1/2 -translate-x-1/2 border-4 border-black" src={currentEvent.image} alt="" />
           <div className="min-h-[calc(40vh-52px-2rem)] w-full absolute bg-gradient-to-t from-default  md:via-transparent to-transparent"></div>
         </div>
       </div>
 
-      <TitileWithLines title={currentEvent.title}></TitileWithLines>
+      <TitileWithLines title={currentEvent?.title}></TitileWithLines>
 
       <div className="flex md:flex-row flex-col items-center justify-evenly min-h-[calc(30vh-52px-2rem)] md:px-default-2xl px-default-lg pt-default">
         <div className="flex flex-row justify-evenly items-center gap-12">
@@ -234,7 +234,7 @@ function TitileWithLines({ title }) {
 }
 
 function DateInfo({ event }) {
-  const date_time = new Date(event.dateTime)
+  const date_time = new Date(event?.dateTime)
 
   return (
     <div className="text-center">
@@ -247,11 +247,11 @@ function DateInfo({ event }) {
 }
 
 function EventInfo({ event }) {
-  const date_time = new Date(event.dateTime)
+  const date_time = new Date(event?.dateTime)
   return (
     <div>
-      <LinnedText text={event.place.name} />
-      <p className="text-sm sm:text-xl leading-3 -mt-2 font-light tracking-tighter"> {event.place.address} </p>
+      <LinnedText text={event?.place?.name} />
+      <p className="text-sm sm:text-xl leading-3 -mt-2 font-light tracking-tighter"> {event?.place?.address} </p>
       <LinnedText text={`${date_time.toLocaleString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}`} />
     </div>
   )
