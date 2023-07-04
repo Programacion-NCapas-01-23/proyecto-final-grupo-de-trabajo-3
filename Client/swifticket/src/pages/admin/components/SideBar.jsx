@@ -1,13 +1,22 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { MdComputer, MdTableRows, MdLogout } from 'react-icons/md';
+import { useSetRecoilState } from 'recoil';
+import { tokenState } from '../../../state/atoms/tokenState';
 
 const SideBar = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const setToken = useSetRecoilState(tokenState);
 
   const redirectUser = (path) => {
     navigate(`/${path}`);
+  };
+
+  const handleLogOut = () => {
+    setToken(null);
+    localStorage.removeItem('auth_token');
+    localStorage.removeItem('roles');
   };
 
   const isCurrentPath = (path) => {
@@ -116,7 +125,10 @@ const SideBar = () => {
             </button>
           </div>
           <div className="flex w-full">
-            <button className="flex items-center pl-16 gap-4 bg-[#00052E] w-11/12 p-2 rounded-r-3xl">
+            <button
+              onClick={() => handleLogOut()}
+              className="flex items-center pl-16 gap-4 bg-[#00052E] w-11/12 p-2 rounded-r-3xl"
+            >
               <MdLogout size={25} />
               Log Out
             </button>

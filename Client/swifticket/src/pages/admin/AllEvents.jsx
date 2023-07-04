@@ -13,7 +13,7 @@ export default function AllEvents() {
   const [events, setEvents] = useState([]);
 
   const handleEvents = async () => {
-    const response = await getAllEvents(page);
+    const response = await getAllEvents(page + 1);
 
     if (response.status === 200) {
       setMaxPage(response.data.totalPages);
