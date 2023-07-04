@@ -7,9 +7,10 @@ import UserActions from './components/UserActions';
 import ModActions from './components/ModActions';
 import CollabActions from './components/CollabActions';
 import { MdAccountCircle, MdClose, MdLogout, MdPerson } from 'react-icons/md';
-import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { useRecoilState, useRecoilValue, useSetRecoilState } from 'recoil';
 import { tokenState } from '../../state/atoms/tokenState';
 import { validateToken } from '../../services/Auth.Services';
+import { guestState } from '../../state/atoms/guestState';
 
 export default function SideBar(props) {
   const navigate = useNavigate();
@@ -17,11 +18,12 @@ export default function SideBar(props) {
   const [user, setUser] = useState(Roles.nullUser);
   const [userRoles, setUserRoles] = useState([{}]);
   const token = useRecoilValue(tokenState);
-  const [isGuest, setIsGuest] = useState(false);
+  const [isGuest, setIsGuest] = useRecoilState(guestState);
 
   const handleLogOut = () => {
     setToken(null);
     localStorage.removeItem('auth_token');
+    localStorage.removeItem('roles');
   };
 
   useEffect(() => {
@@ -36,7 +38,12 @@ export default function SideBar(props) {
   }, []);
 
   const redirectUser = () => {
-    navigate(isGuest ? '/login' : 'user');
+    if (isGuest) {
+      setIsGuest(false);
+      navigate('/login');
+    } else {
+      navigate('user');
+    }
   };
 
   return (
