@@ -8,26 +8,51 @@ import { tokenState } from '../state/atoms/tokenState';
 
 export default function Home() {
 
-  const [events, setEvents] = useState([])
+  const [newEvents, setNewEvents] = useState([]);
+  const [events, setEvents] = useState([]);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(999);
+
+  const handlePreviousPage = () => {
+    if (page <= 1) return;
+    setPage(page => page - 1);
+  }
+
+  const handleNextPage = () => {
+    if (page >= limit) return;
+    setPage(page => page + 1);
+  }
+
+  const fetchNewEvents = async () => {
+    const response = await getAllEvents();
+    setNewEvents(response.data);
+  }
+
+  const fetchEvents = async (page) => {
+    const response = await getAllEvents(page);
+    // console.log(response);
+    setEvents(response.data);
+    setLimit(response.data.totalPages);
+  }
 
   useEffect(() => {
-    const fetchEvents = async () => {
-      const response = await getAllEvents();
-      setEvents(response.data)
-    }
-    fetchEvents()
+    fetchNewEvents();
   }, [])
+
+  useEffect(() => {
+    fetchEvents(page);
+  }, [page])
 
   return (
     <div className="min-h-[calc(100vh-52px-3.5rem)]">
       <section className="">
         <TitileWithLines title="What's Next?" />
         <div className="flex md:flex-row flex-col justify-evenly">
-          {events.content && events.content.length > 0 ? (
-            <EventCardSt event={events.content[0]} />
+          {newEvents.content && newEvents.content.length > 0 ? (
+            <EventCardSt event={newEvents.content[0]} />
           ) : <h1>Loading...</h1>}
-          {events.content && events.content.length > 1 ? (
-            <EventCardSt event={events.content[1]} />
+          {newEvents.content && newEvents.content.length > 1 ? (
+            <EventCardSt event={newEvents.content[1]} />
           ) : <h1>Loading...</h1>}
         </div>
       </section>
@@ -41,6 +66,7 @@ export default function Home() {
           ) : <h1> Loading...</h1>
           }
         </div>
+        <Pagination page={page} limit={limit} handlePreviousPage={handlePreviousPage} handleNextPage={handleNextPage} />
       </section>
     </div>
   );
@@ -55,5 +81,30 @@ function TitileWithLines({ title }) {
       </h1>
       <div className="border h-0 border-primary md:col-span-3 col-span-2"></div>
     </span>
+  );
+}
+
+function Pagination({page, limit, handlePreviousPage, handleNextPage}) {
+  return (
+    <div className="flex flex-wrap w-full justify-center mt-[2vh]">
+      {/* next page */}
+      { (page > 1) ? 
+        <a href="#" className="inline-flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+        onClick={handlePreviousPage}>
+          Previous
+        </a>
+        : "" }
+      {/* Current page */}
+      <a href="#" className="inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+        { page }
+      </a>
+      {/* previous page */}
+      { (page < limit) ? 
+        <a href="#" className="inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+        onClick={handleNextPage}>
+          Next
+        </a>
+        : "" }
+    </div>
   );
 }
