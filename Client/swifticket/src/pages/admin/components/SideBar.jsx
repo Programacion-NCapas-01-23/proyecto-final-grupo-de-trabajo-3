@@ -28,7 +28,7 @@ const SideBar = () => {
       <div className="flex flex-col h-1/4 w-full">
         <div className="flex justify-center items-center h-1/2 w-full">
           {/* <img src={userPlaceholder} alt="User" className="h-1/2" /> */}
-          <p className="p-default">AdminGod</p>
+          <p className="p-default">Admin View</p>
         </div>
         <div className="flex flex-col justify-evenly items-center h-1/2 w-full">
           <p className="heading-lg">STATS</p>
