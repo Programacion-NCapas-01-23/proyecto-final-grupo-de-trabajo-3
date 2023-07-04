@@ -209,7 +209,7 @@ const OneEvent = () => {
     };
 
     fetchEvent();
-  }, []);
+  }, [isEdit]);
 
   return currentEvent ? (
     isEdit ? (
