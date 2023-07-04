@@ -25,21 +25,23 @@ const OneEvent = () => {
   if (token) {
     const payload = token.split('.')[1];
     const decodedPayload = JSON.parse(atob(payload));
-  }
 
-  const handleIsEdit = async () => {
-    const response = await getOneUser(token, decodedPayload.sub);
+    const handleIsEdit = async () => {
+      const response = await getOneUser(token, decodedPayload.sub);
 
-    if (response.status === 200) {
-      if (response.data.roles.find((role) => role.id === 5 || role.id === 4)) {
-        setIsAdmin(true);
+      if (response.status === 200) {
+        if (
+          response.data.roles.find((role) => role.id === 5 || role.id === 4)
+        ) {
+          setIsAdmin(true);
+        }
       }
-    }
-  };
+    };
 
-  useEffect(() => {
-    if (token) handleIsEdit();
-  }, []);
+    useEffect(() => {
+      handleIsEdit();
+    }, []);
+  }
 
   // Set up state variables
   const [imageError, setImageError] = useState(false);
