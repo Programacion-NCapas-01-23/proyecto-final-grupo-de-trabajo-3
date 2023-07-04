@@ -140,7 +140,7 @@ public class StatsController {
 	public ResponseEntity<?> getEventAttendanceStats(@PathVariable String id) {
 		User authUser = userServices.findUserAuthenticated();
 		// Grant access by user's role -> ADMIN, SUPER_ADMIN
-		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.SUPER_ADMIN};
+		int[] validRoles = {RoleCatalog.ADMIN, RoleCatalog.COLLABORATOR, RoleCatalog.SUPER_ADMIN};
 		if (!RoleVerifier.userMatchesRoles(validRoles, userServices.getUserRoles(authUser)))
 			return new ResponseEntity<>(new MessageDTO("Credential permissions not valid"), HttpStatus.UNAUTHORIZED);
 
