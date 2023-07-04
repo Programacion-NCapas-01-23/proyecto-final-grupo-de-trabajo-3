@@ -12,14 +12,15 @@ export function Ticket() {
   const { id } = useParams();
 
   const getTicket = async () => {
-    const response = await getTicketByID(token, id);
+    let response = await getTicketByID(token, id);
     console.log(response);
+
     setTicket(response.data);
+    setTimeout(() => setIsLoading(false), 600);
   };
 
   useEffect(() => {
     getTicket(token);
-    setTimeout(() => setIsLoading(false), 1000);
   }, []);
 
   return (

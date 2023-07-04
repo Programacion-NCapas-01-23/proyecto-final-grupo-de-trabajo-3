@@ -65,6 +65,7 @@ const ScanQr = () => {
           <QrReader
             onResult={handleResult}
             style={{ width: '100%' }}
+            constraints={{ facingMode: 'environment' }}
             />}
         </div>
       </div>

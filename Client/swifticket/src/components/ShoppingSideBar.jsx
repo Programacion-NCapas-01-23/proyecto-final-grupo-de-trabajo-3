@@ -1,13 +1,14 @@
+import { useNavigate } from "react-router-dom";
 import { Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { MdClose } from "react-icons/md";
 import EventCardSh from "./EventCards/Shoping/EventCardSh";
 import { shoppingCartState } from "../state/atoms/shoppingCartState";
-import { cartState } from "../state/atoms/cartState";
 import { useRecoilValue } from "recoil";
 
 export default function ShoppingSideBar(props) {
   const shoppingCart = useRecoilValue(shoppingCartState);
+  const navigate = useNavigate();
 
   return (
     <Transition.Root show={props.open} as={Fragment}>
@@ -80,7 +81,7 @@ export default function ShoppingSideBar(props) {
                       <div className="px-4 py-6 sm:px-6">
                         <div className="mt-6">
                           <a
-                            href="/checkout"
+                            onClick={() => {navigate('/checkout')}}
                             className="flex items-center justify-center rounded-md bg-primary px-6 py-3 text-3xl hover:bg-primary-700"
                           >
                             Checkout
@@ -127,7 +128,7 @@ export default function ShoppingSideBar(props) {
 function EmptyShoppingCart() {
   return (
     <div className="flex flex-col h-full w-full gap-3 items-center align-middle">
-      <img className="w-1/2" src="/src/assets/sad.png" alt="" />
+      <img className="w-1/2" src="/assets/sad.png" alt="" />
       <p className="text-3xl tracking-wide leading-7 font-bold">Oh no...</p>
       <p className="p-default">
         It looks like your cart it's empty. Tickets you add to your shoping cart

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useNavigate, useParams } from 'react-router-dom';
 import Landing from '../../Landing';
 import { Toaster, toast } from 'react-hot-toast';
@@ -9,6 +10,17 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { tokenState } from '../../state/atoms/tokenState';
 import { getOneUser } from '../../services/User.Services';
 import EventTiersAndSponsors from '../admin/CreateEvent/EventTiersAndSponsors';
+=======
+import { useNavigate, useParams } from "react-router-dom";
+import Landing from "../../Landing";
+import { Toaster, toast } from 'react-hot-toast'
+import { useEffect, useState } from "react";
+import { MdAddBox, MdIndeterminateCheckBox } from "react-icons/md"
+import { getEventById } from "../../services/Events.Services";
+import { shoppingCartState } from "../../state/atoms/shoppingCartState";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { guestState } from "../../state/atoms/guestState";
+>>>>>>> 40b818509c539cd84945f68feef2ccc9fd5cc825
 
 const OneEvent = () => {
   const [shoppingCart, setShoppingCart] = useRecoilState(shoppingCartState);
@@ -18,6 +30,7 @@ const OneEvent = () => {
 
   const { eventId } = useParams();
   const navigate = useNavigate();
+  const isGuest = useRecoilValue(guestState)
 
   // Set up state variables
   const [currentEvent, setCurrentEvent] = useState(null);
@@ -50,6 +63,11 @@ const OneEvent = () => {
 
   // Shopping cart validations function
   const shoppingCartValidations = () => {
+    if (isGuest) {
+      toast.error("You have to log in!", { id: 'shcart' });
+      return false;
+    }
+
     if (!oneSelected(tierCounts) || !oneSelected(tierCountsDisplay)) {
       setTierCounts(initialTierCounts);
       currentEvent.tiers.forEach((tier) => {
@@ -72,6 +90,7 @@ const OneEvent = () => {
       return false;
     }
 
+<<<<<<< HEAD
     setReducedEvent((prev) => ({
       ...prev,
       tiers: prev.tiers.map((tier) => ({
@@ -83,6 +102,11 @@ const OneEvent = () => {
       initialTierCounts[tier.id] = 0;
     });
     setTierCountsDisplay(initialTierCounts);
+=======
+
+    setReducedEvent(prev => ({ ...prev, tiers: prev.tiers.map(tier => ({ ...tier, count: (tier.count || 0) + (tierCounts[tier.id] || 0) })) }));
+    currentEvent.tiers.forEach(tier => { initialTierCounts[tier.id] = 0; }); setTierCountsDisplay(initialTierCounts);
+>>>>>>> 40b818509c539cd84945f68feef2ccc9fd5cc825
 
     return true;
   };
@@ -136,7 +160,11 @@ const OneEvent = () => {
     });
 
     // Show success toast
+<<<<<<< HEAD
     toast.success('Items added to your cart!', { duration: 2500 });
+=======
+    toast.success("Items added to your cart!");
+>>>>>>> 40b818509c539cd84945f68feef2ccc9fd5cc825
 
     // Save the shopping cart to session storage
     sessionStorage.setItem('shoppingCart', JSON.stringify(shoppingCart));
@@ -154,26 +182,15 @@ const OneEvent = () => {
   useEffect(() => {
     const fetchEvent = async () => {
       const response = await getEventById(eventId);
+      console.log(response.data);
+      if (response.status == 404)
+        navigate("/event");
 
-      if (response.status == 404) navigate('/event');
+      const { available, category, duration, organizer, place, sponsors, state, ...restructuredEvent } = response.data;
 
-      const {
-        available,
-        category,
-        duration,
-        organizer,
-        place,
-        sponsors,
-        state,
-        ...restructuredEvent
-      } = response.data;
-
-      let modifiedTiers;
-      if (!shoppingCart.find((ev) => ev.id === restructuredEvent.id)) {
-        modifiedTiers = response.data.tiers.map(({ available, ...tier }) => ({
-          ...tier,
-          count: 0,
-        }));
+      let modifiedTiers
+      if (!shoppingCart.find(ev => ev.id === restructuredEvent.id)) {
+        modifiedTiers = response.data.tiers.map(({ available, ...tier }) => ({ ...tier, count: 0 }));
       } else {
         modifiedTiers = response.data.tiers.map(({ available, ...tier }) => {
           const cartItem = shoppingCart.find(
@@ -199,69 +216,45 @@ const OneEvent = () => {
     fetchEvent();
   }, []);
 
-  return currentEvent ? (
-    isEdit ? (
-      <EventTiersAndSponsors setIsEdit={setIsEdit} eventId={eventId} />
-    ) : (
-      <section
-        className={`min-h-[calc(100vh-52px-3.5rem)] max-h-[calc(100vh-52px-4rem)] overflow-x-hidden overflow-y-auto`}
-      >
-        <Toaster position="top-right" />
-        <div className="">
-          <div
-            className="min-h-[calc(40vh-52px-2rem)] relative bg-cover bg-center"
-            style={{ backgroundImage: `url(${currentEvent.image})` }}
-          >
-            <div className="min-h-[calc(40vh-52px-2rem)] invisible lg:visible absolute backdrop-blur-lg backdrop-brightness-50 w-full" />
-            <img
-              className="max-h-[calc(40vh-52px-2rem)] invisible lg:visible shadow-2xl absolute top-0 left-1/2 -translate-x-1/2 border-4 border-black"
-              src={currentEvent.image}
-              alt=""
-            />
-            <div className="min-h-[calc(40vh-52px-2rem)] w-full absolute bg-gradient-to-t from-default  md:via-transparent to-transparent"></div>
+  return (
+    currentEvent ? <section className={`min-h-[calc(100vh-52px-3.5rem)] max-h-[calc(100vh-52px-4rem)] overflow-x-hidden overflow-y-auto`}>
+      <Toaster position="top-right" />
+      <div className="">
+        <div className="min-h-[calc(40vh-52px-2rem)] relative bg-cover bg-center" style={{ backgroundImage: `url(${currentEvent?.image})` }}>
+          <div className="min-h-[calc(40vh-52px-2rem)] invisible lg:visible absolute backdrop-blur-lg backdrop-brightness-50 w-full" />
+          <img className="max-h-[calc(40vh-52px-2rem)] invisible lg:visible shadow-2xl absolute top-0 left-1/2 -translate-x-1/2 border-4 border-black" src={currentEvent.image} alt="" />
+          <div className="min-h-[calc(40vh-52px-2rem)] w-full absolute bg-gradient-to-t from-default  md:via-transparent to-transparent"></div>
+        </div>
+      </div>
+
+      <TitileWithLines title={currentEvent?.title}></TitileWithLines>
+
+      <div className="flex md:flex-row flex-col items-center justify-evenly min-h-[calc(30vh-52px-2rem)] md:px-default-2xl px-default-lg pt-default">
+        <div className=" w-full flex flex-col -mt-4 mb-4">
+          <div>
+            <p className="tracking-tight italic col-span-1 font-thin">Organizer</p>
+            <p className="tracking-tighter col-span-2">{currentEvent?.organizer.name}</p>
           </div>
+          {currentEvent.sponsors && currentEvent.sponsors.length > 0 && (
+            <div>
+              <p className="tracking-tighter col-span-1">Sponsors</p>
+              <p className="tracking-tighter col-span-2">Sponsors</p>
+            </div>
+          )}
+
+        </div>
+        <div className="flex flex-row justify-evenly items-center gap-12">
+          <DateInfo event={currentEvent} />
+          <EventInfo event={currentEvent} />
         </div>
 
-        <TitileWithLines title={currentEvent.title}></TitileWithLines>
-
-        <div className="flex md:flex-row flex-col items-center justify-evenly min-h-[calc(30vh-52px-2rem)] md:px-default-2xl px-default-lg pt-default">
-          <button
-            className="bg-emerald-400 px-5 py-2 rounded text-fuchsia-600 text-3xl tracking-tighter font-bold animate-bounce"
-            onClick={() => {
-              console.log({
-                'Tickets Selected': tierCounts,
-                Event: reducedEvent,
-                ShoppingCarta: shoppingCart,
-              });
-            }}
-          >
-            {' '}
-            LOG{' '}
-          </button>
-          <div className="flex flex-row justify-evenly items-center gap-12">
-            <DateInfo event={currentEvent} />
-            <EventInfo event={currentEvent} />
-          </div>
-
-          <div className="flex justify-center h-fit">
-            <div className="md:w-fit mt-default-sm flex justify-center bg-secondary bg-opacity-30 p-default-sm rounded-lg">
-              <div>
-                {currentEvent.tiers?.map((tier, index) => {
-                  const handleDecreaseCount = (tierId) => {
-                    if (tierCounts[tierId] > 0) {
-                      setTierCounts((prevCounts) => ({
-                        ...prevCounts,
-                        [tierId]: prevCounts[tierId] - 1,
-                      }));
-                      setTierCountsDisplay((prevCounts) => ({
-                        ...prevCounts,
-                        [tierId]: prevCounts[tierId] - 1,
-                      }));
-                    }
-                  };
-
-                  const handleIncreaseCount = (tierId) => {
-                    setTierCounts((prevCounts) => ({
+        <div className="flex justify-center h-fit">
+          <div className="md:w-fit mt-default-sm flex justify-center bg-secondary bg-opacity-30 p-default-sm rounded-lg">
+            <div>
+              {currentEvent.tiers?.map((tier, index) => {
+                const handleDecreaseCount = (tierId) => {
+                  if (tierCounts[tierId] > 0) {
+                    setTierCounts(prevCounts => ({
                       ...prevCounts,
                       [tierId]: prevCounts[tierId] + 1,
                     }));
@@ -269,42 +262,41 @@ const OneEvent = () => {
                       ...prevCounts,
                       [tierId]: prevCounts[tierId] + 1,
                     }));
-                  };
-                  const tierCount = tierCountsDisplay[tier.id];
-                  return (
-                    <div
-                      key={index}
-                      className="grid grid-flow-col grid-cols-4 sm:gap-8 p-default-xs md:text-2xl"
-                    >
-                      <p className="px-default-sm col-span-2"> {tier.name} </p>
-                      <p className="px-default-sm self-center">
-                        {' '}
-                        ${tier.price}{' '}
-                      </p>
+                  }
+                };
+
+                const handleIncreaseCount = (tierId) => {
+                  setTierCounts(prevCounts => ({
+                    ...prevCounts,
+                    [tierId]: prevCounts[tierId] + 1
+                  }));
+                  setTierCountsDisplay(prevCounts => ({
+                    ...prevCounts,
+                    [tierId]: prevCounts[tierId] + 1
+                  }));
+                };
+                const tierCount = tierCountsDisplay[tier.id];
+                return (
+
+                  <div key={index} className="grid grid-flow-col grid-cols-4 sm:gap-8 p-default-xs md:text-2xl">
+                    <p className="px-default-sm col-span-2"> {tier.name} </p>
+                    <p className="px-default-sm self-center"> ${tier.price} </p>
+                    {!soldOut(tier) ?
                       <div className="flex flex-row items-center">
-                        <button
-                          onClick={() => {
-                            handleDecreaseCount(tier.id);
-                          }}
-                        >
-                          <MdIndeterminateCheckBox
-                            size="1.5rem"
-                            className="text-lg"
-                          />
+                        <button onClick={() => { handleDecreaseCount(tier.id) }}>
+                          <MdIndeterminateCheckBox size="1.5rem" className="text-lg" />
                         </button>
                         <p className="px-default-sm"> {tierCount} </p>
-                        <button
-                          onClick={() => {
-                            handleIncreaseCount(tier.id);
-                          }}
-                        >
+                        <button onClick={() => { handleIncreaseCount(tier.id) }}>
                           <MdAddBox size="1.5rem" className="text-lg" />
                         </button>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
+                      :
+                      <p className="text-red-600 font-bold leading-6 tracking-tighter w-full sm:text-xl text-center"> SOLD OUT </p>
+                    }
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
@@ -343,7 +335,7 @@ function TitileWithLines({ title }) {
 }
 
 function DateInfo({ event }) {
-  const date_time = new Date(event.dateTime);
+  const date_time = new Date(event?.dateTime)
 
   return (
     <div className="text-center">
@@ -358,21 +350,12 @@ function DateInfo({ event }) {
 }
 
 function EventInfo({ event }) {
-  const date_time = new Date(event.dateTime);
+  const date_time = new Date(event?.dateTime)
   return (
     <div>
-      <LinnedText text={event.place.name} />
-      <p className="text-sm sm:text-xl leading-3 -mt-2 font-light tracking-tighter">
-        {' '}
-        {event.place.address}{' '}
-      </p>
-      <LinnedText
-        text={`${date_time.toLocaleString('en-US', {
-          hour: 'numeric',
-          minute: '2-digit',
-          hour12: true,
-        })}`}
-      />
+      <LinnedText text={event?.place?.name} />
+      <p className="text-sm sm:text-xl leading-3 -mt-2 font-light tracking-tighter"> {event?.place?.address} </p>
+      <LinnedText text={`${date_time.toLocaleString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })}`} />
     </div>
   );
 }
@@ -401,6 +384,12 @@ function checkAvailability(tickets, tiers) {
     }
   }
   return true;
+}
+
+function soldOut(tier) {
+  if (tier.capacity == tier.ticketsSold)
+    return true;
+  else return false
 }
 
 export default OneEvent;

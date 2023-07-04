@@ -47,6 +47,8 @@ const ModifyCatalogs = lazy(() =>
 // import ModifyCatalogs from './pages/admin/ModifyCatalogs/ModifyCatalogs';
 const ScanQr = lazy(() => import('./pages/ScanQr/ScanQr'));
 // import ScanQr from './pages/ScanQr/ScanQr';
+const PaymentSucces = lazy(() => import('./pages/Checkout/Succes/PaymentSucces'))
+
 import { useRecoilValue } from 'recoil';
 import { tokenState } from './state/atoms/tokenState';
 import AccountInfo from './pages/user/UserProfile/Fragments/AccountInfo';
@@ -54,9 +56,16 @@ import Avatars from './pages/user/UserProfile/Fragments/Avatars';
 import ChangePassword from './pages/user/UserProfile/Fragments/ChangePassword';
 import { Ticket } from './pages/OneTicket/Ticket';
 import SendTicket from './pages/SendTicket/SendTicket';
+import { guestState } from './state/atoms/guestState';
+import PaymentError from './pages/Checkout/Failure/PaymentError';
+import Mod from './pages/Mod/Mod';
+import LoginRedirct from './components/LoginRedirct';
 
 function App() {
   const token = useRecoilValue(tokenState);
+  const isGuest = useRecoilValue(guestState);
+
+  // console.log((token || isGuest) ? "Main router" : "Login router");
 
   const router = createBrowserRouter(
     createRoutesFromElements(
@@ -64,11 +73,15 @@ function App() {
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
 
-          <Route path="checkout" element={<Checkout />} />
+          <Route path="checkout">
+            <Route index element={<Checkout />} />
+            <Route path="successful" element={<PaymentSucces />} />
+            <Route path="error" element={<PaymentError />} />
+            <Route path="validate-qr" element={<ScanQr />} />
+          </Route>
 
           <Route path="receive-qr" element={<ReceiveQR />} />
-          {/* Este sera para el validador */}
-          <Route path="validate-qr" element={<ScanQr />} /> 
+          <Route path="validate-qr" element={<ScanQr />} />
           <Route path="send-ticket-qr/:ticketId" element={<SendTicket />} />
 
           <Route path="user">
@@ -85,11 +98,12 @@ function App() {
             <Route path=":eventId">
               <Route index element={<OneEvent />} />
               <Route path="send-qr" element={<SendQR />} />
-              <Route path="buy" element={<Landing />} />{' '}
-              {/* CREATE A BUYING VARIANT OF ONE ELEMENT */}
             </Route>
           </Route>
         </Route>
+        
+        <Route path="moderator" element={<Mod />} />
+
         <Route path="admin" element={<Admin />}>
           <Route index element={<Charts />} />
           <Route path="catalogs" element={<Catalogs />} />
@@ -98,8 +112,8 @@ function App() {
           <Route path="create-event" element={<CreateEvent />} />
           <Route path="all-events" element={<AllEvents />} />
         </Route>
-        <Route path="development" element={<Admin />} />
-        <Route path="error" element={<Landing />} />
+        {/* redirects user when token or isGuest is set */}
+        <Route path="login" element={<LoginRedirct />} />
         <Route path="*" element={<Landing />} />
       </>
     )
@@ -123,7 +137,7 @@ function App() {
           </div>
         }
       >
-        {token ? (
+        {token || isGuest ? (
           <RouterProvider router={router} />
         ) : (
           <RouterProvider router={routerLogin} />

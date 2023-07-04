@@ -1,17 +1,10 @@
 import React, { useState } from "react";
-import images from "react-payment-inputs/images";
-import { PaymentInputsWrapper, usePaymentInputs } from "react-payment-inputs";
 import "react-credit-cards-2/dist/es/styles-compiled.css";
 import Cards from "react-credit-cards-2";
+import { shoppingCartState } from "../../state/atoms/shoppingCartState";
+import { useRecoilState } from "recoil";
 
 export default function PaymentInfo() {
-  const {
-    wrapperProps,
-    getCardImageProps,
-    getCardNumberProps,
-    getExpiryDateProps,
-    getCVCProps,
-  } = usePaymentInputs();
 
   const [state, setState] = useState({
     number: "",
@@ -36,9 +29,7 @@ export default function PaymentInfo() {
 
   const handleInputDateChange = (evt) => {
     const { name, value } = evt.target;
-
     const formatedDate = convertDateFormat(value);
-
     setState((prev) => ({ ...prev, [name]: formatedDate }));
   };
 
@@ -64,17 +55,7 @@ export default function PaymentInfo() {
           focused={state.focus}
         />
 
-        {/* AQUI ESTAN LOS INPUTS*/}
         <div className="py-default md:min-w-max">
-          {/* QUE TIENEN VALIDACIONES CHIDAS */}
-          {/* <PaymentInputsWrapper className="w-full text-black mb-default-xs" {...wrapperProps}>
-          <svg {...getCardImageProps({ images })} />
-          <input {...getCardNumberProps()} />
-          <input {...getExpiryDateProps()} />
-          <input {...getCVCProps()} />
-        </PaymentInputsWrapper> */}
-
-          {/* QUE LE DAN ESTILO A LA TAARJETA */}
           <input
             className="p-2 text-black w-full rounded-sm my-default-xs"
             name="number"

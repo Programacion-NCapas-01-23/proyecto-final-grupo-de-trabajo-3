@@ -173,7 +173,7 @@ export const getAllEvents = async (page = 0) => {
   try {
     const data = await axios({
       method: 'GET',
-      url: `http://ec2-3-223-145-52.compute-1.amazonaws.com/events?page=${page}`,
+      url: `${BASE}/events`,
     });
 
     if (data) {

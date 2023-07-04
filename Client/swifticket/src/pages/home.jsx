@@ -9,7 +9,6 @@ import { tokenState } from '../state/atoms/tokenState';
 export default function Home() {
 
   const [events, setEvents] = useState([])
-  const [latestEvent, setLatestEvent] = useState()
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -34,6 +33,14 @@ export default function Home() {
       </section>
       <section className="">
         <TitileWithLines title="Available now" />
+        <div className='grid grid-cols-2 sm:grid-cols-3 items-center'>
+          {events.content && events.content.length > 0 ? (
+            events.content.map((event, index) => (
+              <EventCardMi key={index} event={event} />
+            ))
+          ) : <h1> Loading...</h1>
+          }
+        </div>
       </section>
     </div>
   );

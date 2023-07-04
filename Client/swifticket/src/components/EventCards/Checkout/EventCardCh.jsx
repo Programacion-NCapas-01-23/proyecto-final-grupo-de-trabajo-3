@@ -14,15 +14,15 @@ export default function EventCardCh(props) {
   const handleDelete = () => {
     const updatedCart = shoppingCart.filter(item => item.id !== props.event.id);
     setShoppingCart(updatedCart);
-    sessionStorage.setItem('shoppingCart', JSON.stringify(shoppingCart))
+    sessionStorage.setItem('shoppingCart', JSON.stringify(updatedCart))
   }
 
   return (
     <section className="flex flex-col p-default relative">
-      <div onClick={handleDelete} className="rounded-full p-0.5 bg-red-500 absolute right-2 top-2 z-30"><MdClose size='1.3rem' /></div>
+      <div onClick={handleDelete} className="rounded-full p-0.5 bg-red-500 absolute right-2 top-2 z-10"><MdClose size='1.3rem' /></div>
       {/* CARD DIV */}
 
-      <div className="flex flex-row pb-default">
+      <div className="flex flex-row max-h-52 pb-default">
         {/* IMAGE AND DATE DIV */}
         <div className="relative">
           <img

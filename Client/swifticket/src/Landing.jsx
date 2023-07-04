@@ -1,5 +1,5 @@
 import React from 'react';
-import errorImage from './assets/errorImage.jpg';
+import errorImage from '/assets/errorImage.jpg';
 import { useNavigate } from 'react-router-dom';
 
 const Landing = () => {

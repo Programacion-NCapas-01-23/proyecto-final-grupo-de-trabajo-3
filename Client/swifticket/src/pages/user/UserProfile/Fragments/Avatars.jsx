@@ -43,14 +43,14 @@ export default function Avatars() {
             <div className="sm:px-32 sm:py-24 px-12 py-6 bg-default-900 rounded-lg shadow-2xl relative h-fit max-w-5xl flex flex-col gap-2 sm:gap-8">
                 <MdArrowBack onClick={() => { navigate(-1) }} className='absolute cursor-pointer left-0 top-0 text-8xl sm:p-6 p-8 sm:m-0 -mt-3 -ml-3' />
                 <div className='grid sm:grid-cols-3 grid-cols-2 gap-x-16 gap-y-5'>
-                    <img onClick={() => {handleUser(1)}} className='hover:scale-110 transition-all cursor-pointer hover:shadow-md hover:shadow-white rounded-full' src={`/src/assets/avatar1.png`} alt="avatar" />
-                    <img onClick={() => {handleUser(2)}} className='hover:scale-110 transition-all cursor-pointer hover:shadow-md hover:shadow-white rounded-full' src={`/src/assets/avatar2.png`} alt="avatar" />
-                    <img onClick={() => {handleUser(3)}} className='hover:scale-110 transition-all cursor-pointer hover:shadow-md hover:shadow-white rounded-full' src={`/src/assets/avatar3.png`} alt="avatar" />
-                    <img onClick={() => {handleUser(4)}} className='hover:scale-110 transition-all cursor-pointer hover:shadow-md hover:shadow-white rounded-full' src={`/src/assets/avatar4.png`} alt="avatar" />
-                    <img onClick={() => {handleUser(5)}} className='hover:scale-110 transition-all cursor-pointer hover:shadow-md hover:shadow-white rounded-full' src={`/src/assets/avatar5.png`} alt="avatar" />
+                    <img onClick={() => {handleUser(1)}} className='hover:scale-110 transition-all cursor-pointer hover:shadow-md hover:shadow-white rounded-full' src={`/assets/avatar1.png`} alt="avatar" />
+                    <img onClick={() => {handleUser(2)}} className='hover:scale-110 transition-all cursor-pointer hover:shadow-md hover:shadow-white rounded-full' src={`/assets/avatar2.png`} alt="avatar" />
+                    <img onClick={() => {handleUser(3)}} className='hover:scale-110 transition-all cursor-pointer hover:shadow-md hover:shadow-white rounded-full' src={`/assets/avatar3.png`} alt="avatar" />
+                    <img onClick={() => {handleUser(4)}} className='hover:scale-110 transition-all cursor-pointer hover:shadow-md hover:shadow-white rounded-full' src={`/assets/avatar4.png`} alt="avatar" />
+                    <img onClick={() => {handleUser(5)}} className='hover:scale-110 transition-all cursor-pointer hover:shadow-md hover:shadow-white rounded-full' src={`/assets/avatar5.png`} alt="avatar" />
                 </div>
             </div>
-            <img src="/src/assets/loginFooter.svg" alt="Footer" className="footer-login" />
+            <img src="/assets/loginFooter.svg" alt="Footer" className="footer-login" />
             <Toaster position='top-right' />
         </div>
     )
